@@ -1,0 +1,6 @@
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
