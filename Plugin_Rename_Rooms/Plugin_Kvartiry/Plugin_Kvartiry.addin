@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>Plugin_Kvartiry</Name>
+		<Assembly>C:\Users\k.sinyagina\Плагины\Plugin_Kvartiry\Plugin_Kvartiry.dll</Assembly>
+		<ClientId>E2AAA60B-72D8-4DB3-823B-B2BDFB081DDF</ClientId>
+		<FullClassName>Plugin_Kvartiry.Main</FullClassName>
+		<Text>Plugin_Kvartiry</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>

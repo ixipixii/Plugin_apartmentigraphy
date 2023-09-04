@@ -1,0 +1,17 @@
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\bin\Release\Plugin_Kvartiry.dll
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\bin\Release\Plugin_Kvartiry.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\bin\Release\Prism.dll
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\bin\Release\Prism.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\bin\Release\Prism.xml
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\LevelSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\RoomSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\LevelSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\RoomSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.g.resources
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.csproj.CopyComplete
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.dll
+C:\Users\k.sinyagina\source\repos\Plugin_Kvartiry\Plugin_Kvartiry\obj\Release\Plugin_Kvartiry.pdb
