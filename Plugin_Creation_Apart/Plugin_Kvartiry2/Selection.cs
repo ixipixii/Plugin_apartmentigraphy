@@ -175,11 +175,11 @@ namespace Plugin_Kvartiry2
                 }
             }
 
-            List<Element> apartment = new FilteredElementCollector(doc, doc.ActiveView.Id)
+/*            List<Element> apartment = new FilteredElementCollector(doc, doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_IOSModelGroups)
                 .WhereElementIsNotElementType()
                 .Cast<Element>()
-                .ToList();
+                .ToList();*/
 
             //Запись параметров в файл
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
