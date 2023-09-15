@@ -32,7 +32,7 @@ namespace Plugin_apartmentography
         public Result OnStartup(UIControlledApplication application)
         {
 
-            string tabName = "Квартирография";
+            string tabName = "Панель";
             application.CreateRibbonTab(tabName);
 
             string absPath = GetExeDirectory();

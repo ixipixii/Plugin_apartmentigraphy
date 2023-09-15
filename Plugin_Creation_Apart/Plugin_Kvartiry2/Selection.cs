@@ -3,10 +3,15 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using Microsoft.Win32;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -16,11 +21,11 @@ namespace Plugin_Kvartiry2
     public class Selection
     {
         private ExternalCommandData _commandData;
-        public static List<Element> elements = new List<Element>();
+        public static List<Element> rooms = new List<Element>();
         public static Group group;
         public static String section = String.Empty;
         public static String level = String.Empty;
-        public static int position = 0;
+        public static List<String> index = new List<String>();
         public DelegateCommand SelectionLevel { get; }
         public DelegateCommand Appoint { get; }
         public DelegateCommand Сontinue { get; }
@@ -44,7 +49,7 @@ namespace Plugin_Kvartiry2
         private void OnAppoint()
         {
             List<ElementId> elementsId = new List<ElementId>();
-            foreach(var element in elements)
+            foreach(var element in rooms)
             {
                 elementsId.Add(element.Id);
             }
@@ -57,8 +62,13 @@ namespace Plugin_Kvartiry2
             {
                 CreateParameter();
             }
-            group.LookupParameter("ADSK_Номер квартиры").Set($"{section}.{level}.{position}");
-            elements.Clear();
+            
+            if(index.Count > 0)
+                group.LookupParameter("ADSK_Номер квартиры").Set($"{section}.{level}.{index[index.Count + 1]}");
+            else
+                group.LookupParameter("ADSK_Номер квартиры").Set($"{section}.{level}.{1}");
+
+            rooms.Clear();
             elementsId.Clear();
             transaction.Commit();
         }
@@ -100,6 +110,15 @@ namespace Plugin_Kvartiry2
             CloseRequest?.Invoke(this, EventArgs.Empty);
         }
 
+        public string GetExeDirectory()
+        {
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Uri.UnescapeDataString(uri.Path);
+            path = Path.GetDirectoryName(path);
+            return path;
+        }
+
         public void Select()
         {
             var uiapp = _commandData.Application;
@@ -111,25 +130,78 @@ namespace Plugin_Kvartiry2
             var roomFilter = new GroupPickFilter();
             var selectedRef = uidoc.Selection.PickObjects(ObjectType.Element, roomFilter, "Выберите помещения");
 
-            //var selectedRef = uidoc.Selection.PickObjects(ObjectType.Element, "Выберите комнаты");
-
             foreach(var selectedElement in selectedRef)
             {
-                elements.Add(doc.GetElement(selectedElement));
+                rooms.Add(doc.GetElement(selectedElement));
             }
 
-            section = elements[0].LookupParameter("PNR_Корпус").AsString();
-            level = elements[0].LookupParameter("PNR_Этаж").AsString();
+            section = rooms[0].LookupParameter("ADSK_Корпус").AsString();
+            level = rooms[0].LookupParameter("ADSK_Этаж").AsString();
 
-            List<Element> groups = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            //Чтение файла
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog.Filter = "All files(*.*)|*.*";
+
+            string filePath = GetExeDirectory();
+
+            if (filePath is null)
+                return;
+
+            int rowIndex = 0; //количество строк в файле
+            using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                IWorkbook workbook = new XSSFWorkbook(filePath);
+                ISheet sheet = workbook.GetSheetAt(index: 0);
+
+                int lastRowNum = sheet.LastRowNum; //последняя строка в файле
+
+                if(lastRowNum != -1) //если -1, значит файл пустой. В другом случае считываем номера квартир
+                {
+                    while (sheet.GetRow(rowIndex) != null)
+                    {
+                        if (sheet.GetRow(rowIndex).GetCell(0) == null ||
+                            sheet.GetRow(rowIndex).GetCell(1) == null ||
+                            sheet.GetRow(rowIndex).GetCell(2) == null)
+                        {
+                            rowIndex++;
+                            continue;
+                        }
+
+                        //Считываем номера квартир 
+                        index.Add(sheet.GetRow(rowIndex).GetCell(0).StringCellValue);
+                        rowIndex++;
+                    }
+                }
+            }
+
+            List<Element> apartment = new FilteredElementCollector(doc, doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_IOSModelGroups)
                 .WhereElementIsNotElementType()
                 .Cast<Element>()
                 .ToList();
 
-            if(groups.Count > 0)
-                position = groups.Count + 1;
-            else position = 1;
+            //Запись параметров в файл
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string excelPath = Path.Combine(desktopPath, "База_данных_квартир.xlsx");
+
+            using (FileStream stream = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet sheet = workbook.GetSheetAt(0);
+
+                foreach (var apart in apartment)
+                {
+                    sheet.SetCellValue(rowIndex, columnIndex: 0, index);
+                    sheet.SetCellValue(rowIndex, columnIndex: 1, level);
+                    sheet.SetCellValue(rowIndex, columnIndex: 2, section);
+                    rowIndex++;
+                }
+
+                workbook.Write(stream, false);
+            }
+
+            System.Diagnostics.Process.Start(excelPath);
         }
 
         public class GroupPickFilter : ISelectionFilter

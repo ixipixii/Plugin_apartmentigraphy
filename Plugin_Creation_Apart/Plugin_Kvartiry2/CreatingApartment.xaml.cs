@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Plugin_Kvartiry2
             selection.CloseRequest += (s, e) => this.Close();
             DataContext = selection;
 
-            LVR.Items.Add($"ADSK_Номер квартиры: {Selection.section}.{Selection.level}.{Selection.position}");
+            LVR.Items.Add($"ADSK_Номер квартиры: {Selection.section}.{Selection.level}.{Selection.index[Selection.index.Count + 1]}");
         }
     }
 }
