@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>ADSK_Floor</Name>
+		<Assembly>ADSK_Floor.dll</Assembly>
+		<ClientId>3A43820B-A93C-43DE-8E4F-0A44FB93F2DA</ClientId>
+		<FullClassName>ADSK_Floor.Main</FullClassName>
+		<Text>Test_Plagin_2</Text>
+		<VendorId>ADSK_Floor</VendorId>
+	</AddIn>
+</RevitAddIns>

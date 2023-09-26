@@ -1,0 +1,15 @@
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\ADSK_Section.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\ADSK_Section.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\LevelSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\Prism.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\Prism.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\Prism.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\LevelSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.g.resources
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.csproj.CopyComplete

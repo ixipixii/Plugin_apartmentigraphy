@@ -2,7 +2,7 @@
 <RevitAddIns>
 	<AddIn Type="Application">
 		<Name>Plugin_apartmentography</Name>
-		<Assembly>(userappdata}\Autodesk\Revit\Addins\2021\KV\Plugin_apartmentography.dll</Assembly>
+		<Assembly>Plugin_apartmentography\Plugin_apartmentography.dll</Assembly>
 		<ClientId>CC8FECB3-4894-4E95-BD84-85CDE36D1DB8</ClientId>
 		<FullClassName>Plugin_apartmentography.Main</FullClassName>
 		<Text>Plugin_apartmentography</Text>

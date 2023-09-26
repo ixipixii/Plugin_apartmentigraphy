@@ -26,7 +26,5 @@ namespace Plugin_Kvartiry
 
             return Result.Succeeded;
         }
-
-
     }
 }

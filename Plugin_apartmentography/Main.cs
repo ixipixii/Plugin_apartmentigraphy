@@ -32,11 +32,11 @@ namespace Plugin_apartmentography
         public Result OnStartup(UIControlledApplication application)
         {
 
-            string tabName = "Панель";
+            string tabName = "Квартирография";
             application.CreateRibbonTab(tabName);
 
             string absPath = GetExeDirectory();
-            
+
             string relPath1 = @"1\";
             string path1 = Path.Combine(absPath, relPath1);
             path1 = Path.GetFullPath(path1);
@@ -49,17 +49,37 @@ namespace Plugin_apartmentography
 
             string pathImg2 = Path.Combine(absPath, @"Resources\kv.png");
 
+            string relPath3 = @"3\";
+            string path3 = Path.Combine(absPath, relPath3);
+            path3 = Path.GetFullPath(path3);
+
+            string pathImg3 = Path.Combine(absPath, @"Resources\kv.png");
+
+            string relPath4 = @"4\";
+            string path4 = Path.Combine(absPath, relPath4);
+            path4 = Path.GetFullPath(path4);
+
+            string pathImg4 = Path.Combine(absPath, @"Resources\kv.png");
+
             var panel = application.CreateRibbonPanel(tabName, "Создание");
 
-            var button_1 = new PushButtonData("Помещения", "Переименование\nпомещений", 
-                Path.Combine(path1, "Plugin_Kvartiry.dll"), 
+            var button_1 = new PushButtonData("Помещения", "Переименование\nпомещений",
+                Path.Combine(path1, "Plugin_Kvartiry.dll"),
                 "Plugin_Kvartiry.Main");
 
             var button_2 = new PushButtonData("Квартиры", "Создание квартир",
                 Path.Combine(path2, "Plugin_Kvartiry2.dll"),
                 "Plugin_Kvartiry2.Main");
 
-            Uri uriImage1 = new Uri(pathImg1, UriKind.Absolute);
+            var button_3 = new PushButtonData("Этаж", "Создание этажа",
+                Path.Combine(path3, "ADSK_Floor.dll"),
+                "ADSK_Floor.Main");
+
+            var button_4 = new PushButtonData("Секция", "Создание секции",
+                Path.Combine(path4, "ADSK_Section.dll"),
+                "ADSK_Section.Main");
+
+/*            Uri uriImage1 = new Uri(pathImg1, UriKind.Absolute);
             BitmapImage largeImage1 = new BitmapImage(uriImage1);
             button_1.LargeImage = largeImage1;
 
@@ -67,8 +87,18 @@ namespace Plugin_apartmentography
             BitmapImage largeImage2 = new BitmapImage(uriImage2);
             button_2.LargeImage = largeImage2;
 
+            Uri uriImage3 = new Uri(pathImg3, UriKind.Absolute);
+            BitmapImage largeImage3 = new BitmapImage(uriImage3);
+            button_3.LargeImage = largeImage3;
+
+            Uri uriImage4 = new Uri(pathImg4, UriKind.Absolute);
+            BitmapImage largeImage4 = new BitmapImage(uriImage4);
+            button_4.LargeImage = largeImage4;*/
+
             panel.AddItem(button_1);
             panel.AddItem(button_2);
+            panel.AddItem(button_3);
+            panel.AddItem(button_4);
 
             return Result.Succeeded;
         }

@@ -190,13 +190,13 @@ namespace Plugin_Kvartiry2
                 IWorkbook workbook = new XSSFWorkbook();
                 ISheet sheet = workbook.GetSheetAt(0);
 
-                foreach (var apart in apartment)
+/*                foreach (var apart in apartment)
                 {
                     sheet.SetCellValue(rowIndex, columnIndex: 0, index);
                     sheet.SetCellValue(rowIndex, columnIndex: 1, level);
                     sheet.SetCellValue(rowIndex, columnIndex: 2, section);
                     rowIndex++;
-                }
+                }*/
 
                 workbook.Write(stream, false);
             }

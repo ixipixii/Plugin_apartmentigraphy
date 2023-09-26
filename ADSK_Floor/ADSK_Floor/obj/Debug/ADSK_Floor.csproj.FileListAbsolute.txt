@@ -1,0 +1,15 @@
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\bin\Debug\ADSK_Floor.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\bin\Debug\ADSK_Floor.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\LevelSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\LevelSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.g.resources
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.CopyComplete
