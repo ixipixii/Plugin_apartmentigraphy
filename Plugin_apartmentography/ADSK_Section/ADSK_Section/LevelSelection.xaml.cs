@@ -21,6 +21,7 @@ namespace ADSK_Section
     /// <summary>
     /// Логика взаимодействия для LevelSelection.xaml
     /// </summary>
+    /// 
     public partial class LevelSelection : Window
     {
         private ExternalCommandData _commandData;
@@ -29,8 +30,9 @@ namespace ADSK_Section
 
         static public String parameterValue;
 
-        public static double y = 0.0;
-
+        //Листы с координатами сетки
+        static public List<Double> valueX = new List<double>();
+        static public List<Double> valueY = new List<double>();
         public LevelSelection(ExternalCommandData commandData)
         {
             InitializeComponent();
@@ -38,18 +40,24 @@ namespace ADSK_Section
 
             Document doc = _commandData.Application.ActiveUIDocument.Document;
 
+            //Собираем все сетки
             List<Autodesk.Revit.DB.Grid> grids = new List<Autodesk.Revit.DB.Grid>(
                 new FilteredElementCollector(doc)
                 .OfClass(typeof(Autodesk.Revit.DB.Grid))
                 .Cast<Autodesk.Revit.DB.Grid>());
 
-
+            //Вводим координаты
             foreach (var grid in grids)
             {
-                if(grid.Name == "Б")
+                if(grid.Name == "3" || grid.Name == "2")
                 {
                     LB.Items.Add(grid);
-                    y = grid.Curve.GetEndPoint(1).Y;
+                    valueX.Add(grid.Curve.GetEndPoint(1).X);                   
+                }
+                if (grid.Name == "А" || grid.Name == "Б")
+                {
+                    LB.Items.Add(grid);
+                    valueY.Add(grid.Curve.GetEndPoint(1).Y);
                 }
                 LB.DisplayMemberPath = "Name";
             }

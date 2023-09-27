@@ -1,4 +1,5 @@
 ﻿using ADSK_Section;
+using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
@@ -13,6 +14,13 @@ using System.Windows.Controls;
 
 namespace ADSK_Section
 {
+    public class Data
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public Room Room { get; set; }
+        public Data() { }
+    }
     public class Selection
     {
         public DelegateCommand SelectionLevel { get; }
@@ -34,22 +42,50 @@ namespace ADSK_Section
         {
             var uiapp = _commandData.Application;
             var uidoc = uiapp.ActiveUIDocument;
-            Document doc = _commandData.Application.ActiveUIDocument.Document;
+            Autodesk.Revit.DB.Document doc = _commandData.Application.ActiveUIDocument.Document;
 
             String parameterValue = LevelSelection.parameterValue;
 
-            List<Wall> walls = new FilteredElementCollector(doc)
-                .OfCategory(BuiltInCategory.OST_Walls)
-                .WhereElementIsNotElementType()
-                .Cast<Wall>()
+            //Считываем помещения
+            List<Room> collector = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Rooms)
+                .OfType<Room>()
                 .ToList();
 
-            TaskDialog.Show("result", $"{LevelSelection.y}");
+            List<Data> elements = new List<Data>();
 
-            foreach( var wall in walls )
+            //Заполняем координаты помещений
+            foreach( var element in collector)
             {
-                if(wall.Lo)
+                double x = 0.0;
+                double y = 0.0;
+                LocationPoint LP = element.Location as LocationPoint;
+                if ( LP != null)
+                {
+                    x = LP.Point.X;
+                    y = LP.Point.Y;  
+                    Data room = new Data();
+                    room.X = x;
+                    room.Y = y;
+                    room.Room = element;
+                    elements.Add(room);
+                }
             }
+
+            //Если координаты точки помещения входят в границы секции, заносим текст в параметр ADSK_Секция
+            Transaction tr = new Transaction(doc, "Create parameter");
+            tr.Start();
+
+            foreach (var element in elements)
+            {
+                if (element.Y > LevelSelection.valueY.Min() && element.Y < LevelSelection.valueY.Max())
+                {
+                    if(element.X > LevelSelection.valueX.Min() && element.X < LevelSelection.valueX.Max())
+                        TaskDialog.Show("test", $"{element.Room.Name}");
+                }
+            }
+
+            tr.Commit();
         }
 
         public event EventHandler CloseRequest;
