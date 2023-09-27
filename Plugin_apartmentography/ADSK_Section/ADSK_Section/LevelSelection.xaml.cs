@@ -26,8 +26,6 @@ namespace ADSK_Section
     {
         private ExternalCommandData _commandData;
 
-        static public Autodesk.Revit.DB.Grid selectedLevel;
-
         static public String parameterValue;
 
         //Листы с координатами сетки
@@ -49,7 +47,21 @@ namespace ADSK_Section
             //Вводим координаты
             foreach (var grid in grids)
             {
-                if(grid.Name == "3" || grid.Name == "2")
+                Autodesk.Revit.DB.Line line = grid.Curve as Autodesk.Revit.DB.Line;
+                if (line != null)
+                {
+                    if(line.Direction.X == 1.0)
+                    {
+                        CB_Gorizontal_1.Items.Add(grid);
+                        CB_Gorizontal_2.Items.Add(grid);
+                    }
+                    else
+                    {
+                        CB_Vertical_1.Items.Add(grid);
+                        CB_Vertical_2.Items.Add(grid);
+                    }
+                }
+                /*if(grid.Name == "3" || grid.Name == "2")
                 {
                     LB.Items.Add(grid);
                     valueX.Add(grid.Curve.GetEndPoint(1).X);                   
@@ -58,8 +70,11 @@ namespace ADSK_Section
                 {
                     LB.Items.Add(grid);
                     valueY.Add(grid.Curve.GetEndPoint(1).Y);
-                }
-                LB.DisplayMemberPath = "Name";
+                }*/
+                CB_Gorizontal_1.DisplayMemberPath = "Name";
+                CB_Gorizontal_2.DisplayMemberPath = "Name";
+                CB_Vertical_1.DisplayMemberPath = "Name";
+                CB_Vertical_2.DisplayMemberPath = "Name";
             }
 
             TB.Text = parameterValue;
@@ -70,8 +85,25 @@ namespace ADSK_Section
         }
         public void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selected = LB.SelectedItem;
-            selectedLevel = (Autodesk.Revit.DB.Grid)selected;
+/*            Autodesk.Revit.DB.Grid grid_Vertical_1 = (Autodesk.Revit.DB.Grid)CB_Vertical_1.SelectedItem;
+            valueX.Add(grid_Vertical_1.Curve.GetEndPoint(1).X);
+
+            Autodesk.Revit.DB.Grid grid_Vertical_2 = (Autodesk.Revit.DB.Grid)CB_Vertical_2.SelectedItem;
+            valueX.Add(grid_Vertical_2.Curve.GetEndPoint(1).X);*/
+
+            Autodesk.Revit.DB.Grid grid_Gorizontal_1 = (Autodesk.Revit.DB.Grid)CB_Gorizontal_1.SelectedItem;
+            valueX.Add(grid_Gorizontal_1.Curve.GetEndPoint(1).X);
+
+/*            Autodesk.Revit.DB.Grid grid_Gorizontal_2 = (Autodesk.Revit.DB.Grid)CB_Gorizontal_2.SelectedItem;
+            valueX.Add(grid_Gorizontal_2.Curve.GetEndPoint(1).X);*/
+
+            /*//Добавляем значения с вертикальных комбобоксов
+            valueX.Add(Convert.ToDouble(CB_Vertical_1.SelectedItem.ToString()));
+            valueX.Add(Convert.ToDouble(CB_Vertical_2.SelectedItem.ToString()));
+
+            //Добавляем значения с горизонтальных комбобоксов
+            valueY.Add(Convert.ToDouble(CB_Gorizontal_1.SelectedItem.ToString()));
+            valueY.Add(Convert.ToDouble(CB_Gorizontal_2.SelectedItem.ToString()));*/
         }
 
 /*        public event EventHandler CloseRequest;
