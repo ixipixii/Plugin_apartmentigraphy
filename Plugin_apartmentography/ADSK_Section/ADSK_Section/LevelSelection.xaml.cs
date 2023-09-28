@@ -26,9 +26,9 @@ namespace ADSK_Section
     {
         private ExternalCommandData _commandData;
 
-        static public String parameterValue;
+        static public String nameSection;
 
-        //Листы с координатами сетки
+        //Листы с координатами осей
         static public List<Double> valueX = new List<double>();
         static public List<Double> valueY = new List<double>();
         public LevelSelection(ExternalCommandData commandData)
@@ -38,18 +38,19 @@ namespace ADSK_Section
 
             Document doc = _commandData.Application.ActiveUIDocument.Document;
 
-            //Собираем все сетки
+            //Собираем все оси
             List<Autodesk.Revit.DB.Grid> grids = new List<Autodesk.Revit.DB.Grid>(
                 new FilteredElementCollector(doc)
                 .OfClass(typeof(Autodesk.Revit.DB.Grid))
                 .Cast<Autodesk.Revit.DB.Grid>());
 
-            //Вводим координаты
+            //Проходимся по всем осям проекта
             foreach (var grid in grids)
             {
                 Autodesk.Revit.DB.Line line = grid.Curve as Autodesk.Revit.DB.Line;
                 if (line != null)
                 {
+                    //Определяем вертикальные и горизонтальные оси и добавляем на combobox-ы
                     if(line.Direction.X == 1.0)
                     {
                         CB_Gorizontal_1.Items.Add(grid);
@@ -61,55 +62,45 @@ namespace ADSK_Section
                         CB_Vertical_2.Items.Add(grid);
                     }
                 }
-                /*if(grid.Name == "3" || grid.Name == "2")
-                {
-                    LB.Items.Add(grid);
-                    valueX.Add(grid.Curve.GetEndPoint(1).X);                   
-                }
-                if (grid.Name == "А" || grid.Name == "Б")
-                {
-                    LB.Items.Add(grid);
-                    valueY.Add(grid.Curve.GetEndPoint(1).Y);
-                }*/
+                //На combobox-ах будте показано свойство Name объектов-осей
                 CB_Gorizontal_1.DisplayMemberPath = "Name";
                 CB_Gorizontal_2.DisplayMemberPath = "Name";
                 CB_Vertical_1.DisplayMemberPath = "Name";
                 CB_Vertical_2.DisplayMemberPath = "Name";
             }
 
-            TB.Text = parameterValue;
+            //Название секции
+            TB.Text = nameSection;
+            nameSection = "123";
 
             Selection selection = new Selection(commandData);
             selection.CloseRequest += (s, e) => this.Close();
             DataContext = selection;
         }
-        public void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        //Обработчики события combobox-ов. Сразу добавляем координаты в массивы координат
+        private void CB_Gorizontal_1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-/*            Autodesk.Revit.DB.Grid grid_Vertical_1 = (Autodesk.Revit.DB.Grid)CB_Vertical_1.SelectedItem;
-            valueX.Add(grid_Vertical_1.Curve.GetEndPoint(1).X);
-
-            Autodesk.Revit.DB.Grid grid_Vertical_2 = (Autodesk.Revit.DB.Grid)CB_Vertical_2.SelectedItem;
-            valueX.Add(grid_Vertical_2.Curve.GetEndPoint(1).X);*/
-
             Autodesk.Revit.DB.Grid grid_Gorizontal_1 = (Autodesk.Revit.DB.Grid)CB_Gorizontal_1.SelectedItem;
-            valueX.Add(grid_Gorizontal_1.Curve.GetEndPoint(1).X);
-
-/*            Autodesk.Revit.DB.Grid grid_Gorizontal_2 = (Autodesk.Revit.DB.Grid)CB_Gorizontal_2.SelectedItem;
-            valueX.Add(grid_Gorizontal_2.Curve.GetEndPoint(1).X);*/
-
-            /*//Добавляем значения с вертикальных комбобоксов
-            valueX.Add(Convert.ToDouble(CB_Vertical_1.SelectedItem.ToString()));
-            valueX.Add(Convert.ToDouble(CB_Vertical_2.SelectedItem.ToString()));
-
-            //Добавляем значения с горизонтальных комбобоксов
-            valueY.Add(Convert.ToDouble(CB_Gorizontal_1.SelectedItem.ToString()));
-            valueY.Add(Convert.ToDouble(CB_Gorizontal_2.SelectedItem.ToString()));*/
+            valueY.Add(grid_Gorizontal_1.Curve.GetEndPoint(1).Y);
         }
 
-/*        public event EventHandler CloseRequest;
-        private void RaiseCloseRequest()
+        private void CB_Gorizontal_2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CloseRequest?.Invoke(this, EventArgs.Empty);
-        }*/
+            Autodesk.Revit.DB.Grid grid_Gorizontal_2 = (Autodesk.Revit.DB.Grid)CB_Gorizontal_2.SelectedItem;
+            valueY.Add(grid_Gorizontal_2.Curve.GetEndPoint(1).Y);
+        }
+
+        private void CB_Vertical_1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Autodesk.Revit.DB.Grid grid_Vertical_1 = (Autodesk.Revit.DB.Grid)CB_Vertical_1.SelectedItem;
+            valueX.Add(grid_Vertical_1.Curve.GetEndPoint(1).X);
+        }
+
+        private void CB_Vertical_2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Autodesk.Revit.DB.Grid grid_Vertical_2 = (Autodesk.Revit.DB.Grid)CB_Vertical_2.SelectedItem;
+            valueX.Add(grid_Vertical_2.Curve.GetEndPoint(1).X);
+        }
     }
 }

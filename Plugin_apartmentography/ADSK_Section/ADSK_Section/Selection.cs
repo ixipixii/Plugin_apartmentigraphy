@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using ReitAPIPluginLibrary;
 
 namespace ADSK_Section
 {
@@ -44,7 +45,7 @@ namespace ADSK_Section
             var uidoc = uiapp.ActiveUIDocument;
             Autodesk.Revit.DB.Document doc = _commandData.Application.ActiveUIDocument.Document;
 
-            String parameterValue = LevelSelection.parameterValue;
+            String parameterValue = LevelSelection.nameSection;
 
             //Считываем помещения
             List<Room> collector = new FilteredElementCollector(doc)
@@ -81,7 +82,22 @@ namespace ADSK_Section
                 if (element.Y > LevelSelection.valueY.Min() && element.Y < LevelSelection.valueY.Max())
                 {
                     if(element.X > LevelSelection.valueX.Min() && element.X < LevelSelection.valueX.Max())
+                    {
+                        if(element.Room.LookupParameter("PNR_Корпус") == null)
+                        {
+                            var categorySet = new CategorySet();
+                            categorySet.Insert(element.Room.Category);
+                            CreateShared createShared = new CreateShared();
+                            createShared.CreateSharedParameter(uiapp.Application,
+                                                       doc,
+                                                       "PNR_Корпус",
+                                                       categorySet,
+                                                       BuiltInParameterGroup.PG_IDENTITY_DATA,
+                                                       true);
+                        }
                         TaskDialog.Show("test", $"{element.Room.Name}");
+                        element.Room.LookupParameter("PNR_Корпус").Set(LevelSelection.nameSection);
+                    }
                 }
             }
 

@@ -13,3 +13,5 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentograph
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\LevelSelection.baml
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.g.resources
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\obj\Debug\ADSK_Section.csproj.CopyComplete
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\ReitAPIPluginLibrary.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\ADSK_Section\ADSK_Section\bin\Debug\ReitAPIPluginLibrary.pdb
