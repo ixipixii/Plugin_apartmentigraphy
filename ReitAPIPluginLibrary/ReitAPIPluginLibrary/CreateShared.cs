@@ -38,7 +38,7 @@ namespace ReitAPIPluginLibrary
 
             try
             {
-                map.ReInsert(definition, binding, builtInParameterGroup);
+                map.Insert(definition, binding, builtInParameterGroup);
             }
             catch (Autodesk.Revit.Exceptions.InvalidOperationException)
             {
