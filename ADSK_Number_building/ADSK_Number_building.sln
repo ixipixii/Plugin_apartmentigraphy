@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADSK_Number_building", "ADSK_Number_building\ADSK_Number_building.csproj", "{8F2BFD65-A508-4CB6-BA83-0CECA0137DBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReitAPIPluginLibrary", "..\ReitAPIPluginLibrary\ReitAPIPluginLibrary\ReitAPIPluginLibrary.csproj", "{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8F2BFD65-A508-4CB6-BA83-0CECA0137DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F2BFD65-A508-4CB6-BA83-0CECA0137DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F2BFD65-A508-4CB6-BA83-0CECA0137DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F2BFD65-A508-4CB6-BA83-0CECA0137DBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7FA47F8E-6559-4078-8943-834834661F19}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,4 @@
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Number_building\ADSK_Number_building\obj\Debug\ADSK_Number_building.csproj.AssemblyReference.cache
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Number_building\ADSK_Number_building\obj\Debug\GridSelection.g.cs
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Number_building\ADSK_Number_building\obj\Debug\ADSK_Number_building_MarkupCompile.cache
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Number_building\ADSK_Number_building\obj\Debug\ADSK_Number_building_MarkupCompile.lref

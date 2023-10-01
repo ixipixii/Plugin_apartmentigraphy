@@ -1,0 +1,108 @@
+﻿<Window x:Class="ADSK_Number_building.GridSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ADSK_Number_building"
+             mc:Ignorable="d" 
+             Height="285" MinHeight="285" Width="250" MinWidth="250"
+             Title="Выбор осей">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label  Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Content="Выберите оси:"/>
+        <Label  Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Content="По горизонтали:"/>
+        <Label  Grid.Row="2"
+                Grid.Column="0"
+                Content="         От:"
+                Margin="2"/>
+        <ComboBox x:Name="CB_Gorizontal_1"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 Margin="6,5,5,5" 
+                 SelectionChanged= "CB_Gorizontal_1_SelectionChanged"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                    />
+        <Label  Grid.Row="2"
+                Grid.Column="2"
+                Content="         До:"
+                Margin="2"
+                />
+        <ComboBox x:Name="CB_Gorizontal_2" 
+                 Grid.Row="2"
+                 Grid.Column="3"
+                 Margin="4,5,5,5" 
+                 SelectedItem = "{Binding SelectedLevelList}"
+                 SelectionChanged= "CB_Gorizontal_2_SelectionChanged"
+                    />
+
+        <Label  Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Content="По вертикали:"
+                Margin="0 10 0 0"/>
+        <Label  Grid.Row="4"
+                Grid.Column="0"
+                Content="         От:"/>
+        <ComboBox x:Name="CB_Vertical_1" 
+                 Grid.Row="4"
+                 Grid.Column="1"
+                 Margin="6,5,5,5" 
+                 SelectedItem = "{Binding SelectedLevelList}"
+                 SelectionChanged= "CB_Vertical_1_SelectionChanged"
+                    />
+        <Label  Grid.Row="4"
+                Grid.Column="2"
+                Content="         До:"
+                Margin="2"/>
+        <ComboBox x:Name="CB_Vertical_2" 
+                 Grid.Row="4"
+                 Grid.Column="3"
+                 Margin="4,5,5,5" 
+                 SelectedItem = "{Binding SelectedLevelList}"
+                 SelectionChanged= "CB_Vertical_2_SelectionChanged"
+                    />
+        <Label  Grid.Row="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="4"
+                Content="Название секции:"
+                Margin="0 10 0 0"/>
+        <TextBox x:Name="TB"
+                 TextChanged="TB_TextChanged"
+                 Grid.Row="6"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="4"
+                 Margin="5 0 5 0"
+            />
+        <Button Content="Ввести параметр секции" 
+                Command="{Binding SelectionLevel}"
+                Margin="5"
+                Grid.Row="7"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="150"
+                Height="25"/>
+    </Grid>
+</Window>
