@@ -83,20 +83,20 @@ namespace ADSK_Section
                 {
                     if(element.X > LevelSelection.valueX.Min() && element.X < LevelSelection.valueX.Max())
                     {
-                        if(element.Room.LookupParameter("ADSK_Секция") == null)
+                        if(element.Room.LookupParameter("ADSK_Номер секции") == null)
                         {
                             var categorySet = new CategorySet();
                             categorySet.Insert(element.Room.Category);
                             CreateShared createShared = new CreateShared();
                             createShared.CreateSharedParameter(uiapp.Application,
                                                        doc,
-                                                       "ADSK_Секция",
+                                                       "ADSK_Номер секции",
                                                        categorySet,
                                                        BuiltInParameterGroup.PG_IDENTITY_DATA,
                                                        true);
                         }
                         TaskDialog.Show("test", $"{element.Room.Name}");
-                        element.Room.LookupParameter("ADSK_Секция").Set(LevelSelection.nameSection);
+                        element.Room.LookupParameter("ADSK_Номер секции").Set(LevelSelection.nameSection);
                     }
                 }
             }

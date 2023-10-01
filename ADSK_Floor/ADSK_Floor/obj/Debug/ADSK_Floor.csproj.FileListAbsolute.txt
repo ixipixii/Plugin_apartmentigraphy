@@ -28,3 +28,5 @@ C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\De
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.CopyComplete
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.dll
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.pdb
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.dll
+C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.pdb

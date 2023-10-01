@@ -60,7 +60,7 @@ namespace ADSK_Floor
 
         private void TB_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TB.Text = parameterValue;
+            parameterValue = TB.Text;
         }
     }
 }

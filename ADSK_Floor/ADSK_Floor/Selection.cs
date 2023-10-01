@@ -40,11 +40,10 @@ namespace ADSK_Floor
             uidoc.ActiveView = LevelSelection.selectedLevel;
 
             //Считываем помещения
-            List<Room> collector = new FilteredElementCollector(doc, uidoc.ActiveView.Id)
+            List<Room> collector = new FilteredElementCollector(doc)
                 .OfCategory(BuiltInCategory.OST_Rooms)
                 .OfType<Room>()
                 .ToList();
-
 
             Transaction tr = new Transaction(doc, "Rename level");
             tr.Start();
