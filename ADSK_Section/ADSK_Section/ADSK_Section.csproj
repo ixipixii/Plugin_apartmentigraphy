@@ -74,7 +74,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ReitAPIPluginLibrary\ReitAPIPluginLibrary\ReitAPIPluginLibrary.csproj">
+    <ProjectReference Include="..\..\ReitAPIPluginLibrary\ReitAPIPluginLibrary\ReitAPIPluginLibrary.csproj">
       <Project>{0c92e8c9-6686-4837-8ef4-df61bd2b3e05}</Project>
       <Name>ReitAPIPluginLibrary</Name>
     </ProjectReference>

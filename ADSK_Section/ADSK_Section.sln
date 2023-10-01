@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADSK_Section", "ADSK_Section\ADSK_Section.csproj", "{14AD9AB0-E0A8-44F3-A1EF-9E7754881F04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReitAPIPluginLibrary", "..\..\ReitAPIPluginLibrary\ReitAPIPluginLibrary\ReitAPIPluginLibrary.csproj", "{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReitAPIPluginLibrary", "..\ReitAPIPluginLibrary\ReitAPIPluginLibrary\ReitAPIPluginLibrary.csproj", "{0C92E8C9-6686-4837-8EF4-DF61BD2B3E05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

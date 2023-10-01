@@ -48,8 +48,6 @@ namespace ADSK_Floor
                 LB.DisplayMemberPath = "Name";
             }
 
-            TB.Text = parameterValue;
-
             Selection selection = new Selection(commandData);
             selection.CloseRequest += (s, e) => this.Close();
             DataContext = selection;
@@ -60,10 +58,9 @@ namespace ADSK_Floor
             selectedLevel = (ViewPlan)selected;
         }
 
-        /*        public event EventHandler CloseRequest;
-                private void RaiseCloseRequest()
-                {
-                    CloseRequest?.Invoke(this, EventArgs.Empty);
-                }*/
+        private void TB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TB.Text = parameterValue;
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using ReitAPIPluginLibrary;
 
 namespace ADSK_Floor
 {
@@ -35,8 +36,40 @@ namespace ADSK_Floor
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = _commandData.Application.ActiveUIDocument.Document;
 
+            //Делаем активным вид, который выбрал пользователь
             uidoc.ActiveView = LevelSelection.selectedLevel;
-            String parameterValue = LevelSelection.parameterValue;
+
+            //Считываем помещения
+            List<Room> collector = new FilteredElementCollector(doc, uidoc.ActiveView.Id)
+                .OfCategory(BuiltInCategory.OST_Rooms)
+                .OfType<Room>()
+                .ToList();
+
+
+            Transaction tr = new Transaction(doc, "Rename level");
+            tr.Start();
+
+            foreach (Room room in collector)
+            {
+                if (room != null)
+                {
+                    if(room.LookupParameter("ADSK_Этаж") == null)
+                    {
+                        var categorySet = new CategorySet();
+                        categorySet.Insert(room.Category);
+                        CreateShared createShared = new CreateShared();
+                        createShared.CreateSharedParameter(uiapp.Application,
+                                                   doc,
+                                                   "ADSK_Этаж",
+                                                   categorySet,
+                                                   BuiltInParameterGroup.PG_IDENTITY_DATA,
+                                                   true);
+                    }
+                    room.LookupParameter("ADSK_Этаж").Set($"{LevelSelection.parameterValue}");
+                }
+            }
+
+            tr.Commit();
 
         }
 

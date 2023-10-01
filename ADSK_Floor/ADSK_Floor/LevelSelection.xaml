@@ -25,6 +25,7 @@
                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                     />
         <TextBox x:Name="TB"
+                 TextChanged="TB_TextChanged"
                  Grid.Row="2"
                  Margin="5"
             />

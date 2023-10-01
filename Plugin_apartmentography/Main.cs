@@ -63,7 +63,7 @@ namespace Plugin_apartmentography
 
             var panel = application.CreateRibbonPanel(tabName, "Создание");
 
-            var button_1 = new PushButtonData("Помещения", "Переименование\nпомещений",
+            var button_1 = new PushButtonData("Имя помещения", "Имя помещения",
                 Path.Combine(path1, "Plugin_Kvartiry.dll"),
                 "Plugin_Kvartiry.Main");
 
@@ -71,11 +71,11 @@ namespace Plugin_apartmentography
                 Path.Combine(path2, "Plugin_Kvartiry2.dll"),
                 "Plugin_Kvartiry2.Main");
 
-            var button_3 = new PushButtonData("Этаж", "Создание этажа",
+            var button_3 = new PushButtonData("Этаж", "Этаж",
                 Path.Combine(path3, "ADSK_Floor.dll"),
                 "ADSK_Floor.Main");
 
-            var button_4 = new PushButtonData("Секция", "Создание секции",
+            var button_4 = new PushButtonData("Секция", "Секция",
                 Path.Combine(path4, "ADSK_Section.dll"),
                 "ADSK_Section.Main");
 

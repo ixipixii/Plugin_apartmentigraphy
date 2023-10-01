@@ -100,7 +100,8 @@ namespace ADSK_Section
                     }
                 }
             }
-
+            LevelSelection.valueX.Clear();
+            LevelSelection.valueY.Clear();
             tr.Commit();
         }
 
