@@ -1,5 +1,4 @@
-﻿using ADSK_Section;
-using Autodesk.Revit.Creation;
+﻿using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
@@ -14,7 +13,7 @@ using System.Windows.Controls;
 using ReitAPIPluginLibrary;
 using ADSK_Number_building;
 
-namespace ADSK_Section
+namespace ADSK_Number_building
 {
     public class Data
     {
@@ -84,20 +83,20 @@ namespace ADSK_Section
                 {
                     if (element.X > GridSelection.valueX.Min() && element.X < GridSelection.valueX.Max())
                     {
-                        if (element.Room.LookupParameter("ADSK_Номер секции") == null)
+                        if (element.Room.LookupParameter("ADSK_Номер здания") == null)
                         {
                             var categorySet = new CategorySet();
                             categorySet.Insert(element.Room.Category);
                             CreateShared createShared = new CreateShared();
                             createShared.CreateSharedParameter(uiapp.Application,
                                                        doc,
-                                                       "ADSK_Номер секции",
+                                                       "ADSK_Номер здания",
                                                        categorySet,
                                                        BuiltInParameterGroup.PG_IDENTITY_DATA,
                                                        true);
                         }
                         TaskDialog.Show("test", $"{element.Room.Name}");
-                        element.Room.LookupParameter("ADSK_Номер секции").Set(GridSelection.nameSection);
+                        element.Room.LookupParameter("ADSK_Номер здания").Set(GridSelection.nameSection);
                     }
                 }
             }

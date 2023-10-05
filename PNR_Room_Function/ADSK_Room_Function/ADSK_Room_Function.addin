@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>ADSK_Room_Function</Name>
+		<Assembly>ADSK_Room_Function.dll</Assembly>
+		<ClientId>0ADEC905-2F24-495F-858A-E41B76F394EC</ClientId>
+		<FullClassName>ADSK_Room_Function.Main</FullClassName>
+		<Text>ADSK_Room_Function</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
