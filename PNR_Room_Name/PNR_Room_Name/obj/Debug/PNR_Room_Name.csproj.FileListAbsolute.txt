@@ -1,0 +1,17 @@
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\PNR_Room_Name.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\PNR_Room_Name.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\ReitAPIPluginLibrary.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\ReitAPIPluginLibrary.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.xml
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.AssemblyReference.cache
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\RoomSelection.g.cs
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name_MarkupCompile.cache
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name_MarkupCompile.lref
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\RoomSelection.baml
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.g.resources
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.CoreCompileInputs.cache
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.CopyComplete
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.pdb

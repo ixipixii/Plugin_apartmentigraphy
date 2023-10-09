@@ -18,6 +18,9 @@ namespace ADSK_Number_building
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
+            var window = new GridSelection(commandData);
+            window.ShowDialog();
+
             return Result.Succeeded;
         }
     }

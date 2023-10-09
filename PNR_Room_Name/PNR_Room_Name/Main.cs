@@ -11,13 +11,15 @@ namespace PNR_Room_Name
     [Transaction(TransactionMode.Manual)]
     public class Main : IExternalCommand
     {
+        public static List<ViewPlan> views = new List<ViewPlan>();
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var uiapp = commandData.Application;
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            TaskDialog.Show("Hello", "World");
+            var window = new RoomSelection(commandData);
+            window.ShowDialog();
 
             return Result.Succeeded;
         }

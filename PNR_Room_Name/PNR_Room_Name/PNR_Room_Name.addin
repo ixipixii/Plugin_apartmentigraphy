@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>PNR_Room_Name</Name>
+		<Assembly>PNR_Room_Name.dll</Assembly>
+		<ClientId>CD079589-D507-4F7A-98A9-9EEA1749F830</ClientId>
+		<FullClassName>PNR_Room_Name.Main</FullClassName>
+		<Text>PNR_Room_Name</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>

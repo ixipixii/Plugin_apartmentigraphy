@@ -94,7 +94,7 @@
                  Grid.ColumnSpan="4"
                  Margin="5 0 5 0"
             />
-        <Button Content="Ввести параметр секции" 
+        <Button Content="Ввести параметр здания" 
                 Command="{Binding SelectionLevel}"
                 Margin="5"
                 Grid.Row="7"

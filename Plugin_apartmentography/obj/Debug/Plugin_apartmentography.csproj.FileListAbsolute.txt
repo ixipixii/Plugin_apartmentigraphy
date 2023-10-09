@@ -10,3 +10,9 @@ C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.CoreCompileInputs.cache
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.CoreCompileInputs.cache
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
+C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
