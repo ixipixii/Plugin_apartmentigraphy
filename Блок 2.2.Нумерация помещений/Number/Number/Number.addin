@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>Number</Name>
+		<Assembly>Number.dll</Assembly>
+		<ClientId>A8BBC179-BF01-47DC-9C5B-AA5B585733AA</ClientId>
+		<FullClassName>Number.Main</FullClassName>
+		<Text>Number</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
