@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="B"
                 Content="done"
-                Command="{Binding SelectCommand}"
+                Command="{Binding SelectApart}"
                 ></Button>
             
     </Grid>

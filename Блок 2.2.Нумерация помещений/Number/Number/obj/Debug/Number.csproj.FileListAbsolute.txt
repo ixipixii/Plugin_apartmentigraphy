@@ -28,3 +28,5 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нуме�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\bin\Debug\ru-RU\AdWindows.resources.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\bin\Debug\zh-CN\AdWindows.resources.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\bin\Debug\zh-TW\AdWindows.resources.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Apart.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Apart.baml

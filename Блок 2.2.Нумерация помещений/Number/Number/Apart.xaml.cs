@@ -18,16 +18,16 @@ using System.Windows.Shapes;
 namespace Number
 {
     /// <summary>
-    /// Логика взаимодействия для MainPanel.xaml
+    /// Логика взаимодействия для Apart.xaml
     /// </summary>
-    public partial class MainPanel : Window
+    public partial class Apart : Window
     {
-        public MainPanel(UIApplication uiapp, UIDocument uidoc, Document doc)
+        public Apart(UIApplication uiapp, UIDocument uidoc, Document doc)
         {
             InitializeComponent();
             var numberSelection = new NumberSelection(uiapp, uidoc, doc);
             numberSelection.CloseRequest += (s, e) => this.Close();
-            DataContext = numberSelection;           
+            DataContext = numberSelection;
         }
     }
 }
