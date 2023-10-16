@@ -51,7 +51,7 @@ namespace ADSK_Number_building
                 if (line != null)
                 {
                     //Определяем вертикальные и горизонтальные оси и добавляем на combobox-ы
-                    if (line.Direction.X == 1.0)
+                    if (line.Direction.X == 1.0 || line.Direction.X == -1.0)
                     {
                         CB_Gorizontal_1.Items.Add(grid);
                         CB_Gorizontal_2.Items.Add(grid);

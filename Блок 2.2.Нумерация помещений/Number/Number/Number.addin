@@ -2,7 +2,7 @@
 <RevitAddIns>
 	<AddIn Type="Command">
 		<Name>Number</Name>
-		<Assembly>Number.dll</Assembly>
+		<Assembly>Number\Number.dll</Assembly>
 		<ClientId>A8BBC179-BF01-47DC-9C5B-AA5B585733AA</ClientId>
 		<FullClassName>Number.Main</FullClassName>
 		<Text>Number</Text>

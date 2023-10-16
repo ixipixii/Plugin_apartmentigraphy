@@ -5,19 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Number"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Height="300" Width="300" MinWidth="200"
+             Title="Выбор нумерации">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
-        <Button x:Name="B"
-                Content="done"
+        <Button x:Name="Room"
+                Grid.Row="0"
+                Margin="5 5 5 5"
+                Content="Нумерация помещений"
+                Command="{Binding SelectRoom}"
+                ></Button>
+        <Button x:Name="Apart"
+                Margin="5 5 5 5"
+                Grid.Row="1"
+                Content="Нумерация групп помещений"
                 Command="{Binding SelectApart}"
                 ></Button>
-            
+
     </Grid>
 </Window>

@@ -103,3 +103,4 @@ C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\ReitAPIPluginLibrary\ReitAP
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\ReitAPIPluginLibrary\ReitAPIPluginLibrary\bin\Debug\zh-TW\AdWindows.resources.dll
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\ReitAPIPluginLibrary\ReitAPIPluginLibrary\obj\Debug\ReitAPIPluginLibrary.csproj.CopyComplete
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\ReitAPIPluginLibrary\ReitAPIPluginLibrary\obj\Debug\ReitAPIPluginLibrary.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\ReitAPIPluginLibrary\ReitAPIPluginLibrary\obj\Debug\ReitAPIPluginLibrary.csproj.CopyComplete

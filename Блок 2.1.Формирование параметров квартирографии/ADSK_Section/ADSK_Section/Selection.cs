@@ -95,7 +95,6 @@ namespace ADSK_Section
                                                        BuiltInParameterGroup.PG_IDENTITY_DATA,
                                                        true);
                         }
-                        TaskDialog.Show("test", $"{element.Room.Name}");
                         element.Room.LookupParameter("ADSK_Номер секции").Set(LevelSelection.nameSection);
                     }
                 }
