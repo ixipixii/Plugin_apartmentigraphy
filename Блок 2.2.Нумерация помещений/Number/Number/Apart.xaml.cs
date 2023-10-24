@@ -22,10 +22,11 @@ namespace Number
     /// </summary>
     public partial class Apart : Window
     {
-        public Apart(UIApplication uiapp, UIDocument uidoc, Document doc)
+        public Apart(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue)
         {
             InitializeComponent();
-            var numberSelection = new NumberSelection(uiapp, uidoc, doc);
+            var numberSelection = new NumberSelection(uiapp, uidoc, doc, SelectedSectionValue);
+            numberSelection.ApartList(); //Заносим все нужные группы в ListView
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
         }

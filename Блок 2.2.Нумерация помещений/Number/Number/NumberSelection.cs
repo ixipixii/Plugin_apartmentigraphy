@@ -18,14 +18,13 @@ namespace Number
         UIApplication _uiapp;
         UIDocument _uidoc;
         Document _doc;
-        public DelegateCommand SelectSection { get;  } //Делегат кнопки "Выбрать" для секций
+
         public List<Group> AllGroupsApart = new List<Group>(); //Лист всех групп-помещений
         public DelegateCommand SelectCommand { get; } //Делегат кнопки "Пронумеровать"
         public DelegateCommand SelectApart { get; } //Делегат кнопки "Нумерация групп помещений"
         public DelegateCommand SelectRoom { get; } //Делегат кнопки "Нумерация помещений"
         public List<ClassApartAndRoom> SelectedApartList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView 
-        public List<string> ListSections { get; set; } = new List<string>(); //Вспомогательный лист для ComboBox
-        public String SelectedSectionValue { get; set; }
+        public String _SelectedSectionValue { get; set; } //выбранная секция в ComboBox
 
         //Переменные количества групп определённой функции
         int number_КВ = 0;
@@ -33,7 +32,7 @@ namespace Number
         int number_КМ = 0;
         int number_КХ = 0;
 
-        public NumberSelection(UIApplication uiapp, UIDocument uidoc, Document doc)
+        public NumberSelection(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue)
         {
             _uiapp = uiapp;
             _uidoc = uidoc;
@@ -41,37 +40,8 @@ namespace Number
             SelectCommand = new DelegateCommand(Selection);
             SelectApart = new DelegateCommand(SelectAparts);
             SelectRoom = new DelegateCommand(SelectRooms);
-            SelectSection = new DelegateCommand(SetSelectSection);
-            CreateListSection(); //Заносим все секции в ComboBox
-            ApartList(); //Заносим все нужные группы в ListView
+            _SelectedSectionValue = SelectedSectionValue;
         }
-
-        private void SetSelectSection()
-        {
-            RaiseCloseRequest();
-            TaskDialog.Show("d", $"{SelectedSectionValue}");
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc);
-            apartWindow.ShowDialog();
-        }
-
-        private void CreateListSection()
-        {
-            //Фильтруем по всем комнатам
-            var rooms = new FilteredElementCollector(_doc)
-                            .OfCategory(BuiltInCategory.OST_Rooms)
-                            .WhereElementIsNotElementType()
-                            .ToList();
-            
-            //Считываем у всех комнат параметр секция
-            List<string> nameSections = new List<string>();
-            foreach (var room in rooms)
-            {
-                nameSections.Add(room.LookupParameter("ADSK_Номер секции").AsString());
-            }
-            //Заносим список в лист-секций для ComboBox
-            ListSections = nameSections.Distinct().ToList();
-        }
-
         private void SelectRooms()
         {
             RaiseCloseRequest();
@@ -108,19 +78,22 @@ namespace Number
                 //Если все элементы группы - помещения, заносим группу в ListView
                 if (elementApartGroup.All(g => (BuiltInCategory)_doc.GetElement(g).Category.Id.IntegerValue == BuiltInCategory.OST_Rooms))
                 {
+                    if(elementApartGroup.All(g => _doc.GetElement(g).LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue))
+                    {
                     AllGroupsApart.Add(ApartGroup);
-                    try
-                    {
-                        ClassApartAndRoom apart = new ClassApartAndRoom(ApartGroup,
-                                                    ApartGroup.LookupParameter("ADSK_Номер квартиры").AsString(),
-                                                    "0",
-                                                    ApartGroup.Name);
-                        SelectedApartList.Add(apart);
-                    }
-                    catch
-                    {
-                        ClassApartAndRoom apart = new ClassApartAndRoom(ApartGroup, "ПАРАМЕТР НЕ НАЙДЕН", "0", ApartGroup.Name);
-                        SelectedApartList.Add(apart);
+                        try
+                        {
+                            ClassApartAndRoom apart = new ClassApartAndRoom(ApartGroup,
+                                                        ApartGroup.LookupParameter("ADSK_Номер квартиры").AsString(),
+                                                        "0",
+                                                        ApartGroup.Name);
+                            SelectedApartList.Add(apart);
+                        }
+                        catch
+                        {
+                            ClassApartAndRoom apart = new ClassApartAndRoom(ApartGroup, "ПАРАМЕТР НЕ НАЙДЕН", "0", ApartGroup.Name);
+                            SelectedApartList.Add(apart);
+                        }
                     }
                 }
             }
@@ -130,10 +103,8 @@ namespace Number
             RaiseCloseRequest();
 
             var roomFilter = new RoomPickFilter();
-            var groupFilter = new GroupPickFilter();
+            var groupFilter = new GroupPickFilter(_doc);
 
-            Transaction tr = new Transaction(_doc, "Выбор групп");
-            tr.Start();
             //Создаём листы: ссылки на элементы, лист групп, лист помещений
             IList<Autodesk.Revit.DB.Reference> refrence = new List<Autodesk.Revit.DB.Reference>();
             IList<Element> ApartListElement = new List<Element>();
@@ -152,13 +123,12 @@ namespace Number
                 Element element = _doc.GetElement(_ref);
                 ApartListElement.Add(element);
             }
-            tr.Commit();
             
             //Нумеруем группы
             NumberApart(ApartListElement);
 
             //После завершения нумерации выводим список квартир
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc);
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue);
             apartWindow.ShowDialog();
         }
         public void NumberRoom(IList<Element> RoomListElement) //метод, нумерующий комнаты
@@ -331,9 +301,16 @@ namespace Number
     }
     public class GroupPickFilter : ISelectionFilter //Фильтр для групп
     {
+        Document _doc;
+        public GroupPickFilter(Document doc)
+        {
+            _doc = doc;
+        }
         public bool AllowElement(Element e)
         {
-            return e is Group;
+            if (e is Group && e.LookupParameter("ADSK_Номер квартиры") != null)
+                return e is Group;
+            return false;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {

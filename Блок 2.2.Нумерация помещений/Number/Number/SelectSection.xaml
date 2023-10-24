@@ -18,10 +18,11 @@
                Grid.Row="0"
                Margin="5 5 5 5"></Label>
         
-        <ComboBox Grid.Row="1"
+        <ComboBox x:Name="CB"
+                  Grid.Row="1"
                   Margin="5 5 5 5"
                   ItemsSource="{Binding ListSections}"
-                  SelectedValue ="{Binding SelectedSectionValue}"></ComboBox>
+                  SelectedItem ="{Binding SelectedSectionValue}"></ComboBox>
         
         <Button Content="Выбрать"
                 Grid.Row ="2"

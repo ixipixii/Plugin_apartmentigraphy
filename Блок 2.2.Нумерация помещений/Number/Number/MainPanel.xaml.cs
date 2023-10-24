@@ -25,7 +25,7 @@ namespace Number
         public MainPanel(UIApplication uiapp, UIDocument uidoc, Document doc)
         {
             InitializeComponent();
-            var numberSelection = new NumberSelection(uiapp, uidoc, doc);
+            var numberSelection = new NumberSelection(uiapp, uidoc, doc, "0");
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;           
         }

@@ -25,7 +25,7 @@ namespace Number
         public SelectSection(UIApplication uiapp, UIDocument uidoc, Document doc)
         {
             InitializeComponent();
-            var numberSelection = new NumberSelection(uiapp, uidoc, doc);
+            var numberSelection = new Section(uiapp, uidoc, doc);
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
         }
