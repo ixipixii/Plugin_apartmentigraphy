@@ -35,12 +35,11 @@ namespace Number
         private void SetSelectSection()
         {
             RaiseCloseRequest();
-            //TaskDialog.Show("d", $"{SelectedSectionValue}");
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, SelectedSectionValue);
             apartWindow.ShowDialog();
         }
 
-        private void CreateListSection()
+        private void CreateListSection() //Список всех секций
         {
             //Фильтруем по всем комнатам
             var rooms = new FilteredElementCollector(_doc)

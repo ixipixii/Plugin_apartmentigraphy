@@ -32,3 +32,5 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нуме�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number.csproj.CopyComplete
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Room.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Room.baml

@@ -69,6 +69,9 @@
     </Compile>
     <Compile Include="NumberSelection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Room.xaml.cs">
+      <DependentUpon>Room.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Section.cs" />
     <Compile Include="SelectSection.xaml.cs">
       <DependentUpon>SelectSection.xaml</DependentUpon>
@@ -84,6 +87,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Room.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
