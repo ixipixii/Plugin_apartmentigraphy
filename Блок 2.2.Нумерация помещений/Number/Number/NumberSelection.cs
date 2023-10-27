@@ -169,6 +169,15 @@ namespace Number
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue);
             apartWindow.ShowDialog();
         }
+        public bool OvverideContains(IList<Element> RoomListElement, Element group) //Переопределение Contains для Element
+        {
+            foreach (var element in RoomListElement)
+            {
+                if (element.Name == group.Name)
+                    return false;
+            }
+            return true;
+        }
         public void SelectionRoom() //метод, запускающий поиск помещений
         {
             RaiseCloseRequest();
@@ -188,8 +197,8 @@ namespace Number
             {
                 if(roomElement.GroupId.ToString() == "-1")
                     RoomListElement.Add(roomElement);
-                if (_doc.GetElement(roomElement.GroupId).LookupParameter("PNR_Функция помещения").AsString() == "Помещение управляющей компании")
-                    if(!RoomListElement.Contains(_doc.GetElement(roomElement.GroupId)))
+                if (roomElement.LookupParameter("PNR_Функция помещения").AsString() == "Помещение управляющей компании")
+                    if(OvverideContains(RoomListElement, _doc.GetElement(roomElement.GroupId)))
                         RoomListElement.Add(_doc.GetElement(roomElement.GroupId));
             }
 
@@ -221,14 +230,35 @@ namespace Number
             {
                 if((BuiltInCategory)room.Category.Id.IntegerValue == BuiltInCategory.OST_IOSModelGroups)
                 {
-                    _doc.GetElement(room.GroupId)
-                    number_УК++;
+                    Group group = room as Group;
                     Transaction tr = new Transaction(_doc, "Number room");
                     tr.Start();
+                    var roomInGroup = group.UngroupMembers().ToList();
+                    tr.RollBack();
+                    PNR_Floor = _doc.GetElement(roomInGroup[0]).LookupParameter("PNR_Этаж").AsString();
+                    try { PNR_Building = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Номер здания").AsString(); }
+                    catch { PNR_Building = "-1"; }
+                    number_УК++;
+
+                    tr.Start();
                     if (PNR_Building == "-1")
-                        _doc.GetElement(room.GroupId).LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Floor}.{PNR_Funс}.{number_МОП}");
-                    _doc.GetElement(room.GroupId).LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_МОП}");
+                    {
+                        group.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Floor}.УК.{number_УК}");
+                        foreach(var room_ in roomInGroup)
+                        {
+                            _doc.GetElement(room_).LookupParameter("PNR_Номер помещения").Set($"{PNR_Floor}.УК.{number_УК}");
+                        }
+                    }
+                    else
+                    {
+                        group.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Building}/{PNR_Floor}.УК.{number_УК}");
+                        foreach (var room_ in roomInGroup)
+                        {
+                            _doc.GetElement(room_).LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.УК.{number_УК}");
+                        }
+                    }
                     tr.Commit();
+                    continue;
                 }
 
                 PNR_Function = room.LookupParameter("PNR_Функция помещения").AsString();
@@ -307,7 +337,8 @@ namespace Number
                         tr.Start();
                         if(PNR_Building == "-1")
                             room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Floor}.{PNR_Funс}.{number_МОП}");
-                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_МОП}");
+                        else
+                            room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_МОП}");
                         tr.Commit();
                     }
                     
@@ -318,7 +349,8 @@ namespace Number
                         tr.Start();
                         if (PNR_Building == "-1")
                             room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Floor}.{PNR_Funс}.{number_А}");
-                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_А}");
+                        else
+                            room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_А}");
                         tr.Commit();
                     }
 
@@ -329,7 +361,8 @@ namespace Number
                         tr.Start();
                         if (PNR_Building == "-1")
                             room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Floor}.{PNR_Funс}.{number_СРВ}");
-                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_СРВ}");
+                        else
+                            room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_СРВ}");
                         tr.Commit();
                     }
 
@@ -340,7 +373,8 @@ namespace Number
                         tr.Start();
                         if (PNR_Building == "-1")
                             room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Floor}.{PNR_Funс}.{number_Т}");
-                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_Т}");
+                        else
+                            room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Floor}.{PNR_Funс}.{number_Т}");
                         tr.Commit();
                     }
                 }
