@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Number
 {
@@ -18,6 +19,12 @@ namespace Number
             ADSK_Номер_квартиры = aDSK_Номер_квартиры;
             PNR_Номер_помещения = pNR_Номер_помещения;
             this.name = name;   
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ClassApartAndRoom group) return name == group.name;
+            return false;
         }
 
     }
