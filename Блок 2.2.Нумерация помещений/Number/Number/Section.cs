@@ -17,12 +17,14 @@ namespace Number
         public DelegateCommand SelectSection { get; } //Делегат кнопки "Выбрать" для секций
         public List<string> ListSections { get; set; } = new List<string>(); //Вспомогательный лист для ComboBox
         public String SelectedSectionValue { get; set; } //выбранная секция в ComboBox
-        public Section(UIApplication uiapp, UIDocument uidoc, Document doc)
+        public int _v { get; set; } //выбранный метод нумерации квартир
+        public Section(UIApplication uiapp, UIDocument uidoc, Document doc, int v)
         {
             _uiapp = uiapp;
             _uidoc = uidoc;
             _doc = doc;
             SelectSection = new DelegateCommand(SetSelectSection);
+            _v = v;
             CreateListSection(); //Заносим все секции в ComboBox
         }
 
@@ -35,7 +37,7 @@ namespace Number
         private void SetSelectSection()
         {
             RaiseCloseRequest();
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc, SelectedSectionValue);
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, SelectedSectionValue, _v);
             apartWindow.ShowDialog();
         }
 

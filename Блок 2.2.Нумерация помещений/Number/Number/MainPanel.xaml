@@ -11,6 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
@@ -23,9 +24,16 @@
         <Button x:Name="Apart"
                 Margin="5 5 5 5"
                 Grid.Row="1"
-                Content="Нумерация групп помещений"
                 Command="{Binding SelectApart}"
-                ></Button>
+                >
+            <TextBlock TextAlignment="Center"> Нумерация квартир <LineBreak/> (по параметру группы)</TextBlock>
+        </Button>
+        <Button x:Name="Apart_Room"
+                Margin="5 5 5 5"
+                Grid.Row="2"
+                Command="{Binding SelectApart_2}">
+            <TextBlock TextAlignment="Center"> Нумерация квартир <LineBreak/> (по параметру помещения)</TextBlock>
+        </Button>
 
     </Grid>
 </Window>

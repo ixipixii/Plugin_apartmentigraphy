@@ -24,7 +24,7 @@ namespace Number
         public Room(UIApplication uiapp, UIDocument uidoc, Document doc)
         {
             InitializeComponent();
-            var numberSelection = new NumberSelection(uiapp, uidoc, doc, "0");
+            var numberSelection = new NumberSelection(uiapp, uidoc, doc, "0", 0);
             numberSelection.RoomList(); //Заносим все нужные помещения в ListView
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;

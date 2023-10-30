@@ -22,10 +22,10 @@ namespace Number
     /// </summary>
     public partial class SelectSection : Window
     {
-        public SelectSection(UIApplication uiapp, UIDocument uidoc, Document doc)
+        public SelectSection(UIApplication uiapp, UIDocument uidoc, Document doc, int v)
         {
             InitializeComponent();
-            var numberSelection = new Section(uiapp, uidoc, doc);
+            var numberSelection = new Section(uiapp, uidoc, doc, v);
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
         }
