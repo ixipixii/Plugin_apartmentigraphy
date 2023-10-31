@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Number"
              mc:Ignorable="d" 
-             Height="300" Width="303" MinWidth="200"
+             Height="300" Width="450" MinWidth="200"
              Title="Список квартир">
     <Grid>
         <Grid.RowDefinitions>
@@ -26,8 +26,9 @@
             <ListView.View>
             <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=name}" Width="130">Имя</GridViewColumn>
-                <GridViewColumn DisplayMemberBinding="{Binding Path=ADSK_Номер_квартиры}" Width="140">Номер</GridViewColumn>
-            </GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=ADSK_Номер_квартиры}" Width="140">Номер квартиры</GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=PNR_Номер_помещения}" Width="140">Номер помещения</GridViewColumn>
+                </GridView>
             </ListView.View>
         </ListView>
         <Button Content="Пронумеровать" 
