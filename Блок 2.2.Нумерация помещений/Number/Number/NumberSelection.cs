@@ -5,10 +5,12 @@ using Autodesk.Revit.UI.Selection;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Markup;
 
 namespace Number
@@ -22,11 +24,15 @@ namespace Number
         public List<Group> AllGroupsApart = new List<Group>(); //Лист всех групп-помещений
         public DelegateCommand SelectCommandApart { get; } //Делегат кнопки "Пронумеровать" группы
         public DelegateCommand SelectCommandRoom { get; } //Делегат кнопки "Пронумеровать" помещения
+        public DelegateCommand RenumberCommandApart { get; } //Делегат кнопки "Перенумеровать" помещения
         public DelegateCommand SelectApart { get; } //Делегат кнопки "Нумерация квартир по параметру группы"
         public DelegateCommand SelectApart_2 { get; } //Делегат кнопки "Нумерация квартир по параметру помещения"
         public DelegateCommand SelectRoom { get; } //Делегат кнопки "Нумерация помещений"
         public List<ClassApartAndRoom> SelectedApartList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для групп 
         public List<ClassApartAndRoom> SelectedRoomList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для помещений
+        public ClassApartAndRoom SelectedRoom { get; set; }
+        public DelegateCommand EnterCommandRenumber { get; }
+        public List<Element> AllRoomsRenumber = new List<Element>();
         public String _SelectedSectionValue { get; set; } //выбранная секция в ComboBox
 
         public NumberSelection(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue, int v)
@@ -38,11 +44,13 @@ namespace Number
                 SelectCommandApart = new DelegateCommand(SelectionApart);
             if(v == 2)
                 SelectCommandApart = new DelegateCommand(SelectionApart_2);
+            RenumberCommandApart = new DelegateCommand(RenumberApart);
             SelectCommandRoom = new DelegateCommand(SelectionRoom);
             SelectApart = new DelegateCommand(SelectAparts);
             SelectApart_2 = new DelegateCommand(SelectAparts_2);
             SelectRoom = new DelegateCommand(SelectRooms);
             _SelectedSectionValue = SelectedSectionValue;
+            EnterCommandRenumber = new DelegateCommand(EnterRenumber);
         }
 
         private void SelectRooms()
@@ -685,7 +693,7 @@ namespace Number
             IList<Autodesk.Revit.DB.Reference> refrence = new List<Autodesk.Revit.DB.Reference>();
             IList<Element> ApartListElement = new List<Element>();
 
-            var refElement = _uidoc.Selection.PickObjects(ObjectType.Element,  "Выберите элементы");
+            var refElement = _uidoc.Selection.PickObjects(ObjectType.Element, roomFilter, "Выберите элементы");
 
             foreach (var element in refElement)
             {
@@ -993,20 +1001,64 @@ namespace Number
                             ClassApartAndRoom roomInList = new ClassApartAndRoom(room.LookupParameter("ADSK_Номер квартиры").AsString(), room.LookupParameter("PNR_Номер помещения").AsString(), room.Name);
                             SelectedApartList.Add(roomInList);
                         }
-                        catch
+                        catch (Exception e)
                         {
+                            //TaskDialog.Show("1", $"{e.Message}");
                             ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name);
                             SelectedApartList.Add(roomInList);
                         }
                     }
                 }
             }
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(SelectedApartList);
+            view.SortDescriptions.Add(new SortDescription("ADSK_Номер_квартиры", ListSortDirection.Ascending));
+
+            CollectionView view2 = (CollectionView)CollectionViewSource.GetDefaultView(SelectedApartList);
+            view.SortDescriptions.Add(new SortDescription("PNR_Номер_помещения", ListSortDirection.Ascending));
         }
         private void SelectAparts_2()
         {
             RaiseCloseRequest();
             var sectionWindow = new SelectSection(_uiapp, _uidoc, _doc, 2);
             sectionWindow.ShowDialog();
+        }
+        public void RenumberApart()
+        {
+            RaiseCloseRequest();
+
+            try
+            {}
+            catch(Exception e)
+            {
+                TaskDialog.Show("Ошибка", $"Выберите помещение");
+                var apartWindow1 = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+                apartWindow1.ShowDialog();
+            }
+
+            //Фильтр по всем квартирам - помещениям на данном виде
+            AllRoomsRenumber = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                .WhereElementIsNotElementType()
+                .OfCategory(BuiltInCategory.OST_Rooms)
+                .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() == SelectedRoom.ADSK_Номер_квартиры)
+                .ToList();
+
+            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+            renumber.ShowDialog();
+        }
+        public void EnterRenumber()
+        {
+            RaiseCloseRequest();
+            Transaction tr = new Transaction(_doc, "Renumber");
+            tr.Start();
+            foreach (var room in AllRoomsRenumber)
+            {
+                room.LookupParameter("ADSK_Номер квартиры").Set("");
+                room.LookupParameter("PNR_Номер помещения").Set("");
+            }
+            tr.Commit();
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+            apartWindow.ShowDialog();
         }
     }
     public class RoomPickFilter : ISelectionFilter //Фильтр для комнат
