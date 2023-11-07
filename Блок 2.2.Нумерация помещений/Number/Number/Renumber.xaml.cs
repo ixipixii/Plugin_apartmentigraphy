@@ -22,10 +22,11 @@ namespace Number
     /// </summary>
     public partial class Renumber : Window
     {
-        public Renumber(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue, int v)
+        public Renumber(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue, int v, List<Element> AllRoomsRenumber)
         {
             InitializeComponent();
             var numberSelection = new NumberSelection(uiapp, uidoc, doc, SelectedSectionValue, v);
+            numberSelection.AllRoomsRenumber = AllRoomsRenumber;
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
         }

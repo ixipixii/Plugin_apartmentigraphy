@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -15,7 +16,7 @@ using System.Windows.Markup;
 
 namespace Number
 {
-    internal class NumberSelection
+    internal class NumberSelection : INotifyPropertyChanged
     {
         UIApplication _uiapp;
         UIDocument _uidoc;
@@ -31,10 +32,20 @@ namespace Number
         public List<ClassApartAndRoom> SelectedApartList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для групп 
         public List<ClassApartAndRoom> SelectedRoomList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для помещений
         public ClassApartAndRoom SelectedRoom { get; set; }
-        public DelegateCommand EnterCommandRenumber { get; }
-        public List<Element> AllRoomsRenumber = new List<Element>();
-        public String _SelectedSectionValue { get; set; } //выбранная секция в ComboBox
-
+        public DelegateCommand EnterCommandRenumber { get; } //Делегат кнопки "Ввести"
+        public List<Element> AllRoomsRenumber = new List<Element>(); //Квартиры для переименовки
+        public String _SelectedSectionValue { get; set; } //Выбранная секция в ComboBox
+        private string text; //
+        public string Text
+        {
+            get => text;
+            set
+            {
+                text = value;
+                //обрабатываешь здесь значение из элемента
+                OnPropertyChanged();
+            }
+        }
         public NumberSelection(UIApplication uiapp, UIDocument uidoc, Document doc, string SelectedSectionValue, int v)
         {
             _uiapp = uiapp;
@@ -66,9 +77,13 @@ namespace Number
             sectionWindow.ShowDialog();
         }
         public event EventHandler CloseRequest;
+        public event PropertyChangedEventHandler PropertyChanged;
         private void RaiseCloseRequest()
         {
-            CloseRequest?.Invoke(this, EventArgs.Empty);
+            CloseRequest?.Invoke(this, EventArgs.Empty);        }
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
         public void RoomList() //метод, считывающий все помещения для ListView
         {
@@ -1011,6 +1026,7 @@ namespace Number
                 }
             }
 
+            //Сортировка по номеру квартиры и номеру помещения
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(SelectedApartList);
             view.SortDescriptions.Add(new SortDescription("ADSK_Номер_квартиры", ListSortDirection.Ascending));
 
@@ -1043,18 +1059,36 @@ namespace Number
                 .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() == SelectedRoom.ADSK_Номер_квартиры)
                 .ToList();
 
-            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumber);
             renumber.ShowDialog();
         }
         public void EnterRenumber()
         {
             RaiseCloseRequest();
             Transaction tr = new Transaction(_doc, "Renumber");
+            int i = 1;
             tr.Start();
             foreach (var room in AllRoomsRenumber)
             {
-                room.LookupParameter("ADSK_Номер квартиры").Set("");
-                room.LookupParameter("PNR_Номер помещения").Set("");
+                string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                if(str.Length > 0 )
+                    str = str.Remove(str.Length - 3);
+                if(text.Length == 1)
+                {
+                    room.LookupParameter("ADSK_Номер квартиры").Set(str + "00" + text);
+                    room.LookupParameter("PNR_Номер помещения").Set(str + "00" + text + "." + i);
+                }
+                if (text.Length == 2)
+                {
+                    room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + text);
+                    room.LookupParameter("PNR_Номер помещения").Set(str + "0" + text + "." + i);
+                }
+                if (text.Length == 3)
+                {
+                    room.LookupParameter("ADSK_Номер квартиры").Set(str + text);
+                    room.LookupParameter("PNR_Номер помещения").Set(str + text + "." + i);
+                }
+                i++;
             }
             tr.Commit();
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);

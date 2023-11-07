@@ -18,7 +18,8 @@
                Margin="5 5 5 5"></Label>
         <TextBox x:Name="TB" 
             Grid.Row="1"
-                 Margin="5 5 5 5"></TextBox>
+                 Margin="5 5 5 5"
+                 Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         <Button Content="Ввести"
                 Grid.Row="2"
                 HorizontalAlignment="Right"
