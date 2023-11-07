@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>ADSK_Number_building</Name>
+		<Assembly>ADSK_Number_building\ADSK_Number_building.dll</Assembly>
+		<ClientId>C41FEC3E-CC52-4CD1-A02E-FE3BB4B507BB</ClientId>
+		<FullClassName>ADSK_Number_building.Main</FullClassName>
+		<Text>ADSK_Number_building</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>

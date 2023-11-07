@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>ADSK_Section</Name>
+		<Assembly>Plugin_apartmentography\4\ADSK_Section.dll</Assembly>
+		<ClientId>D463C86F-0458-42AE-8C8C-1B51E1D7C3E7</ClientId>
+		<FullClassName>ADSK_Section.Main</FullClassName>
+		<Text>ADSK_Section</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
