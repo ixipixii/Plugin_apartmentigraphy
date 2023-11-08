@@ -13,6 +13,7 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Label  Grid.Row="0"
                 Content= "Группы помещений"
@@ -40,8 +41,24 @@
                 VerticalAlignment="Bottom"
                 Width="150"
                 Height="25"/>
-        <Button Content="Перенумеровать" 
+        <Button Content="Перенумеровать квартиру" 
                 Command="{Binding RenumberCommandApart}"
+                Margin="5"
+                Grid.Row="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Width="170"
+                Height="25"/>
+        <Button Content="Перенумеровать помещение" 
+                Command="{Binding RenumberCommandRoom}"
+                Margin="5"
+                Grid.Row="4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Width="170"
+                Height="25"/>
+        <Button Content="Выбрать секцию" 
+                Command="{Binding SelectApart_2}"
                 Margin="5"
                 Grid.Row="2"
                 HorizontalAlignment="Left"

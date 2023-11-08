@@ -41,7 +41,7 @@ namespace Plugin_apartmentography
             string path1 = Path.Combine(absPath, relPath1);
             path1 = Path.GetFullPath(path1);
 
-            string pathImg1 = Path.Combine(absPath, @"Resources\этажи.png");
+            string pathImg1 = Path.Combine(absPath, @"Resources\рисунок.svg");
 
             string relPath2 = @"2\";
             string path2 = Path.Combine(absPath, relPath2);

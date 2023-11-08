@@ -25,17 +25,19 @@ namespace Number
         public List<Group> AllGroupsApart = new List<Group>(); //Лист всех групп-помещений
         public DelegateCommand SelectCommandApart { get; } //Делегат кнопки "Пронумеровать" группы
         public DelegateCommand SelectCommandRoom { get; } //Делегат кнопки "Пронумеровать" помещения
-        public DelegateCommand RenumberCommandApart { get; } //Делегат кнопки "Перенумеровать" помещения
+        public DelegateCommand RenumberCommandApart { get; } //Делегат кнопки "Перенумеровать квартиру" помещения
+        public DelegateCommand RenumberCommandRoom { get; } //Делегат кнопки "Перенумеровать помещение" помещения
         public DelegateCommand SelectApart { get; } //Делегат кнопки "Нумерация квартир по параметру группы"
         public DelegateCommand SelectApart_2 { get; } //Делегат кнопки "Нумерация квартир по параметру помещения"
         public DelegateCommand SelectRoom { get; } //Делегат кнопки "Нумерация помещений"
         public List<ClassApartAndRoom> SelectedApartList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для групп 
         public List<ClassApartAndRoom> SelectedRoomList { get; set; } = new List<ClassApartAndRoom>(); //Вспомогательный лист для ListView для помещений
-        public ClassApartAndRoom SelectedRoom { get; set; }
+        static public ClassApartAndRoom SelectedRoom { get; set; } //выбранное помещение на ListView
         public DelegateCommand EnterCommandRenumber { get; } //Делегат кнопки "Ввести"
         public List<Element> AllRoomsRenumber = new List<Element>(); //Квартиры для переименовки
         public String _SelectedSectionValue { get; set; } //Выбранная секция в ComboBox
         private string text; //
+        public int index = 0;
         public string Text
         {
             get => text;
@@ -56,6 +58,7 @@ namespace Number
             if(v == 2)
                 SelectCommandApart = new DelegateCommand(SelectionApart_2);
             RenumberCommandApart = new DelegateCommand(RenumberApart);
+            RenumberCommandRoom = new DelegateCommand(RenumberRoom);
             SelectCommandRoom = new DelegateCommand(SelectionRoom);
             SelectApart = new DelegateCommand(SelectAparts);
             SelectApart_2 = new DelegateCommand(SelectAparts_2);
@@ -100,12 +103,12 @@ namespace Number
                 {
                     try
                     {
-                        ClassApartAndRoom roomInList = new ClassApartAndRoom("0", room.LookupParameter("PNR_Номер помещения").AsString(), room.Name);
+                        ClassApartAndRoom roomInList = new ClassApartAndRoom("0", room.LookupParameter("PNR_Номер помещения").AsString(), room.Name, room.Id);
                         SelectedRoomList.Add(roomInList);
                     }
                     catch
                     {
-                        ClassApartAndRoom roomInList = new ClassApartAndRoom("0", "ПАРАМЕТР НЕ НАЙДЕН", room.Name);
+                        ClassApartAndRoom roomInList = new ClassApartAndRoom("0", "ПАРАМЕТР НЕ НАЙДЕН", room.Name, room.Id);
                         SelectedRoomList.Add(roomInList);
                     }
 
@@ -156,12 +159,12 @@ namespace Number
                             ClassApartAndRoom apart = new ClassApartAndRoom(
                                                         ApartGroup.LookupParameter("ADSK_Номер квартиры").AsString(),
                                                         "0",
-                                                        ApartGroup.Name);
+                                                        ApartGroup.Name, ApartGroup.Id);
                             SelectedApartList.Add(apart);
                         }
                         catch
                         {
-                            ClassApartAndRoom apart = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "0", ApartGroup.Name);
+                            ClassApartAndRoom apart = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "0", ApartGroup.Name, ApartGroup.Id);
                             SelectedApartList.Add(apart);
                         }
                     }
@@ -725,6 +728,7 @@ namespace Number
             var AllRooms = new FilteredElementCollector(_doc)
                 .WhereElementIsNotElementType()
                 .OfCategory(BuiltInCategory.OST_Rooms)
+                .Where(r => r.LookupParameter("ADSK_Номер секции").AsString() == PNR_Section)
                 .ToList();
 
             List<Element> AllRoomsWGroup = new List<Element> ();
@@ -1013,13 +1017,13 @@ namespace Number
                     {
                         try
                         {
-                            ClassApartAndRoom roomInList = new ClassApartAndRoom(room.LookupParameter("ADSK_Номер квартиры").AsString(), room.LookupParameter("PNR_Номер помещения").AsString(), room.Name);
+                            ClassApartAndRoom roomInList = new ClassApartAndRoom(room.LookupParameter("ADSK_Номер квартиры").AsString(), room.LookupParameter("PNR_Номер помещения").AsString(), room.Name, room.Id);
                             SelectedApartList.Add(roomInList);
                         }
                         catch (Exception e)
                         {
                             //TaskDialog.Show("1", $"{e.Message}");
-                            ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name);
+                            ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name, room.Id);
                             SelectedApartList.Add(roomInList);
                         }
                     }
@@ -1059,47 +1063,158 @@ namespace Number
                 .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() == SelectedRoom.ADSK_Номер_квартиры)
                 .ToList();
 
-            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumber);
+            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumber, 0);
+            renumber.ShowDialog();
+        }
+        public void RenumberRoom()
+        {
+            RaiseCloseRequest();
+
+            try
+            { }
+            catch (Exception e)
+            {
+                TaskDialog.Show("Ошибка", $"Выберите помещение");
+                var apartWindow1 = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+                apartWindow1.ShowDialog();
+            }
+
+            //Фильтр по всем квартирам - помещениям на данном виде
+            AllRoomsRenumber = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                .WhereElementIsNotElementType()
+                .OfCategory(BuiltInCategory.OST_Rooms)
+                .Where(g => g.Name == SelectedRoom.name)
+                .ToList();
+
+            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumber, 1);
             renumber.ShowDialog();
         }
         public void EnterRenumber()
         {
             RaiseCloseRequest();
-            Transaction tr = new Transaction(_doc, "Renumber");
-            int i = 1;
-            tr.Start();
-            foreach (var room in AllRoomsRenumber)
+
+            if(index == 0) //Переименовываем квартиры
             {
-                string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                if(str.Length > 0 )
-                    str = str.Remove(str.Length - 3);
-                if(text.Length == 1)
+                int length = 0;
+                string ADSK_Номер_квартиры = string.Empty;
+                foreach (var a in AllRoomsRenumber)
                 {
-                    room.LookupParameter("ADSK_Номер квартиры").Set(str + "00" + text);
-                    room.LookupParameter("PNR_Номер помещения").Set(str + "00" + text + "." + i);
+                    length = a.LookupParameter("ADSK_Номер квартиры").AsString().Length;
+                    break;
                 }
-                if (text.Length == 2)
+
+                var rooms = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                                    .WhereElementIsNotElementType()
+                                    .OfCategory(BuiltInCategory.OST_Rooms)
+                                    .Where(g => g.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == text)
+                                    .ToList();
+
+                if (rooms.Count > 0)
                 {
-                    room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + text);
-                    room.LookupParameter("PNR_Номер помещения").Set(str + "0" + text + "." + i);
+                    foreach (var room in rooms)
+                    {
+                        AllRoomsRenumber.Add(room);
+                        TaskDialog.Show("s", $"{room.Name}");
+                    }
                 }
-                if (text.Length == 3)
+
+                Transaction tr = new Transaction(_doc, "Renumber");
+                int i = 1;
+                tr.Start();
+                foreach (var room in AllRoomsRenumber)
                 {
-                    room.LookupParameter("ADSK_Номер квартиры").Set(str + text);
-                    room.LookupParameter("PNR_Номер помещения").Set(str + text + "." + i);
+                    TaskDialog.Show("s", $"{room.Name}");
+                    string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                    if (str.Length > 0)
+                        str = str.Remove(str.Length - 3);
+                    if (text.Length == 1)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + "00" + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + "00" + text + "." + i);
+                    }
+                    if (text.Length == 2)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + "0" + text + "." + i);
+                    }
+                    if (text.Length == 3)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + text + "." + i);
+                    }
+                    i++;
                 }
-                i++;
+                i = 0;
+                tr.Commit();
+                var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+                apartWindow.ShowDialog();
             }
-            tr.Commit();
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
-            apartWindow.ShowDialog();
+                        
+            if (index == 1) //Переименовываем помещения
+            {
+                int length = 0;
+                string ADSK_Номер_квартиры = string.Empty;
+                var selectedRoom = _doc.GetElement(SelectedRoom.id);
+
+                if (selectedRoom != null) { length = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Length; }
+
+                var rooms = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                                    .WhereElementIsNotElementType()
+                                    .OfCategory(BuiltInCategory.OST_Rooms)
+                                    .Where(g => g.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == text)
+                                    .ToList();
+
+                if (rooms.Count > 0)
+                {
+                    foreach (var room in rooms)
+                    {
+                        AllRoomsRenumber.Add(room);
+                    }
+                }
+
+                Transaction tr = new Transaction(_doc, "Renumber");
+                int i = 1;
+                tr.Start();
+                foreach (var room in AllRoomsRenumber)
+                {
+                    TaskDialog.Show("s", $"{room.Name}");
+                    string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                    if (str.Length > 0)
+                        str = str.Remove(str.Length - 3);
+                    if (text.Length == 1)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + "00" + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + "00" + text + "." + i);
+                    }
+                    if (text.Length == 2)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + "0" + text + "." + i);
+                    }
+                    if (text.Length == 3)
+                    {
+                        room.LookupParameter("ADSK_Номер квартиры").Set(str + text);
+                        room.LookupParameter("PNR_Номер помещения").Set(str + text + "." + i);
+                    }
+                    i++;
+                }
+                i = 0;
+                tr.Commit();
+                var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+                apartWindow.ShowDialog();
+            }                      
         }
     }
     public class RoomPickFilter : ISelectionFilter //Фильтр для комнат
     {
         public bool AllowElement(Element e)
         {
-            return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
+            /*return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));*/
+            return true;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {

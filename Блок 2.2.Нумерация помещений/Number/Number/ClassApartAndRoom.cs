@@ -14,11 +14,13 @@ namespace Number
         public String ADSK_Номер_квартиры { get; set; }
         public String PNR_Номер_помещения { get; set; }
         public String name { get; set; }
-        public ClassApartAndRoom(string aDSK_Номер_квартиры, string pNR_Номер_помещения, string name)
+        public ElementId id { get; set; }
+        public ClassApartAndRoom(string aDSK_Номер_квартиры, string pNR_Номер_помещения, string name, ElementId id)
         {
             ADSK_Номер_квартиры = aDSK_Номер_квартиры;
             PNR_Номер_помещения = pNR_Номер_помещения;
-            this.name = name;   
+            this.name = name;
+            this.id = id;
         }
 
         public override bool Equals(object obj)
