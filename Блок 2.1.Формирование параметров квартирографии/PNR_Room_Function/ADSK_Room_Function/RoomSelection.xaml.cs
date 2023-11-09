@@ -32,6 +32,7 @@ namespace ADSK_Room_Function
             DataContext = selection;
 
             LVR.Items.Add("Квартиры бед доп. отделки");
+            LVR.Items.Add("Апартаменты без доп. Отделки");
             LVR.Items.Add("Коммерческие помещения без доп. отделки");
             LVR.Items.Add("МОП входной группы 1 этажа");
             LVR.Items.Add("МОП входной группы -1 этажа");
@@ -41,6 +42,7 @@ namespace ADSK_Room_Function
             LVR.Items.Add("Лестницы эвакуации  (с -1го до последнего этажа)");
             LVR.Items.Add("Паркинг");
             LVR.Items.Add("Квартиры с отделкой");
+            LVR.Items.Add("Апартаменты с отделкой");
             LVR.Items.Add("Коммерческие помещения с отделкой");
             LVR.Items.Add("Помещения загрузки");
             LVR.Items.Add("Помещения мусороудаления");

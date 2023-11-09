@@ -718,7 +718,12 @@ namespace Number
                 var apart = _doc.GetElement(element);
                 ApartListElement.Add(apart);
                 PNR_Function = apart.LookupParameter("PNR_Функция помещения").AsString();
-                try { PNR_Section = apart.LookupParameter("ADSK_Номер секции").AsString(); }
+                try 
+                { 
+                    PNR_Section = apart.LookupParameter("ADSK_Номер секции").AsString();
+                    if (PNR_Section == "")
+                        PNR_Section = "-1";
+                }
                 catch { PNR_Section = "-1"; }
                 try { PNR_Building = apart.LookupParameter("ADSK_Номер здания").AsString(); }
                 catch { PNR_Building = "-1"; }

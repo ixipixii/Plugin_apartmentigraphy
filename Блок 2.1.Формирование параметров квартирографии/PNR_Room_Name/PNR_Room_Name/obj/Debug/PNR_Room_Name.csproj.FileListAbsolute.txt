@@ -15,3 +15,20 @@ C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.CopyComplete
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.dll
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\PNR_Room_Name.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\PNR_Room_Name.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\ReitAPIPluginLibrary.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\ReitAPIPluginLibrary.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\bin\Debug\Prism.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\RoomSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\RoomSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.g.resources
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.csproj.CopyComplete
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\PNR_Room_Name\PNR_Room_Name\obj\Debug\PNR_Room_Name.pdb

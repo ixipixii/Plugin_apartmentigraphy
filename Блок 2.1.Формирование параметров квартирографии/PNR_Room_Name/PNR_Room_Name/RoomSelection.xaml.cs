@@ -56,7 +56,8 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Постирочная");
                     LVR.Items.Add("Терраса");
                     LVR.Items.Add("Кабинет");
-                    LVR.Items.Add("Балкон, Лоджия");
+                    LVR.Items.Add("Балкон");
+                    LVR.Items.Add("Лоджия");
                     break;              
                 case "Коммерческие помещения без доп. отделки":
                     LVR.Items.Add("Помещения общественного назначения");
@@ -72,6 +73,11 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Тамбур");
                     LVR.Items.Add("Лифтовой холл");
                     LVR.Items.Add("Тамбур-шлюз");
+                    LVR.Items.Add("Почтовая комната");
+                    LVR.Items.Add("Инвентарная (помещение хранения детского оборудования)");
+                    LVR.Items.Add("Санузел");
+                    LVR.Items.Add("ПУИ");
+                    LVR.Items.Add("Сервисный коридор");
                     break;
                 case "МОП входной группы -1 этажа":
                     LVR.Items.Add("Тамбур-шлюз");
@@ -82,15 +88,6 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Лифтовой холл");
                     LVR.Items.Add("Коридор");
                     LVR.Items.Add("Лифтовой холл (ПБЗ)");
-                    break;
-                case "МОП входной группы 1 этажа_":
-                    LVR.Items.Add("Почтовая комната");
-                    LVR.Items.Add("Инвентарная (помещение хранения детского оборудования)");
-                    LVR.Items.Add("Санузел");
-                    LVR.Items.Add("ПУИ");
-                    LVR.Items.Add("Сервисный коридор");
-                    break;
-                case "МОП типовых этажей_":
                     LVR.Items.Add("Тамбур-шлюз");
                     LVR.Items.Add("Лестничная клетка");
                     LVR.Items.Add("Лестничная клетка/ПБЗ");
@@ -118,7 +115,8 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Постирочная");
                     LVR.Items.Add("Терраса");
                     LVR.Items.Add("Кабинет");
-                    LVR.Items.Add("Балкон, Лоджия");
+                    LVR.Items.Add("Балкон");
+                    LVR.Items.Add("Лоджия");
                     break;
                 case "Коммерческие помещения с отделкой":
                     LVR.Items.Add("Помещения общественного назначения");
@@ -128,6 +126,7 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Ресторан");
                     LVR.Items.Add("Супермаркет");
                     LVR.Items.Add("Детский сад");
+                    LVR.Items.Add("Фитнес-центр");
                     break;
                 case "Помещения загрузки":
                     LVR.Items.Add("Зона / коридор загрузки");
