@@ -41,7 +41,7 @@ namespace Plugin_apartmentography
             string path1 = Path.Combine(absPath, relPath1);
             path1 = Path.GetFullPath(path1);
 
-            string pathImg1 = Path.Combine(absPath, @"Resources\рисунок.svg");
+            string pathImg1 = Path.Combine(absPath, @"Resources\этажи.png");
 
             string relPath2 = @"2\";
             string path2 = Path.Combine(absPath, relPath2);
@@ -67,6 +67,12 @@ namespace Plugin_apartmentography
 
             string pathImg5 = Path.Combine(absPath, @"Resources\имя.png");
 
+            string relPath6 = @"6\";
+            string path6 = Path.Combine(absPath, relPath6);
+            relPath6 = Path.GetFullPath(path6);
+
+            string pathImg6 = Path.Combine(absPath, @"Resources\нумерация.png");
+
             var panel = application.CreateRibbonPanel(tabName, "Квартирография");
 
             var button_1 = new PushButtonData("Этаж", "Этаж",
@@ -89,6 +95,10 @@ namespace Plugin_apartmentography
                 Path.Combine(path5, "PNR_Room_Name.dll"),
                 "PNR_Room_Name.Main");
 
+            var button_6 = new PushButtonData("Нумерация", "Нумерация",
+                Path.Combine(path6, "Number.dll"),
+                 "Number.Main");
+
             Uri uriImage1 = new Uri(pathImg1, UriKind.Absolute);
             BitmapImage largeImage1 = new BitmapImage(uriImage1);
             button_1.LargeImage = largeImage1;
@@ -109,11 +119,16 @@ namespace Plugin_apartmentography
             BitmapImage largeImage5 = new BitmapImage(uriImage5);
             button_5.LargeImage = largeImage5;
 
+            Uri uriImage6 = new Uri(pathImg6, UriKind.Absolute);
+            BitmapImage largeImage6 = new BitmapImage(uriImage6);
+            button_6.LargeImage = largeImage6;
+
             panel.AddItem(button_1);
             panel.AddItem(button_2);
             panel.AddItem(button_3);
             panel.AddItem(button_4);
             panel.AddItem(button_5);
+            panel.AddItem(button_6);
 
             return Result.Succeeded;
         }

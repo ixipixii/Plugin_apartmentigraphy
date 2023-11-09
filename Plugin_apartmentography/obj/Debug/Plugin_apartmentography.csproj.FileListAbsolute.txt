@@ -1,9 +1,3 @@
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.dll
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.pdb
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.CoreCompileInputs.cache
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
-C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.dll
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.pdb
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
@@ -16,3 +10,9 @@ C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
 C:\Users\Skynet\source\repos\Plugin_apartmentigraphy\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\bin\Debug\Plugin_apartmentography.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Plugin_apartmentography\obj\Debug\Plugin_apartmentography.pdb
