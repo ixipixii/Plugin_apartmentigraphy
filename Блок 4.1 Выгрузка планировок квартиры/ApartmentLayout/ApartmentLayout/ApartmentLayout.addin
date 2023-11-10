@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>ApartmentLayout</Name>
+		<Assembly>ApartmentLayout\ApartmentLayout.dll</Assembly>
+		<ClientId>A4CB4FCE-84DB-485E-990C-BC3D5E67E9C4</ClientId>
+		<FullClassName>ApartmentLayout.Main</FullClassName>
+		<Text>ApartmentLayout</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
