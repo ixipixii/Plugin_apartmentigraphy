@@ -2,7 +2,7 @@
 <RevitAddIns>
 	<AddIn Type="Command">
 		<Name>ApartmentLayout</Name>
-		<Assembly>ApartmentLayout\ApartmentLayout.dll</Assembly>
+		<Assembly>Number\ApartmentLayout.dll</Assembly>
 		<ClientId>A4CB4FCE-84DB-485E-990C-BC3D5E67E9C4</ClientId>
 		<FullClassName>ApartmentLayout.Main</FullClassName>
 		<Text>ApartmentLayout</Text>

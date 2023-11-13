@@ -25,58 +25,117 @@ namespace ApartmentLayout
                             .OfCategory(BuiltInCategory.OST_Rooms)
                             .ToList();
 
-            Room room = null;
+            List<Room> rooms = new List<Room>();
 
-            foreach(var rooms in AllRooms)
+            foreach (var room in AllRooms)
             {
-                if(rooms.Name == "Гостиная 256")
+                if (room.LookupParameter("ADSK_Номер квартиры").AsString() == "1/КВ-02004")
                 {
-                    room = (Room)rooms; 
-                    break;
+                    var room_kv = (Room)room;
+                    rooms.Add(room_kv);
                 }
             }
 
+            double MAX_X = 0;
+            double MAX_Y = 0;
+            double MIN_X = 10000000000;
+            double MIN_Y = 100000000000;
+
+            foreach (var room in rooms)
+            {
+                if (MAX_X > room.get_Geometry(new Options()).GetBoundingBox().Max.X)
+                    MAX_X = room.get_Geometry(new Options()).GetBoundingBox().Max.X;
+                if (MAX_Y > room.get_Geometry(new Options()).GetBoundingBox().Max.Y)
+                    MAX_Y = room.get_Geometry(new Options()).GetBoundingBox().Max.Y;
+                if (MIN_X < room.get_Geometry(new Options()).GetBoundingBox().Min.X)
+                    MIN_X = room.get_Geometry(new Options()).GetBoundingBox().Min.X;
+                if (MIN_Y < room.get_Geometry(new Options()).GetBoundingBox().Min.Y)
+                    MIN_Y = room.get_Geometry(new Options()).GetBoundingBox().Min.Y;
+            }
+
+
+            /*            var MAX_X = room.get_Geometry(new Options()).GetBoundingBox().Max.X;
+
+                        var MAX_Y = room.get_Geometry(new Options()).GetBoundingBox().Max.Y;
+
+                        var MIN_X = room.get_Geometry(new Options()).GetBoundingBox().Min.X;
+
+                        var MIN_Y = room.get_Geometry(new Options()).GetBoundingBox().Min.Y;*/
+
+            List<XYZ> points = new List<XYZ>();
+
+            XYZ point_1 = null;
+            XYZ point_2 = null;
+            XYZ point_3 = null;
+            XYZ point_4 = null;
+
+            //Фильтр по всем стенам на данном виде
+            var AllWalls = new FilteredElementCollector(doc, uidoc.ActiveView.Id)
+                            .WhereElementIsNotElementType()
+                            .OfCategory(BuiltInCategory.OST_Walls)
+                            .ToList();
+
+            foreach (var wall in AllWalls)
+            {
+                //Добавили ширину сверху
+                if (Math.Round(wall.get_Geometry(new Options()).GetBoundingBox().Min.Y, 4) == Math.Round(MAX_Y, 4))
+                {
+                    point_1 = new XYZ(wall.get_Geometry(new Options()).GetBoundingBox().Max.X,
+                                           wall.get_Geometry(new Options()).GetBoundingBox().Max.Y,
+                                           wall.get_Geometry(new Options()).GetBoundingBox().Max.Z);
+                }
+                //Добавили ширину слева
+                if (Math.Round(wall.get_Geometry(new Options()).GetBoundingBox().Max.X, 4) == Math.Round(MIN_X, 4))
+                {
+                    point_2 = new XYZ(wall.get_Geometry(new Options()).GetBoundingBox().Min.X,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Max.Y,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Max.Z);
+                }
+                //Добавили ширину снизу
+                if (Math.Round(wall.get_Geometry(new Options()).GetBoundingBox().Max.Y, 4) == Math.Round(MIN_Y, 4))
+                {
+                    point_3 = new XYZ(wall.get_Geometry(new Options()).GetBoundingBox().Min.X,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Min.Y,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Max.Z);
+                }
+                //Добавили ширину справа
+                if (Math.Round(wall.get_Geometry(new Options()).GetBoundingBox().Min.X, 4) == Math.Round(MAX_X, 4))
+                {
+                    point_4 = new XYZ(wall.get_Geometry(new Options()).GetBoundingBox().Max.X,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Max.Y,
+                                      wall.get_Geometry(new Options()).GetBoundingBox().Max.Z);
+                }
+            }
+
+            if (point_1 != null && point_2 != null && point_3 != null && point_4 != null)
+            {
+                //point 1
+                points.Add(new XYZ(point_4.X, point_1.Y, point_1.Z));
+                //point 2
+                points.Add(new XYZ(point_2.X, point_1.Y, point_1.Z));
+                //point 3
+                points.Add(new XYZ(point_2.X, point_3.Y, point_1.Z));
+                //point 4
+                points.Add(new XYZ(point_4.X, point_3.Y, point_1.Z));
+            }
+
+            // Создание объекта цепочки кривых
+            CurveLoop loop = new CurveLoop();
+
+            loop.Append(Line.CreateBound(points[0], points[1]));
+            loop.Append(Line.CreateBound(points[1], points[2]));
+            loop.Append(Line.CreateBound(points[2], points[3]));
+            loop.Append(Line.CreateBound(points[3], points[0]));
+
             Transaction tr = new Transaction(doc, "view");
             tr.Start();
-
-
+            // Назначение границ подрезки
+            uidoc.ActiveView.GetCropRegionShapeManager().SetCropShape(loop);
 
             //CropAroundRoom(room, uidoc.ActiveView);
             tr.Commit();
 
             return Result.Succeeded;
         }
-
-        public void CropAroundRoom(Room room, View view)
-        {
-            if (view != null)
-            {
-                IList<IList<Autodesk.Revit.DB.BoundarySegment>> segments = room.GetBoundarySegments(new SpatialElementBoundaryOptions());
-
-                if (null != segments)  //комната может быть не связана
-                {
-                    foreach (IList<Autodesk.Revit.DB.BoundarySegment> segmentList in segments)
-                    {
-                        CurveLoop loop = new CurveLoop();
-                        foreach (Autodesk.Revit.DB.BoundarySegment boundarySegment in segmentList)
-                        {
-                            loop.Append(boundarySegment.GetCurve());
-                        }
-
-                        ViewCropRegionShapeManager vcrShapeMgr = view.GetCropRegionShapeManager();
-                        vcrShapeMgr.SetCropShape(loop);
-                        break;  // если для комнаты имеется более одного набора граничных сегментов, обрежьте первый из них
-                    }
-                }
-            }
-        }
-
-
-    }
-
-    internal class WallSegment
-    {
-        public Wall Wall { get; set; }
-        public Curve Curve { get; set; }
     }
 }
