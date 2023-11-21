@@ -37,44 +37,56 @@ namespace Plugin_apartmentography
 
             string absPath = GetExeDirectory();
 
+            /* ПАНЕЛЬ СОЗДАНИЯ ПАРАМЕТРОВ*/
+
             string relPath1 = @"1\";
             string path1 = Path.Combine(absPath, relPath1);
             path1 = Path.GetFullPath(path1);
-
             string pathImg1 = Path.Combine(absPath, @"Resources\этажи.png");
 
             string relPath2 = @"2\";
             string path2 = Path.Combine(absPath, relPath2);
             path2 = Path.GetFullPath(path2);
-
             string pathImg2 = Path.Combine(absPath, @"Resources\секции.png");
 
             string relPath3 = @"3\";
             string path3 = Path.Combine(absPath, relPath3);
             path3 = Path.GetFullPath(path3);
-
             string pathImg3 = Path.Combine(absPath, @"Resources\номер.png");
 
             string relPath4 = @"4\";
             string path4 = Path.Combine(absPath, relPath4);
             path4 = Path.GetFullPath(path4);
-
             string pathImg4 = Path.Combine(absPath, @"Resources\функция.png");
 
             string relPath5 = @"5\";
             string path5 = Path.Combine(absPath, relPath5);
             relPath5 = Path.GetFullPath(path5);
-
             string pathImg5 = Path.Combine(absPath, @"Resources\имя.png");
 
             string relPath6 = @"6\";
             string path6 = Path.Combine(absPath, relPath6);
             relPath6 = Path.GetFullPath(path6);
-
             string pathImg6 = Path.Combine(absPath, @"Resources\нумерация.png");
 
-            var panel = application.CreateRibbonPanel(tabName, "Квартирография");
+            /* ПАНЕЛЬ СОЗДАНИЯ И ВЫГРУЗКИ ПЛАНИРОВКИ*/
+            
+            string relPath7 = @"7\";
+            string path7 = Path.Combine(absPath, relPath7);
+            path7 = Path.GetFullPath(path7);
+            string pathImg7 = Path.Combine(absPath, @"Resources\этажи.png");
 
+            string relPath8 = @"8\";
+            string path8 = Path.Combine(absPath, relPath8);
+            path8 = Path.GetFullPath(path8);
+            string pathImg8 = Path.Combine(absPath, @"Resources\этажи.png");
+
+
+
+            //Создаём панель с кнопками создания параметров
+            var panel_1 = application.CreateRibbonPanel(tabName, "Создание параметров");
+
+            //Добавляем кнопки
             var button_1 = new PushButtonData("Этаж", "Этаж",
                 Path.Combine(path1, "ADSK_Floor.dll"),
                 "ADSK_Floor.Main");
@@ -123,12 +135,33 @@ namespace Plugin_apartmentography
             BitmapImage largeImage6 = new BitmapImage(uriImage6);
             button_6.LargeImage = largeImage6;
 
-            panel.AddItem(button_1);
-            panel.AddItem(button_2);
-            panel.AddItem(button_3);
-            panel.AddItem(button_4);
-            panel.AddItem(button_5);
-            panel.AddItem(button_6);
+            panel_1.AddItem(button_1);
+            panel_1.AddItem(button_2);
+            panel_1.AddItem(button_3);
+            panel_1.AddItem(button_4);
+            panel_1.AddItem(button_5);
+            panel_1.AddItem(button_6);
+
+            //Создаём панель с кнопками планировки
+            var panel_2 = application.CreateRibbonPanel(tabName, "Создание и выгрузка планировок");
+
+            //Добавляем кнопки
+            var button_7 = new PushButtonData("Обрезка вида", "Обрезка вида",
+                Path.Combine(path7, "ApartmentLayout.dll"),
+                "ApartmentLayout.Main");
+            Uri uriImage7 = new Uri(pathImg7, UriKind.Absolute);
+            BitmapImage largeImage7 = new BitmapImage(uriImage1);
+            button_7.LargeImage = largeImage7;
+            panel_2.AddItem(button_7);
+
+
+            var button_8 = new PushButtonData("Выгрузка плана", "Выгрузка плана",
+                Path.Combine(path8, "ApartmentLayout.dll"),
+                "ApartmentLayout.Main");
+            Uri uriImage8 = new Uri(pathImg8, UriKind.Absolute);
+            BitmapImage largeImage8 = new BitmapImage(uriImage1);
+            button_8.LargeImage = largeImage7;
+            panel_2.AddItem(button_8);
 
             return Result.Succeeded;
         }

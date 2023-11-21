@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>UnloadingPlan</Name>
+		<Assembly>Number\UnloadingPlan.dll</Assembly>
+		<ClientId>44E64EC5-DD23-47F0-B1FE-2005A472FE16</ClientId>
+		<FullClassName>UnloadingPlan.Main</FullClassName>
+		<Text>UnloadingPlan</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
