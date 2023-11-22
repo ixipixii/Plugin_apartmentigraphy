@@ -4,3 +4,5 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгр�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\UnloadingPlan\UnloadingPlan\obj\Debug\UnloadingPlan.csproj.CoreCompileInputs.cache
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\UnloadingPlan\UnloadingPlan\obj\Debug\UnloadingPlan.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\UnloadingPlan\UnloadingPlan\obj\Debug\UnloadingPlan.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\UnloadingPlan\UnloadingPlan\obj\Debug\UnloadingPlan.Properties.Resources.resources
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\UnloadingPlan\UnloadingPlan\obj\Debug\UnloadingPlan.csproj.GenerateResource.cache
