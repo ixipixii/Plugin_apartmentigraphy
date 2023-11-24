@@ -150,18 +150,26 @@ namespace Plugin_apartmentography
                 Path.Combine(path7, "ApartmentLayout.dll"),
                 "ApartmentLayout.Main");
             Uri uriImage7 = new Uri(pathImg7, UriKind.Absolute);
-            BitmapImage largeImage7 = new BitmapImage(uriImage1);
+            BitmapImage largeImage7 = new BitmapImage(uriImage7);
             button_7.LargeImage = largeImage7;
             panel_2.AddItem(button_7);
 
 
-            var button_8 = new PushButtonData("Выгрузка плана", "Выгрузка плана",
-                Path.Combine(path8, "ApartmentLayout.dll"),
-                "ApartmentLayout.Main");
+            var pulldownButtonData = new PulldownButtonData("Выгрузка плана", "Выгрузка плана");
             Uri uriImage8 = new Uri(pathImg8, UriKind.Absolute);
-            BitmapImage largeImage8 = new BitmapImage(uriImage1);
-            button_8.LargeImage = largeImage7;
-            panel_2.AddItem(button_8);
+            BitmapImage largeImage8 = new BitmapImage(uriImage8);
+            pulldownButtonData.LargeImage = largeImage8;
+            var group = panel_2.AddItem(pulldownButtonData) as PulldownButton;
+
+            var button_8_1 = new PushButtonData("JPG", "JPG",
+                Path.Combine(path8, "UnloadingPlan.dll"),
+                "UnloadingPlan.MainJPG");
+            var new_button_8_1 = group.AddPushButton(button_8_1) as PushButton;
+
+            var button_8_2 = new PushButtonData("PDF", "PDF",
+                Path.Combine(path8, "UnloadingPlan.dll"),
+                "UnloadingPlan.MainPDF");
+            var new_button_8_2 = group.AddPushButton(button_8_2) as PushButton;
 
             return Result.Succeeded;
         }
