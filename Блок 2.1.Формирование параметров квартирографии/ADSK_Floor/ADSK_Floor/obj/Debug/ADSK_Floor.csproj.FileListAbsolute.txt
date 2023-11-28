@@ -30,3 +30,29 @@ C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\De
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.pdb
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.dll
 C:\Users\kseni\source\repos\Plugin_apartmentigraphy\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\ADSK_Floor.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\ADSK_Floor.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\RevitAPI.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\RevitAPIUI.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\AdpSDKCSharpWrapper.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\EnergyAnalysisUtilitiesAPI.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Autodesk.UI.Windows.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Autodesk.UI.Themes.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\ReitAPIPluginLibrary.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\Prism.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\RevitAPI.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\bin\Debug\RevitAPIUI.xml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\LevelSelection.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\LevelSelection.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.g.resources
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.csproj.CopyComplete
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.1.Формирование параметров квартирографии\ADSK_Floor\ADSK_Floor\obj\Debug\ADSK_Floor.pdb

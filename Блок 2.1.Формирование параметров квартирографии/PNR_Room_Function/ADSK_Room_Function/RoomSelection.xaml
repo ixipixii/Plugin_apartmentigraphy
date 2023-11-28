@@ -5,13 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ADSK_Room_Function"
              mc:Ignorable="d" 
-             MaxHeight="545" Width="300" MinWidth="200"
+             Height="315" Width="300" MinWidth="200"
              Title="Назначение">
     <StackPanel>
         <ListView x:Name="LVR" 
+                  Height="200"
                  Margin="5 0 5 5" 
                  SelectedItem = "{Binding NameRoomlList}"
                  SelectionChanged= "LVR_SelectionChanged"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                     />
         <Button Content="Назначить" Command="{Binding Appoint}"
                 Margin="5"

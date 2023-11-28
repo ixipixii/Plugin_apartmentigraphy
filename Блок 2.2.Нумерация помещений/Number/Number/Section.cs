@@ -15,6 +15,7 @@ namespace Number
         UIDocument _uidoc;
         Document _doc;
         public DelegateCommand SelectSection { get; } //Делегат кнопки "Выбрать" для секций
+        public DelegateCommand SelectNotSection { get; } //Делегат кнопки "Продолжить без секции" для секций
         public List<string> ListSections { get; set; } = new List<string>(); //Вспомогательный лист для ComboBox
         public String SelectedSectionValue { get; set; } //выбранная секция в ComboBox
         public int _v { get; set; } //выбранный метод нумерации квартир
@@ -24,8 +25,16 @@ namespace Number
             _uidoc = uidoc;
             _doc = doc;
             SelectSection = new DelegateCommand(SetSelectSection);
+            SelectNotSection = new DelegateCommand(NotSelectSection);
             _v = v;
             CreateListSection(); //Заносим все секции в ComboBox
+        }
+
+        private void NotSelectSection()
+        {
+            RaiseCloseRequest();
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, "-1", _v);
+            apartWindow.ShowDialog();
         }
 
         public event EventHandler CloseRequest;

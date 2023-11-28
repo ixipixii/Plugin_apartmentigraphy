@@ -40,7 +40,7 @@ namespace ADSK_Floor
             uidoc.ActiveView = LevelSelection.selectedLevel;
 
             //Считываем помещения
-            List<Room> collector = new FilteredElementCollector(doc)
+            List<Room> collector = new FilteredElementCollector(doc, doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_Rooms)
                 .OfType<Room>()
                 .ToList();
