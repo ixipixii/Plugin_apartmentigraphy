@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Number"
              mc:Ignorable="d" 
-             Height="190" Width="280" MinWidth="200"
+             Height="205" Width="280" MinWidth="200"
              Title="Выбор секции">
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +32,7 @@
         
         <Button Content="Продолжить без секции"
                 Grid.Row ="3"
-                Margin="10 10 10 10"
+                Margin="10 0 10 15"
                 Command="{Binding SelectNotSection}"></Button>
     </Grid>
 </Window>

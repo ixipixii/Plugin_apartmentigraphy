@@ -74,12 +74,12 @@ namespace Plugin_apartmentography
             string relPath7 = @"7\";
             string path7 = Path.Combine(absPath, relPath7);
             path7 = Path.GetFullPath(path7);
-            string pathImg7 = Path.Combine(absPath, @"Resources\этажи.png");
+            string pathImg7 = Path.Combine(absPath, @"Resources\обрезка.png");
 
             string relPath8 = @"8\";
             string path8 = Path.Combine(absPath, relPath8);
             path8 = Path.GetFullPath(path8);
-            string pathImg8 = Path.Combine(absPath, @"Resources\этажи.png");
+            string pathImg8 = Path.Combine(absPath, @"Resources\выгрузка.png");
 
 
 
