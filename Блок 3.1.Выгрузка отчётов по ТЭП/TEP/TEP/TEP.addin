@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>TEP</Name>
+		<Assembly>Plugin_apartmentography\9\TEP.dll</Assembly>
+		<ClientId>7EECBB1F-E962-4ADE-A4F4-300E21E0D7B4</ClientId>
+		<FullClassName>TEP.Main</FullClassName>
+		<Text>TEP</Text>
+		<VendorId>ADSK</VendorId>
+	</AddIn>
+</RevitAddIns>
