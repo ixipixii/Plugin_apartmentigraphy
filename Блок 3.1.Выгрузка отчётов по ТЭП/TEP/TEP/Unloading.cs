@@ -1,7 +1,9 @@
-﻿using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,10 +64,10 @@ namespace TEP
             //Открываем нужный файл
             string excelPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "s.xlsx");
             //Записываем значение в нужную папку
-            using(FileStream stream = new FileStream(excelPath, FileMode.Open, FileAccess.ReadWrite)) 
+            /*using(FileStream stream = new FileStream(excelPath, FileMode.Open, FileAccess.ReadWrite)) 
             {
                 IWorkbook workbook = new XSSFWorkbook();
-                ISheet sheet = workbook.GetSheet("лист1");
+                ISheet sheet = workbook.GetSheet("Лист1");
                 //ICell cell;
                 try
                 {
@@ -76,19 +78,38 @@ namespace TEP
                     workbook.Write(stream);
                     workbook.Close();
                 }
-                catch (Exception ex) { TaskDialog.Show("f", ex.Message); }
+                catch (Exception ex) { TaskDialog.Show(ex.Source, ex.Message); }
 
                 //workbook.Close();
 
-                /*                using (FileStream fs = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
+                *//*                using (FileStream fs = new FileStream(excelPath, FileMode.Create, FileAccess.Write))
                                 {
                                     workbook.Write(fs);
-                                }*/
+                                }*//*
 
 
+            }*/
+
+            //System.Diagnostics.Process.Start(excelPath);
+
+            using (var package = new ExcelPackage(new FileInfo(excelPath)))
+            {
+                // Выбираем лист
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+                // Координаты ячейки, которую вы хотите изменить
+                int rowNumber = 2;
+                int columnNumber = 2;
+
+                // Новое значение для ячейки
+                string newValue = "Новое значение";
+
+                // Устанавливаем значение ячейки
+                worksheet.Cells[rowNumber, columnNumber].Value = newValue;
+
+                // Сохраняем изменения
+                package.Save();
             }
-
-            System.Diagnostics.Process.Start(excelPath);
         }
 
     }
