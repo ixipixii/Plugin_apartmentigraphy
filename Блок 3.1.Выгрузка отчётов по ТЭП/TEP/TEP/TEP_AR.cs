@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace TEP
         public TEP_AR()
         {
             //CopyFile("ТЭП_АР");
-            FillCell(7,1,"2");
+            FillCell(7,1,"2", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx"));
         }
     }
 }

@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\kseni\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\
 Number
 none
 false
@@ -13,8 +13,8 @@ DEBUG;TRACE
 5-2107738131
 
 11-686528174
-17566827453
+17-598423217
 Apart.xaml;MainPanel.xaml;Renumber.xaml;Room.xaml;SelectSection.xaml;
 
-False
+True
 

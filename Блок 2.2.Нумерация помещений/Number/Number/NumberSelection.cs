@@ -267,7 +267,7 @@ namespace Number
                     tr.Start();
                     var roomInGroup = group.UngroupMembers().ToList();
                     tr.RollBack();
-                    PNR_Floor = _doc.GetElement(roomInGroup[0]).LookupParameter("PNR_Этаж").AsString();
+                    PNR_Floor = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Этаж").AsString();
                     try { PNR_Building = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Номер здания").AsString(); }
                     catch { PNR_Building = "-1"; }
                     number_УК++;
@@ -294,7 +294,7 @@ namespace Number
                 }
 
                 PNR_Function = room.LookupParameter("PNR_Функция помещения").AsString();
-                PNR_Floor = room.LookupParameter("PNR_Этаж").AsString();
+                PNR_Floor = room.LookupParameter("ADSK_Этаж").AsString();
                 try { PNR_Building = room.LookupParameter("ADSK_Номер здания").AsString(); }
                 catch { PNR_Building = "-1"; }
 
