@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using OfficeOpenXml;
 using System;
@@ -77,10 +78,49 @@ namespace TEP
             }
             System.Diagnostics.Process.Start(excelPath);
         }
-        public virtual double Area()
+
+        //Методы Elements возвращают лист определённых элементов
+        //Методы Area возвращают площади элементов
+        //Метод Values возвращает лист значений определённых параметров определённых элементов
+
+        public virtual List<Element> Elements(BuiltInCategory category, Document doc)
+        {
+            List<Element> elements = new FilteredElementCollector(doc)
+                                                    .OfCategory(category)
+                                                    .WhereElementIsNotElementType()
+                                                    .ToList();
+
+            return elements;
+        }
+        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, String valueFilterParameter)
+        {
+            List<Element> elements = new FilteredElementCollector(doc)
+                                                    .OfCategory(category)
+                                                    .WhereElementIsNotElementType()
+                                                    .Where(e => e.LookupParameter(filterParameter).AsString().Contains(valueFilterParameter))
+                                                    .ToList();
+
+            return elements;
+        }
+        public virtual double Area(List<Element> elements)
         {
             double area = 0;
+            foreach (Element element in elements)
+            {
+                area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                TaskDialog.Show($"{element.Id}", $"{area}");
+            }
             return area;
+        }
+        public virtual List<String> Values(String parameter, List<Element> elements)
+        {
+            List<String> values = new List<String>();           
+            foreach (Element element in elements)
+            {
+                Room room = element as Room;
+                values.Add(room.LookupParameter(parameter).AsString());
+            }
+            return values;
         }
 
     }

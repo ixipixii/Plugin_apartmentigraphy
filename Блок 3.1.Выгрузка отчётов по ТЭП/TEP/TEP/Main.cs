@@ -17,7 +17,7 @@ namespace TEP
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            TEP_AR tEP_AR = new TEP_AR();
+            TEP_AR tEP_AR = new TEP_AR(uiapp, uidoc, doc);
 
             return Result.Succeeded;
         }
