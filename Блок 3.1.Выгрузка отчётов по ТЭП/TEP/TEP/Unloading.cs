@@ -102,13 +102,31 @@ namespace TEP
 
             return elements;
         }
-        public virtual double Area(List<Element> elements)
+        public virtual double Area(List<Element> elements, Document doc)
         {
             double area = 0;
             foreach (Element element in elements)
             {
-                area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                TaskDialog.Show($"{element.Id}", $"{area}");
+                    area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    TaskDialog.Show($"{element.Id}", $"{area}");
+            }
+            return area;
+        }
+        public virtual double Area(List<Element> elements, Document doc, String ADSK_Назначение_вида)
+        {
+            double area = 0;
+            foreach (Element element in elements)
+            {
+                Autodesk.Revit.DB.View view = doc.GetElement(element.OwnerViewId) as Autodesk.Revit.DB.View;
+                if (view is ViewPlan)
+                {
+                    ViewPlan viewPlan = (ViewPlan)view;
+                    if(viewPlan.LookupParameter("ADSK_Назначение вида").AsString() == ADSK_Назначение_вида)
+                    {
+                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        TaskDialog.Show($"{element.Id}", $"{area}");
+                    }
+                }
             }
             return area;
         }

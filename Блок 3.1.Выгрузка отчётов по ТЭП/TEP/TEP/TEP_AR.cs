@@ -17,8 +17,8 @@ namespace TEP
             //CopyFile("ТЭП_АР");
             String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx");
             //B6(doc, path);
-            B7(doc, path); 
-            B8(doc, path);
+            //B7(doc, path); 
+            //B8(doc, path);
             B9(doc, path);
         }
         private void B6(Document doc, String path)
@@ -44,9 +44,9 @@ namespace TEP
             string value = (values_all.Distinct().Count() - values_live.Distinct().Count()).ToString();
             FillCell(8, 2, value, path);
         }
-        private void B9(Document doc, String path)
+        private void B9(Document doc, String path) //Сравниваем ГНС с параметром "ADSK_Назначение вида"
         {
-            string value = Area(Elements(BuiltInCategory.OST_Areas, doc)).ToString();
+            string value = Area(Elements(BuiltInCategory.OST_Areas, doc ), doc, "ГНС").ToString();
             FillCell(9, 2, value, path);
         }
         private void B10(Document doc, String path)
