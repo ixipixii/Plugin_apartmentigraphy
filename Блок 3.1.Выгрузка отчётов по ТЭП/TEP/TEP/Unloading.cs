@@ -102,31 +102,38 @@ namespace TEP
 
             return elements;
         }
-        public virtual double Area(List<Element> elements, Document doc)
+        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter)
+        {
+            List<Element> elements = new FilteredElementCollector(doc)
+                                                    .OfCategory(category)
+                                                    .WhereElementIsNotElementType()
+                                                    .Where(e => e.LookupParameter(filterParameter).AsString() (valueFilterParameter))
+                                                    .ToList();
+
+            return elements;
+        }
+        public virtual double Areas(List<Element> elements, Document doc)
         {
             double area = 0;
             foreach (Element element in elements)
             {
                     area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                    TaskDialog.Show($"{element.Id}", $"{area}");
             }
             return area;
         }
-        public virtual double Area(List<Element> elements, Document doc, String ADSK_Назначение_вида)
+        public virtual double Areas(List<Element> elements, Document doc, String PNR_Имя_помещения)
         {
             double area = 0;
             foreach (Element element in elements)
             {
-                Autodesk.Revit.DB.View view = doc.GetElement(element.OwnerViewId) as Autodesk.Revit.DB.View;
-                if (view is ViewPlan)
+                try
                 {
-                    ViewPlan viewPlan = (ViewPlan)view;
-                    if(viewPlan.LookupParameter("ADSK_Назначение вида").AsString() == ADSK_Назначение_вида)
+                    if (element.LookupParameter("PNR_Имя помещения").AsString().Contains(PNR_Имя_помещения))
                     {
                         area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                        TaskDialog.Show($"{element.Id}", $"{area}");
                     }
                 }
+                catch { }
             }
             return area;
         }

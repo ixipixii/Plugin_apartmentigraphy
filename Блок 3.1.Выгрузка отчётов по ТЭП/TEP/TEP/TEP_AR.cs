@@ -19,7 +19,18 @@ namespace TEP
             //B6(doc, path);
             //B7(doc, path); 
             //B8(doc, path);
-            B9(doc, path);
+            //B9(doc, path);
+            //B10(doc, path);
+            //B11(doc, path);
+            //B12(doc, path);
+            //B13(doc, path);
+
+            B14(doc, path);
+            B15(doc, path);
+            B16(doc, path);
+            B17(doc, path);
+            B18(doc, path);
+            B19(doc, path);
         }
         private void B6(Document doc, String path)
         {
@@ -44,25 +55,63 @@ namespace TEP
             string value = (values_all.Distinct().Count() - values_live.Distinct().Count()).ToString();
             FillCell(8, 2, value, path);
         }
-        private void B9(Document doc, String path) //Сравниваем ГНС с параметром "ADSK_Назначение вида"
+        private void B9(Document doc, String path) //Сравниваем ГНС с параметром "PNR_Имя помещения"
         {
-            string value = Area(Elements(BuiltInCategory.OST_Areas, doc ), doc, "ГНС").ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Areas, doc ), doc, "ГНС").ToString();
             FillCell(9, 2, value, path);
         }
         private void B10(Document doc, String path)
         {
-            String value = String.Empty;
+            string value = (Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "ГНС")
+                            - Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "нежилая")).ToString();
             FillCell(10, 2, value, path);
         }
         private void B11(Document doc, String path)
         {
-            String value = String.Empty;
+            string value = (Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "ГНС")
+                            - Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "нежилая")
+                            - Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "входная")).ToString();
             FillCell(11, 2, value, path);
         }
         private void B12(Document doc, String path)
         {
-            String value = String.Empty;
+            string value = Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "входная").ToString();
             FillCell(12, 2, value, path);
+        }
+        private void B13(Document doc, String path)
+        {
+            string value = Areas(Elements(BuiltInCategory.OST_Areas, doc), doc, "нежилая").ToString();
+            FillCell(13, 2, value, path);
+        }
+        private void B14(Document doc, String path)
+        {
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc), doc).ToString();
+            FillCell(14, 2, value, path);
+        }
+        private void B15(Document doc, String path)
+        {
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", ), doc).ToString();
+            FillCell(15, 2, value, path);
+        }
+        private void B16(Document doc, String path)
+        {
+            string value = String.Empty;
+            FillCell(16, 2, value, path);
+        }
+        private void B17(Document doc, String path)
+        {
+            string value = String.Empty;
+            FillCell(17, 2, value, path);
+        }
+        private void B18(Document doc, String path)
+        {
+            string value = String.Empty;
+            FillCell(18, 2, value, path);
+        }
+        private void B19(Document doc, String path)
+        {
+            string value = String.Empty;
+            FillCell(19, 2, value, path);
         }
     }
 }
