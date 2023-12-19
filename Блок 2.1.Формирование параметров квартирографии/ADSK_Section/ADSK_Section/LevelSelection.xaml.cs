@@ -53,7 +53,6 @@ namespace ADSK_Section
                     //Определяем вертикальные и горизонтальные оси и добавляем на combobox-ы
                     if(line.Direction.X == 1.0 || line.Direction.X == -1.0)
                     {
-                        TaskDialog.Show("s", $"{grid.Name}");
                         CB_Gorizontal_1.Items.Add(grid);
                         CB_Gorizontal_2.Items.Add(grid);
                     }

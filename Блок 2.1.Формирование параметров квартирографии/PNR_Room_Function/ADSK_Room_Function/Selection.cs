@@ -18,7 +18,7 @@ namespace ADSK_Room_Function
     {
         public DelegateCommand SelectionLevel { get; }
 
-        public static Element selectedElement;
+        public static List<Element> selectedElement = new List<Element>();
         public DelegateCommand Appoint { get; }
 
         public static List<ElementId> groupElements = new List<ElementId>();
@@ -38,7 +38,7 @@ namespace ADSK_Room_Function
         private void OnContinue()
         {
             RaiseCloseRequest();
-            Select();
+            //Select();
             var window = new RoomSelection(_commandData);
             window.ShowDialog();
         }
@@ -50,55 +50,62 @@ namespace ADSK_Room_Function
             {
                 if (selectedElement != null)
                 {
-                    if (selectedElement.GroupId.ToString() != "-1")
+/*                    if (selectedElement.GroupId.ToString() != "-1")
                     {
                         Group group = (Group)_commandData.Application.ActiveUIDocument.Document.GetElement(selectedElement.GroupId);
                         Transaction t = new Transaction(_commandData.Application.ActiveUIDocument.Document, "UnGroup");
                         t.Start();
                         groupElements = group.UngroupMembers().ToList();
                         t.Commit();
-                    }
+                    }*/
                 }
+                
                 tr.Start();
-                if ((BuiltInCategory)selectedElement.Category.Id.IntegerValue == BuiltInCategory.OST_Rooms)
+                foreach (var element in selectedElement)
                 {
-                    if (selectedElement.LookupParameter("PNR_Функция помещения") == null)
+                    if ((BuiltInCategory)element.Category.Id.IntegerValue == BuiltInCategory.OST_Rooms)
                     {
-                        var categorySet = new CategorySet();
-                        categorySet.Insert(selectedElement.Category);
-                        CreateShared createShared = new CreateShared();
-                        createShared.CreateSharedParameter(_commandData.Application.Application,
-                                                   _commandData.Application.ActiveUIDocument.Document,
-                                                   "PNR_Функция помещения",
-                                                   categorySet,
-                                                   BuiltInParameterGroup.PG_IDENTITY_DATA,
-                                                   true);
+                        if (element.LookupParameter("PNR_Функция помещения") == null)
+                        {
+                            var categorySet = new CategorySet();
+                            categorySet.Insert(element.Category);
+                            CreateShared createShared = new CreateShared();
+                            createShared.CreateSharedParameter(_commandData.Application.Application,
+                                                       _commandData.Application.ActiveUIDocument.Document,
+                                                       "PNR_Функция помещения",
+                                                       categorySet,
+                                                       BuiltInParameterGroup.PG_IDENTITY_DATA,
+                                                       true);
+                        }
+                        element.LookupParameter("PNR_Функция помещения").Set(RoomSelection.RoomFunction);
                     }
-                    selectedElement.LookupParameter("PNR_Функция помещения").Set(RoomSelection.RoomFunction);
-                }
-                else
-                {
-                    TaskDialog.Show("Ошибка", "Выбранный элемент не является помещением");
-                    OnContinue();
-                    RaiseCloseRequest();
-                    return;
+                    else
+                    {
+                        TaskDialog.Show("Ошибка", "Выбранный элемент не является помещением");
+                        OnContinue();
+                        RaiseCloseRequest();
+                        return;
+                    }
                 }
 
+                selectedElement.Clear();
+
                 tr.Commit();
-                tr.Start();
+
+/*                tr.Start();
                 if (groupElements.Count > 0)
                 {
                     _commandData.Application.ActiveUIDocument.Document.Create.NewGroup(groupElements);
                     groupElements.Clear();
                 }
-                tr.Commit();
+                tr.Commit();*/
             }
         }
 
         private void OnSelectionLevel()
         {
             RaiseCloseRequest();
-            Select();
+            //Select();
             var window = new RoomSelection(_commandData);
             window.ShowDialog();
         }
@@ -111,9 +118,15 @@ namespace ADSK_Room_Function
             Document doc = _commandData.Application.ActiveUIDocument.Document;
 
             var roomFilter = new GroupPickFilter();
-            var selectedRef = uidoc.Selection.PickObject(ObjectType.Element, roomFilter, "Выберите комнату");
+            var selectedRef = uidoc.Selection.PickObjects(ObjectType.Element, roomFilter, "Выберите комнаты");
 
-            selectedElement = doc.GetElement(selectedRef);
+
+            foreach(var references in selectedRef)
+            {
+                selectedElement.Add(doc.GetElement(references));
+            }
+
+            //selectedElement = doc.GetElement(selectedRef);
         }
 
 

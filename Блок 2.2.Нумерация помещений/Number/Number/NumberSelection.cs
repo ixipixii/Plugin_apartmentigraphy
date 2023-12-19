@@ -268,7 +268,12 @@ namespace Number
                     var roomInGroup = group.UngroupMembers().ToList();
                     tr.RollBack();
                     PNR_Floor = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Этаж").AsString();
-                    try { PNR_Building = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Номер здания").AsString(); }
+                    try 
+                    { 
+                        PNR_Building = _doc.GetElement(roomInGroup[0]).LookupParameter("ADSK_Номер здания").AsString(); 
+                        if (PNR_Building == "" || PNR_Building == null)
+                            PNR_Building = "-1";
+                    }
                     catch { PNR_Building = "-1"; }
                     number_УК++;
 
@@ -295,7 +300,12 @@ namespace Number
 
                 PNR_Function = room.LookupParameter("PNR_Функция помещения").AsString();
                 PNR_Floor = room.LookupParameter("ADSK_Этаж").AsString();
-                try { PNR_Building = room.LookupParameter("ADSK_Номер здания").AsString(); }
+                try 
+                { 
+                    PNR_Building = room.LookupParameter("ADSK_Номер здания").AsString();
+                    if (PNR_Building == "" || PNR_Building == null)
+                        PNR_Building = "-1";
+                }
                 catch { PNR_Building = "-1"; }
 
                 if(PNR_Function == "МОП входной группы 1 этажа" ||
@@ -756,7 +766,6 @@ namespace Number
                 //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО СЕКЦИИ ДЛЯ КВ
                 if(room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
                 {
-                    TaskDialog.Show("a", $"{_SelectedSectionValue}!!!"); 
                     if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
                     {
                         continue;
@@ -798,7 +807,6 @@ namespace Number
                         var numberRoom = new string(numberRoomArray);
                         var numberStr = numberRoom.TrimStart('0');
                         var number = int.Parse(numberStr);
-                        TaskDialog.Show("v", $"{number}");
                         numberMax_АП.Add(number);
                     }
 
@@ -1251,7 +1259,6 @@ namespace Number
                         }
                         catch (Exception e)
                         {
-                            //TaskDialog.Show("1", $"{e.Message}");
                             ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name, room.Id);
                             SelectedApartList.Add(roomInList);
                         }
@@ -1265,7 +1272,6 @@ namespace Number
                         }
                         catch (Exception e)
                         {
-                            //TaskDialog.Show("1", $"{e.Message}");
                             ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name, room.Id);
                             SelectedApartList.Add(roomInList);
                         }
@@ -1350,6 +1356,8 @@ namespace Number
                                     .WhereElementIsNotElementType()
                                     .OfCategory(BuiltInCategory.OST_Rooms)
                                     .Where(g => g.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
+                                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
                                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == text)
                                     .ToList();
@@ -1359,7 +1367,6 @@ namespace Number
                     foreach (var room in rooms)
                     {
                         AllRoomsRenumber.Add(room);
-                        TaskDialog.Show("s", $"{room.Name}");
                     }
                 }
 
@@ -1368,7 +1375,6 @@ namespace Number
                 tr.Start();
                 foreach (var room in AllRoomsRenumber)
                 {
-                    TaskDialog.Show("s", $"{room.Name}");
                     string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
                     if (str.Length > 0)
                         str = str.Remove(str.Length - 3);
@@ -1424,7 +1430,6 @@ namespace Number
                 tr.Start();
                 foreach (var room in AllRoomsRenumber)
                 {
-                    TaskDialog.Show("s", $"{room.Name}");
                     string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
                     if (str.Length > 0)
                         str = str.Remove(str.Length - 3);
