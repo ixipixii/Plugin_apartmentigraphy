@@ -33,7 +33,7 @@ namespace Number
         private void NotSelectSection()
         {
             RaiseCloseRequest();
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc, "-1", _v);
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, "", _v);
             apartWindow.ShowDialog();
         }
 

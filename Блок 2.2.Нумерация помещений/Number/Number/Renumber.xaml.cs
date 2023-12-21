@@ -26,7 +26,7 @@ namespace Number
         {
             InitializeComponent();
             var numberSelection = new NumberSelection(uiapp, uidoc, doc, SelectedSectionValue, v);
-            numberSelection.AllRoomsRenumber = AllRoomsRenumber;
+            numberSelection.AllRoomsRenumberNew = AllRoomsRenumber;
             numberSelection.index = index;
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
