@@ -735,6 +735,8 @@ namespace Number
                     PNR_Section = apart.LookupParameter("ADSK_Номер секции").AsString();
                     if (PNR_Section == "" || PNR_Section == null)
                         PNR_Section = "-1";
+                    if (_SelectedSectionValue == "")
+                        PNR_Section = "";
                 }
                 catch { PNR_Section = "-1"; }
                 try 
@@ -1666,8 +1668,8 @@ namespace Number
     {
         public bool AllowElement(Element e)
         {
-            return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
-            //return true;
+            //return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
+            return true;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {
