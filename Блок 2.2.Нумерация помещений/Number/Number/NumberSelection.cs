@@ -1668,8 +1668,8 @@ namespace Number
     {
         public bool AllowElement(Element e)
         {
-            //return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
-            return true;
+            return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
+            //return true;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {
