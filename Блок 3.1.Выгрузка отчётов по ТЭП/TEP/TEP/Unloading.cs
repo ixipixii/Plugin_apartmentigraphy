@@ -102,15 +102,39 @@ namespace TEP
 
             return elements;
         }
-        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter)
+        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter_1, String valueFilterParameter_1,
+                                                                                      String filterParameter_2, String valueFilterParameter_2)
         {
             List<Element> elements = new FilteredElementCollector(doc)
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
-                                                    .Where(e => e.LookupParameter(filterParameter).AsString() (valueFilterParameter))
+                                                    .Where(e => e.LookupParameter(filterParameter_1).AsString().Contains(valueFilterParameter_1) &&
+                                                                e.LookupParameter(filterParameter_2).AsString().Contains(valueFilterParameter_2))
                                                     .ToList();
 
             return elements;
+        }
+        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter, bool valeuCompare)
+        {
+            //Если знак >= то valeuCompare = 0. Если знак <= то valeuCompare = 1.
+            if(valeuCompare)
+            {
+                List<Element> elements = new FilteredElementCollector(doc)
+                                        .OfCategory(category)
+                                        .WhereElementIsNotElementType()
+                                        .Where(e => int.Parse(e.LookupParameter(filterParameter).AsString()) >= (valueFilterParameter))
+                                        .ToList();
+                return elements;
+            }
+            else
+            {
+                List<Element> elements = new FilteredElementCollector(doc)
+                                        .OfCategory(category)
+                                        .WhereElementIsNotElementType()
+                                        .Where(e => int.Parse(e.LookupParameter(filterParameter).AsString()) <= (valueFilterParameter))
+                                        .ToList();
+                return elements;
+            }
         }
         public virtual double Areas(List<Element> elements, Document doc)
         {
@@ -121,14 +145,14 @@ namespace TEP
             }
             return area;
         }
-        public virtual double Areas(List<Element> elements, Document doc, String PNR_Имя_помещения)
+        public virtual double Areas(List<Element> elements, Document doc, String PARAMETER)
         {
             double area = 0;
             foreach (Element element in elements)
             {
                 try
                 {
-                    if (element.LookupParameter("PNR_Имя помещения").AsString().Contains(PNR_Имя_помещения))
+                    if (element.LookupParameter("PNR_Имя помещения").AsString().Contains(PARAMETER))
                     {
                         area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
                     }
