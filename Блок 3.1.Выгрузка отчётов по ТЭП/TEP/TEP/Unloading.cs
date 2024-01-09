@@ -109,14 +109,14 @@ namespace TEP
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
                                                     .Where(e => e.LookupParameter(filterParameter_1).AsString().Contains(valueFilterParameter_1) &&
-                                                                e.LookupParameter(filterParameter_2).AsString().Contains(valueFilterParameter_2))
+                                                                e.LookupParameter(filterParameter_2).AsString() == valueFilterParameter_2)
                                                     .ToList();
 
             return elements;
         }
         public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter, bool valeuCompare)
         {
-            //Если знак >= то valeuCompare = 0. Если знак <= то valeuCompare = 1.
+            //Если знак >= то valeuCompare = 1. Если знак < то valeuCompare = 0.
             if(valeuCompare)
             {
                 List<Element> elements = new FilteredElementCollector(doc)
@@ -131,7 +131,7 @@ namespace TEP
                 List<Element> elements = new FilteredElementCollector(doc)
                                         .OfCategory(category)
                                         .WhereElementIsNotElementType()
-                                        .Where(e => int.Parse(e.LookupParameter(filterParameter).AsString()) <= (valueFilterParameter))
+                                        .Where(e => int.Parse(e.LookupParameter(filterParameter).AsString()) < (valueFilterParameter))
                                         .ToList();
                 return elements;
             }
