@@ -1,11 +1,14 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Linq;
 
 namespace TEP
@@ -25,12 +28,14 @@ namespace TEP
             //B12(doc, path);
             //B13(doc, path);
 
-            B14(doc, path);
+            /*B14(doc, path);
             B15(doc, path);
             B16(doc, path);
             B17(doc, path);
             B18(doc, path);
-            B19(doc, path);
+            B19(doc, path);*/
+            B108_infinity(doc, path);
+
         }
         private void B6(Document doc, String path)
         {
@@ -556,7 +561,7 @@ namespace TEP
             string value = string.Empty;
             FillCell(107, 2, value, path);
         }
-        private void B108(Document doc, String path)
+        /*private void B108(Document doc, String path)
         {
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Инженерно-технические помещения", "ADSK_Этаж", "-1"), doc).ToString();
             FillCell(108, 2, value, path);
@@ -798,33 +803,30 @@ namespace TEP
         }
         private void B156(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещения линейного и обслуживающего персонала"), doc).ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString();
             FillCell(156, 2, value, path);
         }
         private void B157(Document doc, String path)
         {
-            string value = string.Empty;
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString();
             FillCell(157, 2, value, path);
         }
         private void B158(Document doc, String path)
         {
-            string value = string.Empty;
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); 
             FillCell(158, 2, value, path);
         }
         private void B159(Document doc, String path)
         {
-            string value = string.Empty;
-            FillCell(159, 2, value, path);
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(159, 2, value, path);
         }
         private void B160(Document doc, String path)
         {
-            string value = string.Empty;
-            FillCell(160, 2, value, path);
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(160, 2, value, path);
         }
         private void B161(Document doc, String path)
         {
-            string value = string.Empty;
-            FillCell(161, 2, value, path);
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(161, 2, value, path);
         }
         private void B162(Document doc, String path)
         {
@@ -1070,6 +1072,98 @@ namespace TEP
         {
             string value = string.Empty;
             FillCell(210, 2, value, path);
+        }*/
+        private void B108_infinity(Document doc, String path)
+        {
+            //string value = string.Empty;
+            //FillCell(108, 2, value, path);
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                string range = "A2:B172";
+                var rangeCells = worksheet.Cells[range];
+                object[,] Allvalues = rangeCells.Value as object[,];
+                if(Allvalues != null)
+                {
+                    int rows = Allvalues.GetLength(0);
+                    int columns = Allvalues.GetLength(1);
+                    int start = 0;
+
+                    for(int i = 0; i <= rows; i++)
+                    {
+                        int j = 1;
+                        if (Allvalues[i,j].ToString() == "Инженерно-технические помещения")
+                        {
+                            TaskDialog.Show("d", $"{Allvalues[i, j-1]}");
+                            start = i;
+                            break;
+                        }
+                    }
+
+                    List<String> function = new List<String>();
+
+                    for(int i = start; i < rows; i++)
+                    {
+                        function.Add(Allvalues[i,1].ToString());
+                    }
+                    
+                    var func = function.Distinct().ToList();
+
+                    var allFuncRoom = new FilteredElementCollector(doc);
+                    
+                    //Лист всех комнат
+                    List<Element> roomList = new List<Element>();
+
+                    foreach(var f in func)
+                    {
+                        roomList.AddRange(allFuncRoom.WhereElementIsNotElementType()
+                            .OfCategory(BuiltInCategory.OST_Rooms)
+                            .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f).ToList());
+                    }
+
+                    List<String> roomNames = new List<String>();                    
+                    foreach(var f in roomList)
+                    {
+                        roomNames.Add(f.LookupParameter("PNR_Имя помещения").AsString());
+                    }
+                    var roomName = roomNames.Distinct().ToList();
+
+                    ExcelWorksheet worksheet1 = package.Workbook.Worksheets[1];
+                    double areaName = 0.0;
+                    double areaFunc = 0.0;
+                    int rowFunc = 2;
+                    int rowName = 1;
+                    for (int n = 0; n < func.Count(); n++)
+                    {
+                        for (int i = 0; i < roomName.Count(); i++)
+                        {
+                            for (int j = 0; j < roomList.Count(); j++)
+                            {
+                                if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
+                                {
+                                    areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                                }
+                            }
+                            worksheet1.Cells[rowName, 1].Value = roomName[i];
+                            worksheet1.Cells[rowName, 2].Value = areaName;
+                            worksheet1.Cells[rowName, 3].Value = "кв.м";
+                            if (roomList[j].LookupParameter("PNR_Функция помещения") == func[n])
+                            {
+                                areaFunc += areaName;
+                            }
+                            areaName = 0;
+                        }
+                        worksheet1.Cells[rowFunc, 1].Value = func[n];
+                        worksheet1.Cells[rowFunc, 2].Value = areaFunc;
+                        worksheet1.Cells[rowFunc, 3].Value = "кв.м";
+                        areaFunc = 0;
+                        rowFunc = rowName;
+                        rowName++;
+                    }
+                }
+                // Сохраняем изменения
+                package.Save();
+            }
         }
     }
 }
