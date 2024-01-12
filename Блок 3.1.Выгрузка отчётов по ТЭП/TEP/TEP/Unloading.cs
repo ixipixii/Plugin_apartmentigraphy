@@ -172,5 +172,125 @@ namespace TEP
             return values;
         }
 
+        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList)
+        {
+            int rowName = rowFunc + 1;
+            double areaName = 0.0;
+            double areaFunc = 0.0;
+            String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
+            for (int i = 0; i < roomName.Count(); i++)
+            {
+                for (int j = 0; j < roomList.Count(); j++)
+                {
+                    String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
+                    if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
+                    {
+                        areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        if (nameFuncNew == nameFunc)
+                        {
+                            areaFunc += areaName;
+                        }
+                        else
+                        {
+                            worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
+                            worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
+                            worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
+                            nameFunc = nameFuncNew;
+                            areaFunc = areaName;
+                            rowFunc = rowName;
+                            rowName++;
+                        }
+                    }
+                }
+                worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
+                worksheet1.Cells[rowName, 2].Value = areaName; worksheet1.Cells[rowName, 2].Style.Font.Italic = true;
+                worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
+                areaName = 0;
+                rowName++;
+                if (i == roomList.Count - 1)
+                {
+                    worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
+                    worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
+                    worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
+                }
+            }
+
+            var rangeStyleA = worksheet1.Cells["A1" + ":" + "A" + (rowName - 1).ToString()];
+            rangeStyleA.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+
+            var rangeStyleB = worksheet1.Cells["B1" + ":" + "B" + (rowName - 1).ToString()];
+            rangeStyleB.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+
+            var rangeStyleC = worksheet1.Cells["C1" + ":" + "C" + (rowName - 1).ToString()];
+            rangeStyleC.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+
+            return rowName;
+        }
+        public List<Element> RoomList(Document doc, List<string> func)
+        {
+            var allFuncRoom = new FilteredElementCollector(doc);
+            //Лист всех комнат
+            List<Element> roomList = new List<Element>();
+            foreach (var f in func)
+            {
+                roomList.AddRange(allFuncRoom
+                    .WhereElementIsNotElementType()
+                    .OfCategory(BuiltInCategory.OST_Rooms)
+                    .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f).ToList());
+            }
+            return roomList;
+        }
+        public List<String> RoomNames(List<Element> roomList)
+        {
+            var roomNames = new List<String>();
+            foreach (var room in roomList)
+            {
+                roomNames.Add(room.LookupParameter("PNR_Имя помещения").AsString());
+            }
+            return roomNames.Distinct().ToList();
+        }
+        public List<string> Func(String NameFuncStart, String NameFuncEnd)
+        {
+            List<String> function = new List<String>();
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                string range = "A2:B172";
+                var rangeCells = worksheet.Cells[range];
+                object[,] Allvalues = rangeCells.Value as object[,];
+                if (Allvalues != null)
+                {
+                    int rows = Allvalues.GetLength(0);
+                    int columns = Allvalues.GetLength(1);
+                    int start = 0;
+
+                    for (int i = 0; i <= rows; i++)
+                    {
+                        int j = 1;
+                        if (Allvalues[i, j].ToString() == NameFuncStart)
+                        {
+                            start = i;
+                            break;
+                        }
+                    }
+                    for (int i = start; i < rows; i++)
+                    {
+                        if (Allvalues[i, 1].ToString() == NameFuncEnd)
+                            break;
+                        function.Add(Allvalues[i, 1].ToString());
+                    }
+                }
+            }
+            return function.Distinct().ToList();
+        }
     }
 }
