@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace TEP
 {
@@ -137,28 +138,88 @@ namespace TEP
             var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ");
             string value = Areas(list, doc).ToString();
             FillCell(20, 2, value, path);
-            return list.Count.ToString();
+            //Определяем количество квартир
+            List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
+            var listADSK_KV = valuesADSK_KV.Distinct().ToList();
+            int max = 0;
+            foreach (var kv in listADSK_KV)
+            {
+                var maxKV = kv.Substring(kv.Length - 3).TrimStart('0');
+                if (maxKV != null)
+                {
+                    if(int.Parse(maxKV) > max)
+                    {
+                        max = int.Parse(maxKV);
+                    }
+                }
+            }
+            return max.ToString();
         }
         private string B21(Document doc, String path)
         {
             var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ");
             string value = Areas(list, doc).ToString();
             FillCell(21, 2, value, path);
-            return list.Count.ToString();
+            //Определяем количество квартир
+            List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
+            var listADSK_KV = valuesADSK_KV.Distinct().ToList();
+            int max = 0;
+            foreach (var kv in listADSK_KV)
+            {
+                var maxKV = kv.Substring(kv.Length - 3).TrimStart('0');
+                if (maxKV != null)
+                {
+                    if (int.Parse(maxKV) > max)
+                    {
+                        max = int.Parse(maxKV);
+                    }
+                }
+            }
+            return max.ToString();
         }
         private string B22(Document doc, String path)
         {
             var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "WHITEBOX");
             string value = Areas(list, doc).ToString();
             FillCell(22, 2, value, path);
-            return list.Count.ToString();
+            //Определяем количество квартир
+            List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
+            var listADSK_KV = valuesADSK_KV.Distinct().ToList();
+            int max = 0;
+            foreach (var kv in listADSK_KV)
+            {
+                var maxKV = kv.Substring(kv.Length - 3).TrimStart('0');
+                if (maxKV != null)
+                {
+                    if (int.Parse(maxKV) > max)
+                    {
+                        max = int.Parse(maxKV);
+                    }
+                }
+            }
+            return max.ToString();
         }
         private string B23(Document doc, String path)
         {
             var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ");
             string value = Areas(list, doc).ToString();
             FillCell(23, 2, value, path);
-            return list.Count.ToString();
+            //Определяем количество квартир
+            List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
+            var listADSK_KV = valuesADSK_KV.Distinct().ToList();
+            int max = 0;
+            foreach (var kv in listADSK_KV)
+            {
+                var maxKV = kv.Substring(kv.Length - 3).TrimStart('0');
+                if (maxKV != null)
+                {
+                    if (int.Parse(maxKV) > max)
+                    {
+                        max = int.Parse(maxKV);
+                    }
+                }
+            }
+            return max.ToString();
         }
         private string B24(Document doc, String path, string count)
         {
@@ -168,52 +229,52 @@ namespace TEP
         }
         private void B25(Document doc, String path, string count)
         {
-            string value = string.Empty;
+            string value = count;
             FillCell(25, 2, value, path);
         }
         private void B26(Document doc, String path, string count)
         {
-            string value = string.Empty;
+            string value = count;
             FillCell(26, 2, value, path);
         }
         private void B27(Document doc, String path, string count)
         {
-            string value = string.Empty;
+            string value = count;
             FillCell(27, 2, value, path);
         }
         private void B28(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Балкон"), doc).ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Балкон"), doc).ToString();
             FillCell(27, 2, value, path);
         }
         private void B29(Document doc, String path)
         {
-            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Балкон"), doc) * 0.3).ToString();
+            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Балкон"), doc) * 0.3).ToString();
             FillCell(27, 2, value, path);
         }
         private void B30(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Лоджия"), doc).ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лоджия"), doc).ToString();
             FillCell(27, 2, value, path);
         }
         private void B31(Document doc, String path)
         {
-            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Лоджия"), doc) * 0.5).ToString();
+            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лоджия"), doc) * 0.5).ToString();
             FillCell(27, 2, value, path);
         }
         private void B32(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Терраса"), doc).ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Терраса"), doc).ToString();
             FillCell(27, 2, value, path);
         }
         private void B33(Document doc, String path)
         {
-            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Терраса"), doc) * 0.3).ToString();
+            string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Терраса"), doc) * 0.3).ToString();
             FillCell(27, 2, value, path);
         }
         private string B34(Document doc, String path)
         {
-            var list = Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Кладовая", "PNG_Функция помещения", "Помещения кладовых");
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Кладовая", "PNR_Функция помещения", "Помещения кладовых");
             string value = Areas(list, doc).ToString();
             FillCell(34, 2, value, path);
             return list.Count.ToString();
@@ -1103,9 +1164,7 @@ namespace TEP
             //Суммарная площадь МОП, в том числе:
             int number = 46;
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "МОП"), doc).ToString();
-            FillCell(number, 1, "Суммарная площадь МОП, в том числе:", path);
-            FillCell(number, 2, value, path);
-            FillCell(number, 3, "кв.м", path);
+            FillCellParameter(number, 2, value, path, "Суммарная площадь МОП, в том числе:", "кв.м.");
 
             //Помещения входной группы (1й этаж)
             number++;
@@ -1123,6 +1182,7 @@ namespace TEP
                 // Сохраняем изменения
                 pack.Save();
             }
+
             //МОП типовых этажей
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
@@ -1138,6 +1198,7 @@ namespace TEP
                 // Сохраняем изменения
                 pack.Save();
             }
+
             //Помещения входной группы паркинг (-1й этаж)
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
@@ -1155,9 +1216,7 @@ namespace TEP
                 value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Инвентарная(помещение хранения велосипедов)"), doc).ToString();
                 if(value != string.Empty)
                 {
-                    FillCell(number, 1, "Инвентарная(помещение хранения велосипедов)", path);
-                    FillCell(number, 2, value, path);
-                    FillCell(number, 3, "кв.м", path);
+                    FillCellParameter(number, 2, value, path, "Инвентарная(помещение хранения велосипедов)", "кв.м.");
                 }
                 number++;
 
@@ -1169,9 +1228,7 @@ namespace TEP
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Проход блока кладовых)"), doc).ToString();
             if (value != string.Empty)
             {
-                FillCell(number, 1, "Проход блока кладовых", path);
-                FillCell(number, 2, value, path);
-                FillCell(number, 3, "кв.м", path);
+                FillCellParameter(number, 2, value, path, "Проход блока кладовых", "кв.м.");
             }
             number++;
 
@@ -1363,6 +1420,28 @@ namespace TEP
                 // Сохраняем изменения
                 pack.Save();
             }
+        }
+        private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor)
+        {
+            string value = string.Empty;
+            //Типовой этаж
+            FillCellParameter(number, 2, value, path, "Типовой этаж " + StartFloor + " - " + EndFloor, "шт.");
+            number++;
+            //Количество квартир
+            FillCell(number, 2, value, path);
+            number++;
+            //На этаж
+            FillCell(number, 2, value, path);
+            number++;
+            //Площадь квартир
+            FillCell(number, 2, value, path);
+            number++;
+            //На этаж
+            FillCell(number, 2, value, path);
+            number++;
+            //Площадь МОП
+            FillCell(number, 2, value, path);
+            number++;
         }
     }
 }

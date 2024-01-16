@@ -76,7 +76,29 @@ namespace TEP
                 // Сохраняем изменения
                 package.Save();
             }
-            System.Diagnostics.Process.Start(excelPath);
+        }
+        public void FillCellParameter(int rowIndex, int columnIndex, String cellValue, String excelPath, string value_1, string value_3) //Заполнить ячейку
+        {
+            using (var package = new ExcelPackage(new FileInfo(excelPath)))
+            {
+                // Выбираем лист
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+
+                // Координаты ячейки, которую вы хотите изменить
+                int rowNumber = rowIndex;
+                int columnNumber = columnIndex;
+
+                // Новое значение для ячейки
+                string newValue = cellValue;
+
+                // Устанавливаем значение ячейки
+                worksheet.Cells[rowNumber, columnNumber].Value = newValue;
+                worksheet.Cells[rowNumber, 1].Value = value_1;
+                worksheet.Cells[rowNumber, 3].Value = value_3;
+
+                // Сохраняем изменения
+                package.Save();
+            }
         }
 
         //Методы Elements возвращают лист определённых элементов
@@ -215,23 +237,7 @@ namespace TEP
                 }
             }
 
-            var rangeStyleA = worksheet1.Cells["A1" + ":" + "A" + (rowName - 1).ToString()];
-            rangeStyleA.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-
-            var rangeStyleB = worksheet1.Cells["B1" + ":" + "B" + (rowName - 1).ToString()];
-            rangeStyleB.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-
-            var rangeStyleC = worksheet1.Cells["C1" + ":" + "C" + (rowName - 1).ToString()];
-            rangeStyleC.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            Style(worksheet1, rowName);
 
             return rowName;
         }
@@ -278,23 +284,7 @@ namespace TEP
                 }
             }
 
-            var rangeStyleA = worksheet1.Cells["A1" + ":" + "A" + (rowName - 1).ToString()];
-            rangeStyleA.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleA.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-
-            var rangeStyleB = worksheet1.Cells["B1" + ":" + "B" + (rowName - 1).ToString()];
-            rangeStyleB.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-            rangeStyleB.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-
-            var rangeStyleC = worksheet1.Cells["C1" + ":" + "C" + (rowName - 1).ToString()];
-            rangeStyleC.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
-            rangeStyleC.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            Style(worksheet1, rowName);
 
             return rowName;
         }
@@ -384,6 +374,26 @@ namespace TEP
                 }
             }
             return function.Distinct().ToList();
+        }
+        public void Style(ExcelWorksheet worksheet1, int rowName)
+        {
+            var rangeStyleA = worksheet1.Cells["A1" + ":" + "A" + (rowName - 1).ToString()];
+            rangeStyleA.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleA.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+
+            var rangeStyleB = worksheet1.Cells["B1" + ":" + "B" + (rowName - 1).ToString()];
+            rangeStyleB.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+            rangeStyleB.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+
+            var rangeStyleC = worksheet1.Cells["C1" + ":" + "C" + (rowName - 1).ToString()];
+            rangeStyleC.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+            rangeStyleC.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
         }
     }
 }

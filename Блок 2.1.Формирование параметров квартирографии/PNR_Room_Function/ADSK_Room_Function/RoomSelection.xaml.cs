@@ -1,20 +1,15 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using OfficeOpenXml;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.IO;
+using Autodesk.Revit.Exceptions;
+using System.IO.Packaging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ADSK_Room_Function
 {
@@ -31,7 +26,48 @@ namespace ADSK_Room_Function
             selection.CloseRequest += (s, e) => this.Close();
             DataContext = selection;
 
-            LVR.Items.Add("Квартиры бед доп. отделки");
+            List<String> function = new List<String>();
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                string range = "A2:B172";
+                var rangeCells = worksheet.Cells[range];
+                object[,] Allvalues = rangeCells.Value as object[,];
+                if (Allvalues != null)
+                {
+                    int rows = Allvalues.GetLength(0);
+                    int columns = Allvalues.GetLength(1);
+                    int start = 0;
+
+                    for (int i = 0; i <= rows; i++)
+                    {
+                        int j = 1;
+                        if (Allvalues[i, j].ToString() == "Квартиры бед доп. отделки")
+                        {
+                            start = i;
+                            break;
+                        }
+                    }
+                    for (int i = start; i < rows; i++)
+                    {
+                        if (Allvalues[i, 1].ToString() == "")
+                            break;
+                        function.Add(Allvalues[i, 1].ToString());
+                    }
+                }
+            }
+
+            List<string> func = function.Distinct().ToList();
+
+            foreach(var f in func)
+            {
+                if (f != null)
+                {
+                    LVR.Items.Add(f);
+                }
+            }
+
+/*                LVR.Items.Add("Квартиры бед доп. отделки");
             LVR.Items.Add("Апартаменты без доп. Отделки");
             LVR.Items.Add("Коммерческие помещения без доп. отделки");
             LVR.Items.Add("МОП входной группы 1 этажа");
@@ -52,7 +88,7 @@ namespace ADSK_Room_Function
             LVR.Items.Add("Помещения линейного и обслуживающего персонала");
             LVR.Items.Add("Помещения охраны");
             LVR.Items.Add("Помещения Клининговых служб");
-            LVR.Items.Add("Помещения кладовых");
+            LVR.Items.Add("Помещения кладовых");*/
         }
 
         private void LVR_SelectionChanged(object sender, SelectionChangedEventArgs e)

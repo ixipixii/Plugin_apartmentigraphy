@@ -1,6 +1,8 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.IO;
 
 namespace PNR_Room_Name
 {
@@ -42,7 +44,37 @@ namespace PNR_Room_Name
 
         private void FunctionRoom(String functionRoom)
         {
-            switch (functionRoom)
+            //Считываем файл наименований помещений
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                string range = "A2:B172";
+                var rangeCells = worksheet.Cells[range];
+                object[,] Allvalues = rangeCells.Value as object[,];
+                if (Allvalues != null)
+                {
+                    int rows = Allvalues.GetLength(0);
+                    int columns = Allvalues.GetLength(1);
+                    int start = 0;
+
+                    for (int i = 0; i <= rows; i++)
+                    {
+                        int j = 1;
+                        if (Allvalues[i, j].ToString() == functionRoom)
+                        {
+                            start = i;
+                            break;
+                        }
+                    }
+                    for (int i = start; i < rows; i++)
+                    {
+                        if (Allvalues[i, 1].ToString() != functionRoom)
+                            break;
+                        LVR.Items.Add(Allvalues[i, 0].ToString());
+                    }
+                }
+            }
+            /*switch (functionRoom)
             {
                 case "Квартиры бед доп. отделки":
                     LVR.Items.Add("Жилая комната");
@@ -225,7 +257,7 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Проход блока кладовых");
                     LVR.Items.Add("Кладовая");
                     break;
-            }           
+            }*/           
         }
     }
 }
