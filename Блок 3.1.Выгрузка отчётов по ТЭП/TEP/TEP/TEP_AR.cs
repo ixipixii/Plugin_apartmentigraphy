@@ -100,12 +100,23 @@ namespace TEP
         }
         private void B16(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ"), doc).ToString();
-            FillCell(16, 2, value, path);
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ");
+            List<String> floors = new List<string>(); 
+            foreach(var room in list)
+            {
+                floors.Add(room.LookupParameter("ADSK_Этаж").ToString());
+            }
+            List<String> floor = floors.Distinct().ToList();
+            double area = 0.0;
+            foreach(var f in floors)
+            {
+                area += Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", f), doc);
+            }
+            FillCell(16, 2, area.ToString(), path);
         }
         private void B17(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КМ"), doc).ToString();
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", "1"), doc).ToString();
             FillCell(17, 2, value, path);
         }
         private void B18(Document doc, String path)
@@ -121,42 +132,51 @@ namespace TEP
                           + Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "АП"), doc)).ToString();
             FillCell(19, 2, value, path);
         }
-        private void B20(Document doc, String path)
+        private string B20(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ"), doc).ToString();
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ");
+            string value = Areas(list, doc).ToString();
             FillCell(20, 2, value, path);
+            return list.Count.ToString();
         }
-        private void B21(Document doc, String path)
+        private string B21(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ"), doc).ToString();
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ");
+            string value = Areas(list, doc).ToString();
             FillCell(21, 2, value, path);
+            return list.Count.ToString();
         }
-        private void B22(Document doc, String path)
+        private string B22(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "WHITEBOX"), doc).ToString();
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "WHITEBOX");
+            string value = Areas(list, doc).ToString();
             FillCell(22, 2, value, path);
+            return list.Count.ToString();
         }
-        private void B23(Document doc, String path)
+        private string B23(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ"), doc).ToString();
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ");
+            string value = Areas(list, doc).ToString();
             FillCell(23, 2, value, path);
+            return list.Count.ToString();
         }
-        private void B24(Document doc, String path)
+        private string B24(Document doc, String path, string count)
         {
-            string value = string.Empty;
+            string value = count;
             FillCell(24, 2, value, path);
+            return value;
         }
-        private void B25(Document doc, String path)
+        private void B25(Document doc, String path, string count)
         {
             string value = string.Empty;
             FillCell(25, 2, value, path);
         }
-        private void B26(Document doc, String path)
+        private void B26(Document doc, String path, string count)
         {
             string value = string.Empty;
             FillCell(26, 2, value, path);
         }
-        private void B27(Document doc, String path)
+        private void B27(Document doc, String path, string count)
         {
             string value = string.Empty;
             FillCell(27, 2, value, path);
@@ -191,22 +211,27 @@ namespace TEP
             string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Терраса"), doc) * 0.3).ToString();
             FillCell(27, 2, value, path);
         }
-        private void B34(Document doc, String path)
+        private string B34(Document doc, String path)
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Кладовая", "PNG_Функция помещения", "Помещения кладовых"), doc).ToString();
+            var list = Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Кладовая", "PNG_Функция помещения", "Помещения кладовых");
+            string value = Areas(list, doc).ToString();
             FillCell(34, 2, value, path);
+            return list.Count.ToString();
         }
-        private void B35(Document doc, String path)
+        private string B35(Document doc, String path, string count)
         {
-            string value = string.Empty;
+            string value = count;
             FillCell(35, 2, value, path);
+            return value;
         }
-        private void B36(Document doc, String path)
+        private void B36(Document doc, String path, string countKl, string countKV)
         {
-            string value = string.Empty;
+            string value = (double.Parse(countKl)/double.Parse(countKV)).ToString();
             FillCell(36, 2, value, path);
         }
-        private void B37(Document doc, String path)
+
+        //КМ
+        /*private void B37(Document doc, String path)
         {
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "КМ"), doc).ToString();
             FillCell(37, 2, value, path);
@@ -250,7 +275,7 @@ namespace TEP
         {
             string value = string.Empty;
             FillCell(45, 2, value, path);
-        }
+        }*/
         /*private void B46(Document doc, String path)
         {
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "МОП"), doc).ToString();
@@ -1073,7 +1098,7 @@ namespace TEP
             string value = string.Empty;
             FillCell(210, 2, value, path);
         }*/
-        private void МОП(Document doc, String path)
+        private int МОП(Document doc, String path)
         {
             //Суммарная площадь МОП, в том числе:
             int number = 46;
@@ -1114,18 +1139,215 @@ namespace TEP
                 pack.Save();
             }
             //Помещения входной группы паркинг (-1й этаж)
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям 
+                List<Element> roomList = RoomList(doc, Func("МОП входной группы -1 этажа", "Помещения кладовых"));
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsArea(worksheet1, number, roomName, roomList);
+
+                //Добавляем помещение хранения велосипедов
+                value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Инвентарная(помещение хранения велосипедов)"), doc).ToString();
+                if(value != string.Empty)
+                {
+                    FillCell(number, 1, "Инвентарная(помещение хранения велосипедов)", path);
+                    FillCell(number, 2, value, path);
+                    FillCell(number, 3, "кв.м", path);
+                }
+                number++;
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+            
             //Проход блока кладовых
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Проход блока кладовых)"), doc).ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Проход блока кладовых", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
             //Площадь лестниц и эвакуации (с -1го до последнего этажа)
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям 
+                List<Element> roomList = RoomList(doc, Func("Лестницы эвакуации  (с -1го до последнего этажа)", "Помещения загрузки"));
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsArea(worksheet1, number, roomName, roomList);
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
+            //Лестничная клетка (1го этажа)
+            double value_1 = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "НЛК (наземная лестничная клетка)", "ADSK_Этаж", "1"), doc);
+            value = value_1.ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Лестничная клетка (1го этажа)", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
+            //Лестничная клетка типового этажа
+            value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "НЛК (наземная лестничная клетка)"), doc) - value_1).ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Лестничная клетка типового этажа", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
+            //Лестничная клетка (-1го этажа)
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПЛК (подземная лестничная клетка)"), doc).ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Проход блока кладовых", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
             //Помещения загрузки, в том числе:
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomList(doc, Func("Помещения загрузки", "Помещения мусороудаления"));
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsArea(worksheet1, number, roomName, roomList);
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Подземный этаж
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomListUnder(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsAreaUnder(worksheet1, number, roomName, roomList, "Подземный этаж");
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Первый этаж
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomListEquals(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsAreaUnder(worksheet1, number, roomName, roomList, "Первый этаж");
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Помещения мусороудаления, в том числе:
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomList(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"));
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsArea(worksheet1, number, roomName, roomList);
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Подземный этаж
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomListUnder(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsAreaUnder(worksheet1, number, roomName, roomList, "Подземный этаж");
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Первый этаж
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            {
+                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
+                List<Element> roomList = RoomListEquals(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
+
+                //Получаем список названий помещений с определёнными категориями
+                List<String> roomName = RoomNames(roomList);
+
+                //Тот лист, на котором будет выводиться отчёт
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
+                number = FillCellsAreaUnder(worksheet1, number, roomName, roomList, "Первый этаж");
+
+                // Сохраняем изменения
+                pack.Save();
+            }
+
             //Въездная рампа
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Рампа"), doc).ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Въездная рампа", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
             //Площадь подземного паркинга
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение автостоянки"), doc).ToString();
+            if (value != string.Empty)
+            {
+                FillCell(number, 1, "Помещение автостоянки", path);
+                FillCell(number, 2, value, path);
+                FillCell(number, 3, "кв.м", path);
+            }
+            number++;
+
+            return number;
         }
-        private void Engineer_infinity(Document doc, String path)
+        private void Engineer_infinity(Document doc, String path, int number)
         {
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
@@ -1137,7 +1359,7 @@ namespace TEP
 
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
-                FillCellsArea(worksheet1, 1, roomName, roomList);
+                FillCellsArea(worksheet1, number, roomName, roomList);
                 // Сохраняем изменения
                 pack.Save();
             }
