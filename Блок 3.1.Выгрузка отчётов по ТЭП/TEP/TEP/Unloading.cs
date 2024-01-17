@@ -158,6 +158,16 @@ namespace TEP
                 return elements;
             }
         }
+        public virtual List<Element> ElementsEquals(BuiltInCategory category, Document doc, String filterParameter, String valueFilterParameter)
+        {
+            List<Element> elements = new FilteredElementCollector(doc)
+                                                    .OfCategory(category)
+                                                    .WhereElementIsNotElementType()
+                                                    .Where(e => e.LookupParameter(filterParameter).AsString() == valueFilterParameter)
+                                                    .ToList();
+
+            return elements;
+        }
         public virtual double Areas(List<Element> elements, Document doc)
         {
             double area = 0;
@@ -299,6 +309,22 @@ namespace TEP
                     .WhereElementIsNotElementType()
                     .OfCategory(BuiltInCategory.OST_Rooms)
                     .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f).ToList());
+            }
+            return roomList;
+        }
+        public List<Element> RoomListFloor(Document doc, List<string> func, string nameFloor)
+        {
+            var allFuncRoom = new FilteredElementCollector(doc);
+            //Лист всех комнат
+            List<Element> roomList = new List<Element>();
+            foreach (var f in func)
+            {
+                roomList.AddRange(allFuncRoom
+                    .WhereElementIsNotElementType()
+                    .OfCategory(BuiltInCategory.OST_Rooms)
+                    .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f)
+                    .Where(g => g.LookupParameter("ADSK_Этаж").AsString() == nameFloor)
+                    .ToList());
             }
             return roomList;
         }
