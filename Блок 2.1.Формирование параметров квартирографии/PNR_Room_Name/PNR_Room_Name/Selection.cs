@@ -38,7 +38,7 @@ namespace PNR_Room_Name
         private void OnContinue()
         {
             RaiseCloseRequest();
-            Select();
+            //Select();
             var window = new RoomSelection(_commandData);
             window.ShowDialog();
         }
@@ -98,7 +98,7 @@ namespace PNR_Room_Name
         private void OnSelectionLevel()
         {
             RaiseCloseRequest();
-            Select();
+            //Select();
             var window = new RoomSelection(_commandData);
             window.ShowDialog();
         }

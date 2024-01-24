@@ -30,7 +30,7 @@ namespace ADSK_Room_Function
             using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                string range = "A2:B172";
+                string range = "A2:B200";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -48,11 +48,15 @@ namespace ADSK_Room_Function
                             break;
                         }
                     }
-                    for (int i = start; i < rows; i++)
+                    for (int i = start; i < 171; i++)
                     {
-                        if (Allvalues[i, 1].ToString() == "")
-                            break;
-                        function.Add(Allvalues[i, 1].ToString());
+                        try
+                        {
+                            if (Allvalues[i, 1].ToString() == null)
+                                break;
+                            function.Add(Allvalues[i, 1].ToString());
+                        }
+                        catch { break; }
                     }
                 }
             }
