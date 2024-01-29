@@ -733,6 +733,10 @@ namespace Number
                 ApartListElement.Add(apart);
                 PNR_Function = apart.LookupParameter("PNR_Функция помещения").AsString();
                 PNR_Floor = apart.LookupParameter("ADSK_Этаж").AsString();
+                if(PNR_Floor.Substring(0,1) == "-")
+                {
+                    PNR_Floor = "П" + PNR_Floor.Substring(1, PNR_Floor.Length - 1);
+                }
                 try
                 {
                     PNR_Section = apart.LookupParameter("ADSK_Номер секции").AsString();
@@ -1469,9 +1473,11 @@ namespace Number
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
-                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер квартиры, PNR_Номер помещения");
+                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер квартиры, PNR_Номер помещения. " +
+                    "Если параметры в модели присутсвуют, проверьте наличие семейства метки квартиры (id: 138092)");
+                return;
             }
             tr.Commit();
 
@@ -1891,7 +1897,7 @@ namespace Number
         public bool AllowElement(Element e)
         {
             return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
-            return true;
+            //return true;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {

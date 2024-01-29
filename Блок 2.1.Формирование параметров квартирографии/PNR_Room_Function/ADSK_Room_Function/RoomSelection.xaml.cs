@@ -10,6 +10,7 @@ using Autodesk.Revit.Exceptions;
 using System.IO.Packaging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ADSK_Room_Function
 {
@@ -26,10 +27,19 @@ namespace ADSK_Room_Function
             selection.CloseRequest += (s, e) => this.Close();
             DataContext = selection;
 
+            //Путь до директории
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Uri.UnescapeDataString(uri.Path);
+            path = Path.GetDirectoryName(path);
+            string pathToFile = Path.Combine(path, @"Resources\Имена помещений.xlsx");
+
+            ExcelPackage.LicenseContext = LicenseContext.Commercial;
             List<String> function = new List<String>();
-            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"))))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                var count = package.Workbook.Worksheets.Count;
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:B200";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];

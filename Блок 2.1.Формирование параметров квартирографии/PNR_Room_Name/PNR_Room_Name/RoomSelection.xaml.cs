@@ -45,10 +45,10 @@ namespace PNR_Room_Name
         private void FunctionRoom(String functionRoom)
         {
             //Считываем файл наименований помещений
-            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"))))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                string range = "A2:B172";
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
+                string range = "A2:B200";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
