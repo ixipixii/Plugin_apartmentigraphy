@@ -61,7 +61,7 @@ namespace TEP
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
             {
                 // Выбираем лист
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Отчёт"];
 
                 // Координаты ячейки, которую вы хотите изменить
                 int rowNumber = rowIndex;
@@ -119,6 +119,10 @@ namespace TEP
             List<Element> elements = new FilteredElementCollector(doc)
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
+                                                    .Where(e => e != null 
+                                                        && e.LookupParameter(filterParameter) != null 
+                                                        && e.LookupParameter(filterParameter).AsString() != null
+                                                        && e.LookupParameter(filterParameter).AsString() != "")
                                                     .Where(e => e.LookupParameter(filterParameter).AsString().Contains(valueFilterParameter))
                                                     .ToList();
 
@@ -130,6 +134,10 @@ namespace TEP
             List<Element> elements = new FilteredElementCollector(doc)
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
+                                                    .Where(e => e != null
+                                                        && e.LookupParameter(filterParameter_1) != null && e.LookupParameter(filterParameter_2) != null 
+                                                        && e.LookupParameter(filterParameter_2).AsString() != null && e.LookupParameter(filterParameter_1).AsString() != null
+                                                        && e.LookupParameter(filterParameter_2).AsString() != "" && e.LookupParameter(filterParameter_1).AsString() != "")
                                                     .Where(e => e.LookupParameter(filterParameter_1).AsString().Contains(valueFilterParameter_1) &&
                                                                 e.LookupParameter(filterParameter_2).AsString() == valueFilterParameter_2)
                                                     .ToList();
@@ -184,7 +192,7 @@ namespace TEP
             {
                 try
                 {
-                    if (element.LookupParameter("PNR_Имя помещения").AsString().Contains(PARAMETER))
+                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && element.LookupParameter("PNR_Имя помещения").AsString().Contains(PARAMETER))
                     {
                         area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
                     }
