@@ -58,6 +58,7 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нуме�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\bin\Debug\zh-TW\AdWindows.resources.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number.csproj.AssemblyReference.cache
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Apart.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\AreaParameter.g.cs
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\MainPanel.g.cs
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Renumber.g.cs
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Room.g.cs
@@ -65,6 +66,7 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нуме�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number_MarkupCompile.cache
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Number_MarkupCompile.lref
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Apart.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\AreaParameter.baml
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\MainPanel.baml
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Renumber.baml
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 2.2.Нумерация помещений\Number\Number\obj\Debug\Room.baml

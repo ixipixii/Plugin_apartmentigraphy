@@ -49,6 +49,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -61,6 +63,9 @@
   <ItemGroup>
     <Compile Include="Apart.xaml.cs">
       <DependentUpon>Apart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AreaParameter.xaml.cs">
+      <DependentUpon>AreaParameter.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClassApartAndRoom.cs" />
     <Compile Include="Main.cs" />
@@ -86,6 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Apart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AreaParameter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

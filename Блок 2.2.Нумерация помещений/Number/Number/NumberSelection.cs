@@ -755,6 +755,36 @@ namespace Number
                 catch { PNR_Building = "-1"; }
             }
 
+            if(PNR_Function.Contains("КВ") || PNR_Function.Contains("АП"))
+            {
+                double LifeArea = 0.0;
+                double GeneralArea = 0.0;
+                foreach (var apart in ApartListElement)
+                {
+                    if (apart != null)
+                    {
+                        if (apart.Name.Contains("Жилая") || apart.Name.Contains("Гостиная") || apart.Name.Contains("Спальня") || apart.Name.Contains("Мастер-спальня"))
+                        {
+                            LifeArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
+                        }
+                        GeneralArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
+                    }
+                }
+                foreach (var apart in ApartListElement)
+                {
+                    apart.LookupParameter("ADSK_Площадь квартиры жилая").Set(LifeArea.ToString());
+                    apart.LookupParameter("ADSK_Площадь квартиры общая").Set(GeneralArea.ToString());
+                }
+                var areaParamter = new AreaParameter();
+                areaParamter.ShowDialog();
+                foreach (var apart in ApartListElement)
+                {
+                    apart.LookupParameter("ADSK_Тип квартиры").Set(areaParamter.selectedType);
+                    apart.LookupParameter("ADSK_Диапазон").Set(areaParamter.selectedRange);
+                    apart.LookupParameter("ADSK_Количество комнат").Set(areaParamter.selectedCount);
+                }
+            }
+
             //Фильтр по всем помещениям на всей модели
             List<Element> AllRooms = new List<Element>();
             try
@@ -1484,7 +1514,6 @@ namespace Number
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
             apartWindow.ShowDialog();
         }
-
         private void Bug(Element room)
         {
             LinkElementId roomId = new LinkElementId(room.Id);
@@ -1498,7 +1527,6 @@ namespace Number
                 .Cast<FamilySymbol>();
             roomTag.ChangeTypeId(type.First().Id);
         }
-
         public void ApartList_2()
         {
             //Фильтр по всем квартирам - помещениям на данном виде

@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
+using MathNet.Numerics;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace TEP
             String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx");
             //Создаём отчёт для квартир
             var CellB6 = B6(doc, path);
-            var CellB7 = B7(doc, path); 
+            var CellB7 = B7(doc, path);
             B8(doc, path, CellB6, CellB7);
             B9(doc, path);
             B10(doc, path);
@@ -43,7 +44,7 @@ namespace TEP
             B25(doc, path, CountApartWithFinishing);
             B26(doc, path, CountApartWhiteBox);
             B27(doc, path, CountApartWithoutFinishing);
-            string value;
+            string value = string.Empty;
             B28(doc, path, out value);
             B29(doc, path, value);
             B30(doc, path, out value);
@@ -59,6 +60,7 @@ namespace TEP
             //Создаём отчёт по МОП
 
             //Создаём отчёт по машиноместам
+            //B90(doc, path);
 
             //Создаём отчёт по всем оставшимся категорям
 
@@ -274,32 +276,32 @@ namespace TEP
         private void B28(Document doc, String path, out string value)
         {
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Балкон"), doc).ToString();
-            FillCell(27, 2, value, path);
+              FillCell(28, 2, value, path);
         }
         private void B29(Document doc, String path, string value)
         {
             //string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Балкон"), doc) * 0.3).ToString();
-            FillCell(27, 2, (double.Parse(value)*0.3).ToString(), path);
+            FillCell(29, 2, (double.Parse(value)*0.3).ToString(), path);
         }
         private void B30(Document doc, String path, out string value)
         {
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лоджия"), doc).ToString();
-            FillCell(27, 2, value, path);
+            FillCell(30, 2, value, path);
         }
         private void B31(Document doc, String path, string value)
         {
             //string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лоджия"), doc) * 0.5).ToString();
-            FillCell(27, 2, (double.Parse(value) * 0.5).ToString(), path);
+            FillCell(31, 2, (double.Parse(value) * 0.5).ToString(), path);
         }
         private void B32(Document doc, String path, out string value)
         {
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Терраса"), doc).ToString();
-            FillCell(27, 2, value, path);
+            FillCell(32, 2, value, path);
         }
         private void B33(Document doc, String path, string value)
         {
             //string value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Терраса"), doc) * 0.3).ToString();
-            FillCell(27, 2, (double.Parse(value) * 0.3).ToString(), path);
+            FillCell(33, 2, (double.Parse(value) * 0.3).ToString(), path);
         }
         private string B34(Document doc, String path)
         {
@@ -586,72 +588,141 @@ namespace TEP
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Паркинг", "ADSK_Этаж", "-1"), doc).ToString();
             FillCell(89, 2, value, path);
         }*/
-        private void B90(Document doc, String path)
+        /*private void B90(Document doc, String path, out List<FamilyInstance> value, out int cells)
+        {
+            value = new FilteredElementCollector(doc)
+                            .OfClass(typeof(FamilyInstance))
+                            .OfCategory(BuiltInCategory.OST_Parking)
+                            .Cast<FamilyInstance>()
+                            .ToList();
+            FillCell(cells, 2, value.Count.ToString(), path);
+            cells++;
+        }*/
+        private void B91(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
-            FillCell(90, 2, value, path);
+            int count_1 = 0;
+            int count_2 = 0;
+            int count_3 = 0;
+            int count_4 = 0;
+            int count_5 = 0;
+            int count_6 = 0;
+            int count_7 = 0;
+            int count_8 = 0;
+            int count_9 = 0;
+            int count_10 = 0;
+            int count_11 = 0;
+            int count_12 = 0;
+            int count_13 = 0;
+            foreach (var v in list)
+            {
+                if (v != null)
+                {
+                    if(v.Name == "Обычные малые")
+                        count_1++;
+                    if (v.Name == "Обычные средние")
+                        count_2++;
+                    if (v.Name == "Обычные большие")
+                        count_3++;
+                    if (v.Name == "Зависимые малые")
+                        count_4++;
+                    if (v.Name == "Зависимые средние")
+                        count_5++;
+                    if (v.Name == "Зависимые большие")
+                        count_6++;
+                    if (v.Name == "С зарядкой малые")
+                        count_7++;
+                    if (v.Name == "С зарядкой средние")
+                        count_8++;
+                    if (v.Name == "С зарядкой большие")
+                        count_9++;
+                    if (v.Name == "Гостевые малые")
+                        count_10++;
+                    if (v.Name == "Гостевые средние")
+                        count_11++;
+                    if (v.Name == "Гостевые большие")
+                        count_12++;
+                    if (v.Name == "Мотоместа")
+                        count_13++;
+                }
+            }
+            List<string> nameCells = new List<string>
+            {
+                "обычных малых",
+                "обычных средних",
+                "обычных больших",
+                "зависимых малых",
+                "зависимых средних",
+                "зависимых больших",
+                "с зарядкой малых",
+                "с зарядкой средних",
+                "с зарядкой больших",
+                "гостевых малых",
+                "гостевых средних",
+                "гостевых больших",
+                "мотоместа"
+            };
+            for (var i = 0; i < 13; i ++)
+            {
+                FillCellParameter(91, 2, value, path, nameCells[i], "шт.");
+            }
         }
-        private void B91(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(91, 2, value, path);
-        }
-        private void B92(Document doc, String path)
+        private void B92(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(92, 2, value, path);
         }
-        private void B93(Document doc, String path)
+        private void B93(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(93, 2, value, path);
         }
-        private void B94(Document doc, String path)
+        private void B94(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(94, 2, value, path);
         }
-        private void B95(Document doc, String path)
+        private void B95(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(95, 2, value, path);
         }
-        private void B96(Document doc, String path)
+        private void B96(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(96, 2, value, path);
         }
-        private void B97(Document doc, String path)
+        private void B97(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(97, 2, value, path);
         }
-        private void B98(Document doc, String path)
+        private void B98(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(98, 2, value, path);
         }
-        private void B99(Document doc, String path)
+        private void B99(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(99, 2, value, path);
         }
-        private void B100(Document doc, String path)
+        private void B100(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(100, 2, value, path);
         }
-        private void B101(Document doc, String path)
+        private void B101(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(101, 2, value, path);
         }
-        private void B102(Document doc, String path)
+        private void B102(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(102, 2, value, path);
         }
-        private void B103(Document doc, String path)
+        private void B103(Document doc, String path, List<FamilyInstance> list)
         {
             string value = string.Empty;
             FillCell(103, 2, value, path);

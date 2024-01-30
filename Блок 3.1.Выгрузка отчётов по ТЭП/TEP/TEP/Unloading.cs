@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
+using MathNet.Numerics;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -183,6 +184,7 @@ namespace TEP
             {
                     area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
             }
+            area = area.Round(3);
             return area;
         }
         public virtual double Areas(List<Element> elements, Document doc, String PARAMETER)
@@ -199,6 +201,7 @@ namespace TEP
                 }
                 catch { }
             }
+            area = area.Round(3);
             return area;
         }
         public virtual List<String> Values(String parameter, List<Element> elements)
@@ -232,6 +235,8 @@ namespace TEP
                         }
                         else
                         {
+                            areaFunc= areaFunc.Round(3);
+                            areaName= areaName.Round(3);
                             worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
@@ -242,6 +247,8 @@ namespace TEP
                         }
                     }
                 }
+                areaFunc = areaFunc.Round(3);
+                areaName = areaName.Round(3);
                 worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
                 worksheet1.Cells[rowName, 2].Value = areaName; worksheet1.Cells[rowName, 2].Style.Font.Italic = true;
                 worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
@@ -249,6 +256,8 @@ namespace TEP
                 rowName++;
                 if (i == roomList.Count - 1)
                 {
+                    areaFunc = areaFunc.Round(3);
+                    areaName = areaName.Round(3);
                     worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
@@ -256,7 +265,6 @@ namespace TEP
             }
 
             Style(worksheet1, rowName);
-
             return rowName;
         }
         public int FillCellsAreaUnder(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList, String nameCells)
@@ -279,6 +287,8 @@ namespace TEP
                         }
                         else
                         {
+                            areaFunc = areaFunc.Round(3);
+                            areaName = areaName.Round(3);
                             worksheet1.Cells[rowFunc, 1].Value = nameCells; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
@@ -289,13 +299,17 @@ namespace TEP
                         }
                     }
                 }
+                areaFunc = areaFunc.Round(3);
+                areaName = areaName.Round(3);
                 worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
                 worksheet1.Cells[rowName, 2].Value = areaName; worksheet1.Cells[rowName, 2].Style.Font.Italic = true;
                 worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
-                areaName = 0;
+                areaName = 0.0;
                 rowName++;
                 if (i == roomList.Count - 1)
                 {
+                    areaFunc = areaFunc.Round(3);
+                    areaName = areaName.Round(3);
                     worksheet1.Cells[rowFunc, 1].Value = nameCells; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
@@ -303,7 +317,6 @@ namespace TEP
             }
 
             Style(worksheet1, rowName);
-
             return rowName;
         }
         public List<Element> RoomList(Document doc, List<string> func)
