@@ -1519,13 +1519,47 @@ namespace Number
             LinkElementId roomId = new LinkElementId(room.Id);
             LocationPoint roomLocation = room.Location as LocationPoint;
             UV uv = new UV(roomLocation.Point.X, roomLocation.Point.Y);
-            RoomTag roomTag = _doc.Create.NewRoomTag(roomId, uv, _doc.ActiveView.Id);
+            RoomTag roomTag = _doc.Create.NewRoomTag(roomId, uv, _doc.ActiveView.Id);      
             var type = new FilteredElementCollector(_doc)
                 .OfCategory(BuiltInCategory.OST_RoomTags)
                 .WhereElementIsElementType()
                 .Where(g => g.Id.ToString() == "138092")
                 .Cast<FamilySymbol>();
             roomTag.ChangeTypeId(type.First().Id);
+            roomTag.HasLeader = true;
+            List<Autodesk.Revit.DB.Grid> grids = new List<Autodesk.Revit.DB.Grid>(
+                new FilteredElementCollector(_doc)
+                .OfClass(typeof(Autodesk.Revit.DB.Grid))
+                .Cast<Autodesk.Revit.DB.Grid>()
+                .Where(g => ((Autodesk.Revit.DB.Line)g.Curve).Direction.X == 1.0 || ((Autodesk.Revit.DB.Line)g.Curve).Direction.X == -1.0));
+
+            Autodesk.Revit.DB.Grid gridHighest = grids[0];
+            Autodesk.Revit.DB.Grid gridLowest = grids[0];
+            Autodesk.Revit.DB.Line lineHighest = gridHighest.Curve as Autodesk.Revit.DB.Line;
+            Autodesk.Revit.DB.Line lineLowest = gridLowest.Curve as Autodesk.Revit.DB.Line;
+            foreach ( var grid in grids)
+            {
+                Autodesk.Revit.DB.Line line = grid.Curve as Autodesk.Revit.DB.Line;
+                if (lineHighest.Origin.Y < line.Origin.Y)
+                {
+                    gridHighest = grid;
+                }
+                if (lineLowest.Origin.Y > line.Origin.Y)
+                {
+                    gridLowest = grid;
+                }
+                lineHighest = gridHighest.Curve as Autodesk.Revit.DB.Line;
+                lineLowest = gridLowest.Curve as Autodesk.Revit.DB.Line;
+            }
+
+            if ((lineHighest.Origin.Y - roomTag.TagHeadPosition.Y) < (roomTag.TagHeadPosition.Y - lineLowest.Origin.Y))
+            {
+                roomTag.TagHeadPosition = new XYZ(roomLocation.Point.X, lineHighest.Origin.Y, roomLocation.Point.Z) + new XYZ(0, 15, 0);
+            }
+            if ((lineHighest.Origin.Y - roomTag.TagHeadPosition.Y) > (roomTag.TagHeadPosition.Y - lineLowest.Origin.Y))
+            {
+                roomTag.TagHeadPosition = new XYZ(roomLocation.Point.X, lineLowest.Origin.Y, roomLocation.Point.Z) + new XYZ(0, -15, 0);
+            }
         }
         public void ApartList_2()
         {
