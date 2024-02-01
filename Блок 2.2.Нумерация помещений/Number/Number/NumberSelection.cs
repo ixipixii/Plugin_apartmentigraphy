@@ -753,37 +753,7 @@ namespace Number
                         PNR_Building = "-1";
                 }
                 catch { PNR_Building = "-1"; }
-            }
-
-            if(PNR_Function.Contains("КВ") || PNR_Function.Contains("АП"))
-            {
-                double LifeArea = 0.0;
-                double GeneralArea = 0.0;
-                foreach (var apart in ApartListElement)
-                {
-                    if (apart != null)
-                    {
-                        if (apart.Name.Contains("Жилая") || apart.Name.Contains("Гостиная") || apart.Name.Contains("Спальня") || apart.Name.Contains("Мастер-спальня"))
-                        {
-                            LifeArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
-                        }
-                        GeneralArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
-                    }
-                }
-                foreach (var apart in ApartListElement)
-                {
-                    apart.LookupParameter("ADSK_Площадь квартиры жилая").Set(LifeArea.ToString());
-                    apart.LookupParameter("ADSK_Площадь квартиры общая").Set(GeneralArea.ToString());
-                }
-                var areaParamter = new AreaParameter();
-                areaParamter.ShowDialog();
-                foreach (var apart in ApartListElement)
-                {
-                    apart.LookupParameter("ADSK_Тип квартиры").Set(areaParamter.selectedType);
-                    apart.LookupParameter("ADSK_Диапазон").Set(areaParamter.selectedRange);
-                    apart.LookupParameter("ADSK_Количество комнат").Set(areaParamter.selectedCount);
-                }
-            }
+            }            
 
             //Фильтр по всем помещениям на всей модели
             List<Element> AllRooms = new List<Element>();
@@ -798,6 +768,7 @@ namespace Number
             catch (Exception ex)
             {
                 TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж");
+                return;
             }
 
             List<Element> AllRoomsWGroup = new List<Element>();
@@ -904,6 +875,7 @@ namespace Number
             catch
             {
                 TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
+                return;
             }
 
             if (PNR_Function == "Квартиры бед доп. отделки" ||
@@ -951,6 +923,54 @@ namespace Number
                 }
             }
 
+            try
+            {
+                //Заполняем параметры квартиры или апартов
+                Transaction trn = new Transaction(_doc, "Set parameter");
+            trn.Start();
+                if (PNR_Funс.Contains("КВ") || PNR_Funс.Contains("АП"))
+                {
+                    double LifeArea = 0.0;
+                    double GeneralArea = 0.0;
+                    foreach (var apart in ApartListElement)
+                    {
+                        if (apart != null)
+                        {
+                            if (apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Жилая") || 
+                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Гостиная") || 
+                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Спальня") || 
+                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Мастер-спальня"))
+                            {
+                                LifeArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
+                            }
+                            GeneralArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
+                        }
+                    }
+                    foreach (var apart in ApartListElement)
+                    {
+                        apart.LookupParameter("ADSK_Площадь квартиры жилая").Set(LifeArea);
+                        apart.LookupParameter("ADSK_Площадь квартиры общая").Set(GeneralArea);
+                    }
+
+                    var areaParamter = new AreaParameter();
+                    areaParamter.ShowDialog();
+
+                    foreach (var apart in ApartListElement)
+                    {
+                        apart.LookupParameter("ADSK_Тип квартиры").Set(areaParamter.selectedType);
+                        apart.LookupParameter("ADSK_Диапазон").Set(areaParamter.selectedRange);
+                        apart.LookupParameter("ADSK_Количество комнат").Set(areaParamter.selectedCount);
+                    }
+                }
+            trn.Commit();
+            }
+            catch 
+            {
+                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Площадь квартиры жилая, ADSK_Площадь квартиры общая, " +
+                    "ADSK_Тип квартиры, ADSK_Диапазон, ADSK_Количество комнат");
+                return;
+            }
+
             //Формируем ADSK_Номер квартиры для УК
             try
             {
@@ -984,6 +1004,7 @@ namespace Number
             catch
             {
                 TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
+                return;
             }
 
             //Переменная-индекс для нумерации помещений
@@ -1539,7 +1560,7 @@ namespace Number
             Autodesk.Revit.DB.Grid gridLowest = grids[0];
             Autodesk.Revit.DB.Line lineHighest = gridHighest.Curve as Autodesk.Revit.DB.Line;
             Autodesk.Revit.DB.Line lineLowest = gridLowest.Curve as Autodesk.Revit.DB.Line;
-            foreach ( var grid in grids)
+            foreach (var grid in grids)
             {
                 Autodesk.Revit.DB.Line line = grid.Curve as Autodesk.Revit.DB.Line;
                 if (lineHighest.Origin.Y < line.Origin.Y)
@@ -1562,6 +1583,14 @@ namespace Number
             {
                 roomTag.TagHeadPosition = new XYZ(roomLocation.Point.X, lineLowest.Origin.Y, roomLocation.Point.Z) + new XYZ(0, -15, 0);
             }
+            /*            Location loc = room.Location;
+                        if(loc is LocationPoint locationPoint)
+                        {
+                            XYZ roomlocation = locationPoint.Point;
+                            SpatialElementGeometryCalculator calculator = new SpatialElementGeometryCalculator(_doc);
+                            SpatialElementGeometryResults results = calculator.CalculateSpatialElementGeometry((SpatialElement)room);
+
+                        }*/
         }
         public void ApartList_2()
         {
@@ -1960,8 +1989,8 @@ namespace Number
     {
         public bool AllowElement(Element e)
         {
-            return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
-            //return true;
+            //return (e.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms));
+            return true;
         }
         public bool AllowReference(Autodesk.Revit.DB.Reference r, XYZ p)
         {

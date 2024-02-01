@@ -27,7 +27,7 @@ namespace Number
         {
             InitializeComponent();
             Type.ItemsSource = new object[] { "S", "M", "L" };
-            Count.ItemsSource = new object[] { "Студия", "1", "2", "3", "4" };
+            Count.ItemsSource = new object[] { "1", "2", "3", "4", "5" };
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
