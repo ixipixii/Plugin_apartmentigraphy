@@ -1519,12 +1519,14 @@ namespace Number
             LinkElementId roomId = new LinkElementId(room.Id);
             LocationPoint roomLocation = room.Location as LocationPoint;
             UV uv = new UV(roomLocation.Point.X, roomLocation.Point.Y);
-            RoomTag roomTag = _doc.Create.NewRoomTag(roomId, uv, _doc.ActiveView.Id);      
+            RoomTag roomTag = _doc.Create.NewRoomTag(roomId, uv, _doc.ActiveView.Id);
             var type = new FilteredElementCollector(_doc)
                 .OfCategory(BuiltInCategory.OST_RoomTags)
                 .WhereElementIsElementType()
-                .Where(g => g.Id.ToString() == "138092")
-                .Cast<FamilySymbol>();
+                .Cast<FamilySymbol>()
+                //.Where(g => g.Id.ToString() == "138092");
+                .Where(g => g.Family.Name == "050_Марка_Помещение_Квартира_2.5мм")
+                .Where(g => g.Name == "Полная марка");
             roomTag.ChangeTypeId(type.First().Id);
             roomTag.HasLeader = true;
             List<Autodesk.Revit.DB.Grid> grids = new List<Autodesk.Revit.DB.Grid>(
