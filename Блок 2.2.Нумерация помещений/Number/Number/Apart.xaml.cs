@@ -29,7 +29,7 @@ namespace Number
             if(v == 1)
                 numberSelection.ApartList(); //Заносим все нужные группы в ListView по 1 варианту
             else
-                numberSelection.ApartList_2(); //Заносим все нужные группы в ListView по 2 варианту
+                numberSelection.ApartList(); //Заносим все нужные группы в ListView по 2 варианту
             numberSelection.CloseRequest += (s, e) => this.Close();
             DataContext = numberSelection;
         }

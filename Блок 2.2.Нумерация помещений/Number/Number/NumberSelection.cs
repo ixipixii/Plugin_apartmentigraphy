@@ -58,7 +58,7 @@ namespace Number
             if (v == 1)
                 SelectCommandApart = new DelegateCommand(SelectionApart);
             if (v == 2)
-                SelectCommandApart = new DelegateCommand(SelectionApart_2);
+                SelectCommandApart = new DelegateCommand(SelectionApart);
             RenumberCommandApart = new DelegateCommand(RenumberApart);
             RenumberCommandRoom = new DelegateCommand(RenumberRoom);
             SelectCommandRoom = new DelegateCommand(SelectionRoom);
@@ -133,76 +133,6 @@ namespace Number
                                     }
                                 }*/
             }
-        }
-        public void ApartList() //метод, считывающий все группы с помещениями для ListView
-        {
-            //Фильтр по всем группам модели
-            var AllGroups = new FilteredElementCollector(_doc)
-                .WhereElementIsNotElementType()
-                .OfClass(typeof(Group))
-                .Cast<Group>()
-                .ToList();
-
-            //Цикл по всем группам
-            Transaction transaction = new Transaction(_doc, "UnGroup");
-            foreach (var ApartGroup in AllGroups)
-            {
-                transaction.Start();
-                var elementApartGroup = ApartGroup.UngroupMembers().ToList();
-                transaction.RollBack();
-
-                //Если все элементы группы - помещения, заносим группу в ListView
-                if (elementApartGroup.All(g => (BuiltInCategory)_doc.GetElement(g).Category.Id.IntegerValue == BuiltInCategory.OST_Rooms))
-                {
-                    if (elementApartGroup.All(g => _doc.GetElement(g).LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue))
-                    {
-                        AllGroupsApart.Add(ApartGroup);
-                        try
-                        {
-                            ClassApartAndRoom apart = new ClassApartAndRoom(
-                                                        ApartGroup.LookupParameter("ADSK_Номер квартиры").AsString(),
-                                                        "0",
-                                                        ApartGroup.Name, ApartGroup.Id);
-                            SelectedApartList.Add(apart);
-                        }
-                        catch
-                        {
-                            ClassApartAndRoom apart = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "0", ApartGroup.Name, ApartGroup.Id);
-                            SelectedApartList.Add(apart);
-                        }
-                    }
-                }
-            }
-        }
-        public void SelectionApart() //метод, запускающий выбор групп
-        {
-            RaiseCloseRequest();
-            var groupFilter = new GroupPickFilter(_doc);
-
-            //Создаём листы: ссылки на элементы, лист групп
-            IList<Autodesk.Revit.DB.Reference> refrence = new List<Autodesk.Revit.DB.Reference>();
-            IList<Element> ApartListElement = new List<Element>();
-
-            //Выбор продолжается пока пользователь не нажмёт ESC
-            try
-            {
-                while (true)
-                    refrence.Add(_uidoc.Selection.PickObject(ObjectType.Element, groupFilter, "Выберите элементы, для выхода нажмите ESC"));
-            }
-            catch { }
-
-            foreach (var _ref in refrence)
-            {
-                Element element = _doc.GetElement(_ref);
-                ApartListElement.Add(element);
-            }
-
-            //Нумеруем группы
-            NumberApart(ApartListElement);
-
-            //После завершения нумерации выводим список квартир
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 1);
-            apartWindow.ShowDialog();
         }
         public bool OvverideContains(IList<Element> RoomListElement, Element group) //*Переопределение Contains для Element
         {
@@ -425,292 +355,17 @@ namespace Number
                 }
             }
         }
-        public void NumberApart(IList<Element> ApartListElement) //метод, нумерующий группы
-        {
-            // Параметры помещений внутри группы
-            String PNR_Function = string.Empty;
-            String PNR_Section = string.Empty;
-            String PNR_Building = string.Empty;
 
-            String PNR_Funс = string.Empty; //Ссылка на функцию помещения
-            int number = 0; //Номер квартиры по счёту
-            String numberApart = string.Empty; //Итоговый номер квартиры
-
-            foreach (var apart in ApartListElement)
-            {
-                Group group = apart as Group;
-                Transaction transaction = new Transaction(_doc, "UnGroup");
-                transaction.Start();
-                var groupRooms = group.UngroupMembers().ToList();
-                transaction.RollBack();
-                foreach (var room in groupRooms)
-                {
-                    if (room != null)
-                    {
-                        Element element = _doc.GetElement(room);
-                        PNR_Function = element.LookupParameter("PNR_Функция помещения").AsString();
-                        if (PNR_Function == "Квартиры бед доп. отделки" ||
-                            PNR_Function == "Апартаменты без доп. Отделки" ||
-                            PNR_Function == "Коммерческие помещения без доп. отделки" ||
-                            PNR_Function == "Квартиры с отделкой" ||
-                            PNR_Function == "Апартаменты с отделкой" ||
-                            PNR_Function == "Коммерческие помещения с отделкой" ||
-                            PNR_Function == "Помещения кладовых")
-                        {
-                            try { PNR_Section = element.LookupParameter("ADSK_Номер секции").AsString(); }
-                            catch { PNR_Section = "-1"; }
-                            try { PNR_Building = element.LookupParameter("ADSK_Номер здания").AsString(); }
-                            catch { PNR_Building = "-1"; }
-
-                            switch (PNR_Function)
-                            {
-                                case "Квартиры бед доп. отделки":
-                                    PNR_Funс = "КВ";
-                                    break;
-
-                                case "Квартиры с отделкой":
-                                    PNR_Funс = "КВ";
-                                    break;
-
-                                case "Апартаменты без доп. Отделки":
-                                    PNR_Funс = "АП";
-                                    break;
-
-                                case "Апартаменты с отделкой":
-                                    PNR_Funс = "АП";
-                                    break;
-
-                                case "Коммерческие помещения без доп. отделки":
-                                    PNR_Funс = "КМ";
-                                    break;
-
-                                case "Коммерческие помещения с отделкой":
-                                    PNR_Funс = "КМ";
-                                    break;
-
-                                case "Помещения кладовых":
-                                    PNR_Funс = "КХ";
-                                    break;
-                            }
-
-                            if (PNR_Funс == "КВ" || PNR_Funс == "КХ" || PNR_Funс == "АП")
-                            {
-                                number = 0;
-                                //С помощью метода Count высчитываем номер квартиры в зависимости от функции
-                                number = CountApart(PNR_Function, PNR_Section);
-                                if (number == -1)
-                                    break;
-                                number++;
-
-                                //Формируем номер квартиры 
-                                if (number > 0 && number <= 9)
-                                {
-                                    if (PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-{PNR_Section}00{number}";
-                                    if (PNR_Section == "-1")
-                                        numberApart = $"{PNR_Building}/{PNR_Funс}-00{number}";
-                                    if (PNR_Section == "-1" && PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-00{number}";
-
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-{PNR_Section}00{number}";
-                                }
-
-                                if (number > 9 && number <= 99)
-                                {
-                                    if (PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-{PNR_Section}0{number}";
-                                    if (PNR_Section == "-1")
-                                        numberApart = $"{PNR_Building}/{PNR_Funс}-0{number}";
-                                    if (PNR_Section == "-1" && PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-0{number}";
-
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-{PNR_Section}0{number}";
-                                }
-
-                                if (number > 99 && number <= 999)
-                                {
-                                    if (PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-{PNR_Section}{number}";
-                                    if (PNR_Section == "-1")
-                                        numberApart = $"{PNR_Building}/{PNR_Funс}-{number}";
-                                    if (PNR_Section == "-1" && PNR_Building == "-1")
-                                        numberApart = $"{PNR_Funс}-{number}";
-
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-{PNR_Section}{number}";
-                                }
-
-                                number = 0;
-                            }
-
-                            if (PNR_Funс == "КМ")
-                            {
-                                number = 0;
-                                //С помощью метода Count высчитываем номер квартиры в зависимости от функции
-                                number = CountApart(PNR_Function, PNR_Section);
-                                if (number == -1)
-                                    break;
-                                number++;
-
-                                //Формируем номер квартиры 
-                                if (number > 0 && number <= 9)
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-00{number}";
-
-                                if (number > 9 && number <= 99)
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-0{number}";
-
-                                if (number > 99 && number <= 999)
-                                    numberApart = $"{PNR_Building}/{PNR_Funс}-{number}";
-                                number = 0;
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                //Нумеруем помещения внутри группы
-                if (number != -1)
-                {
-                    int numberRoom = 1;
-                    transaction.Start();
-                    foreach (var room in groupRooms)
-                    {
-                        Element element = _doc.GetElement(room);
-                        element.LookupParameter("PNR_Номер помещения").Set($"{numberApart}.{numberRoom}");
-                        numberRoom++;
-                    }
-                    transaction.Commit();
-                }
-
-                //Заносим в параметр номер группы
-                if (number != -1)
-                {
-                    transaction.Start();
-                    apart.LookupParameter("ADSK_Номер квартиры").Set(numberApart);
-                    transaction.Commit();
-                }
-            }
-        }
-        private int CountApart(String PNR_Function, String PNR_Section) //метод, считывающий количество групп определённой категории 
-        {
-            List<int> numberMax_КВ = new List<int>();
-            List<int> numberMax_АП = new List<int>();
-            List<int> numberMax_КМ = new List<int>();
-            List<int> numberMax_КХ = new List<int>();
-
-            foreach (var groupApart in AllGroupsApart)
-            {
-                //Создаём лист элементов группы
-                Transaction tr = new Transaction(_doc, "UnGroup");
-                tr.Start();
-                var elementsGroup = groupApart.UngroupMembers().ToList();
-                tr.RollBack();
-                var room = _doc.GetElement(elementsGroup[0]);
-
-                if (groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ") ||
-                    groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("АП") ||
-                    groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КМ") ||
-                    groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КХ"))
-                {
-                    //Высчитываем максимальный номер КВ
-                    if (groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
-                    {
-                        var numberString = groupApart.LookupParameter("ADSK_Номер квартиры").AsString();
-                        var numberStringArray = numberString.ToCharArray();
-                        Array.Reverse(numberStringArray);
-                        var numberStringReverse = new string(numberStringArray);
-                        var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                        var numberRoomArray = numberRoomReverse.ToCharArray();
-                        Array.Reverse(numberRoomArray);
-                        var numberRoom = new string(numberRoomArray);
-                        var numberStr = numberRoom.TrimStart('0');
-                        var number = int.Parse(numberStr);
-                        numberMax_КВ.Add(number);
-                    }
-
-                    //Высчитываем максимальный номер АП
-                    if (groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("АП"))
-                    {
-                        var numberString = groupApart.LookupParameter("ADSK_Номер квартиры").AsString();
-                        var numberStringArray = numberString.ToCharArray();
-                        Array.Reverse(numberStringArray);
-                        var numberStringReverse = new string(numberStringArray);
-                        var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                        var numberRoomArray = numberRoomReverse.ToCharArray();
-                        Array.Reverse(numberRoomArray);
-                        var numberRoom = new string(numberRoomArray);
-                        var numberStr = numberRoom.TrimStart('0');
-                        var number = int.Parse(numberStr);
-                        numberMax_АП.Add(number);
-                    }
-
-                    //Высчитываем максимальный номер КМ
-                    if (groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КМ"))
-                    {
-                        var numberString = groupApart.LookupParameter("ADSK_Номер квартиры").AsString();
-                        var numberStringArray = numberString.ToCharArray();
-                        Array.Reverse(numberStringArray);
-                        var numberStringReverse = new string(numberStringArray);
-                        var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                        var numberRoomArray = numberRoomReverse.ToCharArray();
-                        Array.Reverse(numberRoomArray);
-                        var numberRoom = new string(numberRoomArray);
-                        var numberStr = numberRoom.TrimStart('0');
-                        var number = int.Parse(numberStr);
-                        numberMax_КМ.Add(number);
-                    }
-
-                    //Высчитываем максимальный номер КХ
-                    if (groupApart.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КХ"))
-                    {
-                        var numberString = groupApart.LookupParameter("ADSK_Номер квартиры").AsString();
-                        var numberStringArray = numberString.ToCharArray();
-                        Array.Reverse(numberStringArray);
-                        var numberStringReverse = new string(numberStringArray);
-                        var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                        var numberRoomArray = numberRoomReverse.ToCharArray();
-                        Array.Reverse(numberRoomArray);
-                        var numberRoom = new string(numberRoomArray);
-                        var numberStr = numberRoom.TrimStart('0');
-                        var number = int.Parse(numberStr);
-                        numberMax_КХ.Add(number);
-                    }
-                }
-            }
-
-            //Возваращаем количество квартир в зависимости от функции
-            if (PNR_Function == "Квартиры бед доп. отделки" || PNR_Function == "Квартиры с отделкой")
-                if (numberMax_КВ.Count > 0)
-                    return numberMax_КВ.Max();
-                else
-                    return 0;
-            if (PNR_Function == "Апартаменты без доп. Отделки" || PNR_Function == "Апартаменты с отделкой")
-                if (numberMax_АП.Count > 0)
-                    return numberMax_АП.Max();
-                else
-                    return 0;
-            if (PNR_Function == "Коммерческие помещения без доп. отделки" || PNR_Function == "Коммерческие помещения с отделкой")
-                if (numberMax_КМ.Count > 0)
-                    return numberMax_КМ.Max();
-                else
-                    return 0;
-            if (PNR_Function == "Помещения кладовых")
-                if (numberMax_КХ.Count > 0)
-                    return numberMax_КХ.Max();
-                else
-                    return 0;
-            return -1;
-        }
 
         //version 2
-        public void SelectionApart_2()
+        public void SelectionApart()
         {
             RaiseCloseRequest();
 
             List<int> numberMax_КВ = new List<int>();
             List<int> numberMax_АП = new List<int>();
             List<int> numberMax_КМ = new List<int>();
-            List<int> numberMax_КХ = new List<int>();
+            List<int> numberMax_ХК = new List<int>();
             List<int> numberMax_УК = new List<int>();
 
             String PNR_Function = string.Empty;
@@ -733,27 +388,25 @@ namespace Number
                 ApartListElement.Add(apart);
                 PNR_Function = apart.LookupParameter("PNR_Функция помещения").AsString();
                 PNR_Floor = apart.LookupParameter("ADSK_Этаж").AsString();
-                if(PNR_Floor.Substring(0,1) == "-")
+                if (PNR_Floor.Substring(0, 1) == "-")
                 {
                     PNR_Floor = "П" + PNR_Floor.Substring(1, PNR_Floor.Length - 1);
                 }
                 try
                 {
                     PNR_Section = apart.LookupParameter("ADSK_Номер секции").AsString();
-                    if (PNR_Section == "" || PNR_Section == null)
-                        PNR_Section = "-1";
-                    if (_SelectedSectionValue == "")
+                    if (PNR_Section == null || _SelectedSectionValue == "")
                         PNR_Section = "";
                 }
-                catch { PNR_Section = "-1"; }
+                catch { PNR_Section = ""; }
                 try
                 {
-                    PNR_Building = apart.LookupParameter("ADSK_Номер здания").AsString();
-                    if (PNR_Building == "" || PNR_Building == null)
-                        PNR_Building = "-1";
+                    PNR_Building = apart.LookupParameter("ADSK_Номер здания").AsString() + "/";
+                    if (PNR_Building == null || PNR_Building == "/")
+                        PNR_Building = "";
                 }
-                catch { PNR_Building = "-1"; }
-            }            
+                catch { PNR_Building = ""; }
+            }
 
             //Фильтр по всем помещениям на всей модели
             List<Element> AllRooms = new List<Element>();
@@ -778,105 +431,10 @@ namespace Number
                     AllRoomsWGroup.Add(room);
             }
 
-            //Высчитываем максимальный номер
-            try
-            {
-                foreach (var room in AllRoomsWGroup)
-                {
-                    //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО СЕКЦИИ ДЛЯ КВ
-                    if (room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
-                    {
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
-                        {
-                            continue;
-                        }
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
-                        {
-                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                            var numberStringArray = numberString.ToCharArray();
-                            Array.Reverse(numberStringArray);
-                            var numberStringReverse = new string(numberStringArray);
-                            var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                            var numberRoomArray = numberRoomReverse.ToCharArray();
-                            Array.Reverse(numberRoomArray);
-                            var numberRoom = new string(numberRoomArray);
-                            var numberStr = numberRoom.TrimStart('0');
-                            var number = int.Parse(numberStr);
-                            numberMax_КВ.Add(number);
-                        }
-                    }
-
-                    //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО ЭТАЖУ ДЛЯ АП, КМ, КХ
-                    if (room.LookupParameter("ADSK_Этаж").AsString() == PNR_Floor)
-                    {
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
-                        {
-                            continue;
-                        }
-
-                        //Высчитываем максимальный номер АП
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("АП"))
-                        {
-                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                            var numberStringArray = numberString.ToCharArray();
-                            Array.Reverse(numberStringArray);
-                            var numberStringReverse = new string(numberStringArray);
-                            var numberRoomReverse = numberStringReverse.Substring(0, 2);
-                            var numberRoomArray = numberRoomReverse.ToCharArray();
-                            Array.Reverse(numberRoomArray);
-                            var numberRoom = new string(numberRoomArray);
-                            var numberStr = numberRoom.TrimStart('0');
-                            var number = int.Parse(numberStr);
-                            numberMax_АП.Add(number);
-                        }
-
-                        //Высчитываем максимальный номер КМ
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КМ"))
-                        {
-                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                            var numberStringArray = numberString.ToCharArray();
-                            Array.Reverse(numberStringArray);
-                            var numberStringReverse = new string(numberStringArray);
-                            var numberRoomReverse = numberStringReverse.Substring(0, 2);
-                            var numberRoomArray = numberRoomReverse.ToCharArray();
-                            Array.Reverse(numberRoomArray);
-                            var numberRoom = new string(numberRoomArray);
-                            var numberStr = numberRoom.TrimStart('0');
-                            var number = int.Parse(numberStr);
-                            numberMax_КМ.Add(number);
-                        }
-
-                        //Высчитываем максимальный номер КХ
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КХ"))
-                        {
-                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                            if (numberString.Contains("/"))
-                            {
-                                int index = numberString.IndexOf("/");
-                                numberString = numberString.Substring(index + 1, 2);
-                                numberString = numberString.TrimStart('0');
-                                int number = int.Parse(numberString);
-                                numberMax_КХ.Add(number);
-                                continue;
-                            }
-                            if (numberString.Contains("/") == false)
-                            {
-                                int index = numberString.IndexOf("-");
-                                numberString = numberString.Substring(index + 1, 2);
-                                numberString = numberString.TrimStart('0');
-                                int number = int.Parse(numberString);
-                                numberMax_КХ.Add(number);
-                                continue;
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
-                return;
-            }
+            //Находим максимальный номер у помещений
+            MaxNumberApart(AllRoomsWGroup, PNR_Floor, numberMax_КВ, numberMax_ХК, numberMax_АП,
+                                numberMax_КМ,
+                                numberMax_УК);
 
             if (PNR_Function == "Квартиры бед доп. отделки" ||
                             PNR_Function == "Апартаменты без доп. Отделки" ||
@@ -914,7 +472,7 @@ namespace Number
                         break;
 
                     case "Помещения кладовых":
-                        PNR_Funс = "КХ";
+                        PNR_Funс = "ХК";
                         break;
 
                     case "Помещение управляющей компании":
@@ -927,7 +485,7 @@ namespace Number
             {
                 //Заполняем параметры квартиры или апартов
                 Transaction trn = new Transaction(_doc, "Set parameter");
-            trn.Start();
+                trn.Start();
                 if (PNR_Funс.Contains("КВ") || PNR_Funс.Contains("АП"))
                 {
                     double LifeArea = 0.0;
@@ -936,9 +494,9 @@ namespace Number
                     {
                         if (apart != null)
                         {
-                            if (apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Жилая") || 
-                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Гостиная") || 
-                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Спальня") || 
+                            if (apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Жилая") ||
+                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Гостиная") ||
+                                apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Спальня") ||
                                 apart.LookupParameter("PNR_Номер помещения").AsString().Contains("Мастер-спальня"))
                             {
                                 LifeArea += double.Parse(apart.get_Parameter(BuiltInParameter.ROOM_AREA).AsValueString());
@@ -962,51 +520,27 @@ namespace Number
                         apart.LookupParameter("ADSK_Количество комнат").Set(areaParamter.selectedCount);
                     }
                 }
-            trn.Commit();
+                trn.Commit();
             }
-            catch 
+            catch
             {
                 TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Площадь квартиры жилая, ADSK_Площадь квартиры общая, " +
                     "ADSK_Тип квартиры, ADSK_Диапазон, ADSK_Количество комнат");
                 return;
             }
 
-            //Формируем ADSK_Номер квартиры для УК
-            try
-            {
-                if (PNR_Funс == "УК")
-                {
-                    var AllRoomsУК = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
-                                    .WhereElementIsNotElementType()
-                                    .OfCategory(BuiltInCategory.OST_Rooms)
-                                    .ToList();
+            //Нумеруем помещения
+            NumberApart(ApartListElement, PNR_Funс, PNR_Building, PNR_Section, PNR_Floor, numberMax_КВ, numberMax_ХК, numberMax_АП, numberMax_КМ);
 
-                    //Высчитываем максимальный номер УК
-                    foreach (var room in AllRoomsУК)
-                    {
-                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("УК"))
-                        {
-                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                            var numberStringArray = numberString.ToCharArray();
-                            Array.Reverse(numberStringArray);
-                            var numberStringReverse = new string(numberStringArray);
-                            var numberRoomReverse = numberStringReverse.Substring(0, 3);
-                            var numberRoomArray = numberRoomReverse.ToCharArray();
-                            Array.Reverse(numberRoomArray);
-                            var numberRoom = new string(numberRoomArray);
-                            var numberStr = numberRoom.TrimStart('0');
-                            var number = int.Parse(numberStr);
-                            numberMax_УК.Add(number);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
-                return;
-            }
-
+            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
+            apartWindow.ShowDialog();
+        }
+        public void NumberApart(IList<Element> ApartListElement, string PNR_Funс, string PNR_Building, string PNR_Section, string PNR_Floor, 
+                                List<int> numberMax_КВ,
+                                List<int> numberMax_ХК,
+                                List<int> numberMax_АП,
+                                List<int> numberMax_КМ) //Нумерация помещений
+        {
             //Переменная-индекс для нумерации помещений
             int i = 1;
             //Пррверка существование жучка
@@ -1020,501 +554,90 @@ namespace Number
                 foreach (var room in ApartListElement)
                 {
                     int number = 0;
+                    //Проставляем в number максимальное значение квартиры в зависимости от функции (если ошибка - значит квартир нет и номер = 1)
+                    try
+                    {
+                        if (PNR_Funс == "КВ")
+                        {
+                            number = numberMax_КВ.Max(); number++;
+                        }
+
+                        if (PNR_Funс == "ХК")
+                        {
+                            number = numberMax_ХК.Max(); number++;
+                        }
+
+                        if (PNR_Funс == "АП")
+                        {
+                            number = numberMax_АП.Max(); number++;
+                        }
+
+                        if (PNR_Funс == "КМ")
+                        {
+                            number = numberMax_КМ.Max(); number++;
+                        }
+                    }
+                    catch { number = 1; }
+
+                    //Формируем номера квартир
                     if (PNR_Funс == "КВ")
                     {
-                        try { number = numberMax_КВ.Max(); number++; }
-                        catch { number = 1; }
-                    }
+                        string num = number.ToString();
+                        if (num.Length == 1)
+                            num = "00" + num;
+                        if (num.Length == 2)
+                            num = "0" + num;
 
-                    if (PNR_Funс == "КХ")
-                    {
-                        try { number = numberMax_КХ.Max(); number++; }
-                        catch { number = 1; }
-                    }
-
-                    if (PNR_Funс == "АП")
-                    {
-                        try { number = numberMax_АП.Max(); number++; }
-                        catch { number = 1; }
-                    }
-
-                    if (PNR_Funс == "КМ")
-                    {
-                        try { number = numberMax_КМ.Max(); number++; }
-                        catch { number = 1; }
-                    }
-
-                    //Формируем номер КВ, КХ, АП
-                    if (PNR_Funс == "КВ" || PNR_Funс == "КХ" || PNR_Funс == "АП")
-                    {
-                        if (number > 0 && number <= 9)
+                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}{PNR_Section}{num}");
+                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}{PNR_Section}{num}.{i}");
+                        if (!bug)
                         {
-                            if (PNR_Building == "-1" && PNR_Section != "-1")
+                            if (ApartListElement.Count == i)
                             {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Section}00{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Section}00{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Floor}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Floor}0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    }
-                                }
-                            }
-                            if (PNR_Building != "-1" && PNR_Section == "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/00{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/00{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    }
-                                }
-                            }
-                            if (PNR_Section == "-1" && PNR_Building == "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-00{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-00{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    }
-                                }
-                            }
-                            if (PNR_Section != "-1" && PNR_Building != "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}00{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}00{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    }
-                                }
-                            }
-                        }
-                        if (number > 9 && number <= 99)
-                        {
-                            if (PNR_Building == "-1" && PNR_Section != "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Section}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Section}0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Floor}{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}");
-                                    }
-                                }
-                            }
-                            if (PNR_Building != "-1" && PNR_Section == "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{number}0");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{number}0{i}");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{number}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{number}{i}");
-                                    }
-                                }
-
-                            }
-                            if (PNR_Section == "-1" && PNR_Building == "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Floor}{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}0");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}");
-                                    }
-                                }
-                            }
-                            if (PNR_Section != "-1" && PNR_Building != "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}0{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "АП")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                                if (PNR_Funс == "КХ")
-                                {
-                                    if (i > 0 && i <= 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{number}0{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{number}0");
-                                    }
-                                    if (i > 9)
-                                    {
-                                        room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{number}{i}");
-                                        room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{number}");
-                                    }
-                                }
-
-                            }
-                        }
-                        if (number > 99 && number <= 999)
-                        {
-                            if (PNR_Building == "-1" && PNR_Section != "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Section}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Section}{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                            }
-                            if (PNR_Building != "-1" && PNR_Section == "-1")
-                            {
-                                if (PNR_Funс == "КВ")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Building}/{PNR_Funс}-{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Building}/{PNR_Funс}-{number}.{i}");
-                                    if (!bug)
-                                    {
-                                        if (ApartListElement.Count == i)
-                                        {
-                                            Bug(room);
-                                            bug = true;
-                                        }
-                                    }
-                                }
-                            }
-                            if (PNR_Section == "-1" && PNR_Building == "-1")
-                            {
-                                room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}");
-                                room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}.{i}");
-                                if (!bug)
-                                {
-                                    if (ApartListElement.Count == i)
-                                    {
-                                        Bug(room);
-                                        bug = true;
-                                    }
-                                }
-                            }
-                            if (PNR_Section != "-1" && PNR_Building != "-1")
-                            {
-                                room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}{number}");
-                                room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Section}{number}.{i}");
-                                if (!bug)
-                                {
-                                    if (ApartListElement.Count == i)
-                                    {
-                                        Bug(room);
-                                        bug = true;
-                                    }
-                                }
+                                Bug(room);
+                                bug = true;
                             }
                         }
                     }
 
-                    if (PNR_Funс == "КМ")
+                    //Формируем номера апартов, кладовых, коммерции
+                    if (PNR_Funс == "ХК" || PNR_Funс == "АП" || PNR_Funс == "КМ")
                     {
-                        //Формируем номер КМ 
-                        if (number > 0 && number <= 9)
-                        {
-                            if (room.LookupParameter("ADSK_Этаж").AsString() == "1")
-                            {
-                                if (PNR_Building == "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-0{number}.{i}");
+                        string num = number.ToString();
+                        if (num.Length == 1)
+                            num = "0" + num;
 
-                                }
-                                if (PNR_Building != "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/0{number}.{i}");
-                                }
-                            }
-                            if (room.LookupParameter("ADSK_Этаж").AsString() != "1")
+                        if (PNR_Funс == "АП" || PNR_Funс == "КМ")
+                        {
+                            //Если это коммерция, проверяем на стрит-ритейл (если true то в номере убираем этаж)
+                            if (PNR_Floor == "1" && PNR_Funс == "КМ")
                             {
-                                if (PNR_Building == "-1")
+                                room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}{num}");
+                                room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}{num}.{i}");
+                            }
+                            else
+                            {
+                                room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}{PNR_Floor}{num}");
+                                room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}{PNR_Floor}{num}.{i}");
+                            }
+                            if (!bug)
+                            {
+                                if (ApartListElement.Count == i)
                                 {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Floor}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Floor}0{number}.{i}");
-                                }
-                                if (PNR_Building != "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}0{number}.{i}");
+                                    Bug(room);
+                                    bug = true;
                                 }
                             }
                         }
-                        if (number > 9 && number <= 99)
+
+                        //Формируем номера кладовых
+                        if (PNR_Funс == "ХК")
                         {
-                            if (room.LookupParameter("ADSK_Этаж").AsString() == "1")
-                            {
-                                if (PNR_Building == "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{number}.{i}");
-                                }
-                                if (PNR_Building != "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{number}.{i}");
-                                }
-                            }
-                            if (room.LookupParameter("ADSK_Этаж").AsString() != "1")
-                            {
-                                if (PNR_Building == "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Floor}{number}.{i}");
-                                }
-                                if (PNR_Building != "-1")
-                                {
-                                    room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}");
-                                    room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}/{PNR_Floor}{number}.{i}");
-                                }
-                            }
+                            string iKX = i.ToString();
+                            if (iKX.Length == 1)
+                                iKX = "0" + iKX;
+                            room.LookupParameter("PNR_Номер помещения").Set($"{PNR_Funс}-{PNR_Building}{num}{i}");
+                            room.LookupParameter("ADSK_Номер квартиры").Set($"{PNR_Funс}-{PNR_Building}{num}");
                         }
                     }
 
@@ -1531,9 +654,87 @@ namespace Number
                 return;
             }
             tr.Commit();
+        }
 
-            var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
-            apartWindow.ShowDialog();
+        public void MaxNumberApart(IList<Element> AllRoomsWGroup, string PNR_Floor,
+                                List<int> numberMax_КВ,
+                                List<int> numberMax_ХК,
+                                List<int> numberMax_АП,
+                                List<int> numberMax_КМ,
+                                List<int> numberMax_УК) //Максимальный номер помещений
+        {   //Высчитываем максимальный номер
+            try
+            {
+                foreach (var room in AllRoomsWGroup)
+                {
+                    //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО СЕКЦИИ ДЛЯ КВ
+                    if (room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
+                    {
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
+                        {
+                            continue;
+                        }
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
+                        {
+                            int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
+                            numberMax_КВ.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0')));
+                        }
+                    }
+
+                    //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО ЭТАЖУ ДЛЯ АП, КМ, ХК, УК
+                    if (room.LookupParameter("ADSK_Этаж").AsString() == PNR_Floor)
+                    {
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
+                        {
+                            continue;
+                        }
+
+                        //Высчитываем максимальный номер АП
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("АП"))
+                        {
+                            int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
+                            numberMax_АП.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0')));
+                        }
+
+                        //Высчитываем максимальный номер КМ
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КМ"))
+                        {
+                            int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
+                            numberMax_КМ.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0')));
+                        }
+
+                        //Высчитываем максимальный номер УК
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("УК"))
+                        {
+                            int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
+                            numberMax_УК.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 1, 1).Trim('0')));
+                        }
+
+                        //Высчитываем максимальный номер ХК
+                        if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("ХК"))
+                        {
+                            var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                            if (numberString.Contains("/"))
+                            {
+                                int index = numberString.IndexOf("/");
+                                numberMax_ХК.Add(int.Parse(numberString.Substring(index + 1, 2).TrimStart('0')));
+                                continue;
+                            }
+                            if (numberString.Contains("/") == false)
+                            {
+                                int index = numberString.IndexOf("-");
+                                numberMax_ХК.Add(int.Parse(numberString.Substring(index + 1, 2).TrimStart('0')));
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
+                return;
+            }
         }
         private void Bug(Element room)
         {
@@ -1592,7 +793,7 @@ namespace Number
 
                         }*/
         }
-        public void ApartList_2()
+        public void ApartList()
         {
             //Фильтр по всем квартирам - помещениям на данном виде
             var AllRooms = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
@@ -1605,20 +806,7 @@ namespace Number
             {
                 if (room.GroupId.ToString() == "-1")
                 {
-                    if (room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue)
-                    {
-                        try
-                        {
-                            ClassApartAndRoom roomInList = new ClassApartAndRoom(room.LookupParameter("ADSK_Номер квартиры").AsString(), room.LookupParameter("PNR_Номер помещения").AsString(), room.Name, room.Id);
-                            SelectedApartList.Add(roomInList);
-                        }
-                        catch (Exception e)
-                        {
-                            ClassApartAndRoom roomInList = new ClassApartAndRoom("ПАРАМЕТР НЕ НАЙДЕН", "ПАРАМЕТР НЕ НАЙДЕН", room.Name, room.Id);
-                            SelectedApartList.Add(roomInList);
-                        }
-                    }
-                    if (_SelectedSectionValue == "-1")
+                    if (room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue || (_SelectedSectionValue == "" && room.LookupParameter("ADSK_Номер секции").AsString() == null))
                     {
                         try
                         {
@@ -1769,7 +957,7 @@ namespace Number
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + NewValueNumberApart);
                             room.LookupParameter("PNR_Номер помещения").Set(str + "0" + NewValueNumberApart + "." + i);
                         }
-                        if (func == "КХ")
+                        if (func == "ХК")
                         {
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + NewValueNumberApart);
                             if (i > 9)
@@ -1790,7 +978,7 @@ namespace Number
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + NewValueNumberApart);
                             room.LookupParameter("PNR_Номер помещения").Set(str + NewValueNumberApart + "." + i);
                         }
-                        if (func == "КХ")
+                        if (func == "ХК")
                         {
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + NewValueNumberApart);
                             if (i > 9)
@@ -1921,7 +1109,7 @@ namespace Number
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + NewValueNumberApart);
                             room.LookupParameter("PNR_Номер помещения").Set(str + "0" + NewValueNumberApart + "." + i);
                         }
-                        if (func == "КХ")
+                        if (func == "ХК")
                         {
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + "0" + NewValueNumberApart);
                             if (i > 9)
@@ -1942,7 +1130,7 @@ namespace Number
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + NewValueNumberApart);
                             room.LookupParameter("PNR_Номер помещения").Set(str + NewValueNumberApart + "." + i);
                         }
-                        if (func == "КХ")
+                        if (func == "ХК")
                         {
                             room.LookupParameter("ADSK_Номер квартиры").Set(str + NewValueNumberApart);
                             if (i > 9)
@@ -1966,14 +1154,14 @@ namespace Number
                     string str = room.LookupParameter("ADSK_Номер квартиры").AsString();
                     if (str.Length > 0)
                     {
-                        if (func == "КХ")
+                        if (func == "ХК")
                         {
                             if (i > 9)
                                 room.LookupParameter("PNR_Номер помещения").Set(str + i);
                             if (i < 9)
                                 room.LookupParameter("PNR_Номер помещения").Set(str + "0" + i);
                         }
-                        if (func != "КХ")
+                        if (func != "ХК")
                             room.LookupParameter("PNR_Номер помещения").Set(str + "." + i);
                     }
                     i++;
