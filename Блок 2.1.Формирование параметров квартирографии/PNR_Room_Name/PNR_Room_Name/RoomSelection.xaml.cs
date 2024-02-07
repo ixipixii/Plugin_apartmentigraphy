@@ -48,7 +48,7 @@ namespace PNR_Room_Name
             using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"))))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:B200";
+                string range = "A2:B1000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -68,12 +68,16 @@ namespace PNR_Room_Name
                     }
                     for (int i = start; i < rows; i++)
                     {
-                        if(Allvalues[i, 1] != null && Allvalues[i, 1] != DBNull.Value)
+                        try
                         {
-                            if (Allvalues[i, 1].ToString() != functionRoom)
-                                break;
-                            LVR.Items.Add(Allvalues[i, 0].ToString());
+                            if (Allvalues[i, 1] != null && Allvalues[i, 1] != DBNull.Value)
+                            {
+                                if (Allvalues[i, 1].ToString() != functionRoom)
+                                    break;
+                                LVR.Items.Add(Allvalues[i, 0].ToString());
+                            }
                         }
+                        catch { break; }
                     }
                 }
             }
@@ -260,7 +264,7 @@ namespace PNR_Room_Name
                     LVR.Items.Add("Проход блока кладовых");
                     LVR.Items.Add("Кладовая");
                     break;
-            }*/           
+            }*/
         }
     }
 }

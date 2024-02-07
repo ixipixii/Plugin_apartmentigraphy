@@ -32,10 +32,9 @@ namespace ADSK_Room_Function
             var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
             using (var package = new ExcelPackage(path))
             {
-                TaskDialog.Show("test", $"{path.LastAccessTimeUtc}");
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:B200";
+                string range = "A2:B10000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -53,11 +52,11 @@ namespace ADSK_Room_Function
                             break;
                         }
                     }
-                    for (int i = start; i < 171; i++)
+                    for (int i = start; i < 10000; i++)
                     {
                         try
                         {
-                            if (Allvalues[i, 1].ToString() == null)
+                            if (Allvalues[i, 1].ToString() == "end")
                                 break;
                             function.Add(Allvalues[i, 1].ToString());
                         }
