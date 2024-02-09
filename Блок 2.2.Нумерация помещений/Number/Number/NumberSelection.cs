@@ -151,7 +151,10 @@ namespace Number
             }
 
             //Поверяем параметры
-            CheckParameter(RoomListElement);
+            if(CheckParameter(RoomListElement) == 1)
+                return;
+
+
 
             //Нумеруем помещения
             NumberRoom(RoomListElement);
@@ -164,19 +167,27 @@ namespace Number
         {
             // Параметры помещений
             String PNR_Function = string.Empty;
+            String PNR_Name = string.Empty;
             String PNR_Floor = string.Empty;
             String PNR_Building = string.Empty;
 
             string PNR_Funс = string.Empty;
 
             List<List<String>> funcCount = new List<List<string>>();
+            List<Element> flagList = new List<Element>();
             List<String> funcList = new List<string>();
             foreach (var room in RoomListElement)
             {
                 PNR_Function = room.LookupParameter("PNR_Функция помещения").AsString();
-                SetFunc(PNR_Function, out PNR_Funс);
-                funcList.Add(PNR_Funс);
+                PNR_Name = room.LookupParameter("PNR_Имя помещения").AsString();
+                SetFunc(PNR_Function, PNR_Name, out PNR_Funс, out string flag);
+                if(flag == "0" && PNR_Funс != "УК")
+                {
+                    funcList.Add(PNR_Funс);
+                    flagList.Add(room);
+                }
             }
+
             List<string> funcListDistinct = funcList.Distinct().ToList();
 
             for (int i = 0; i < funcListDistinct.Count; i++)
@@ -184,9 +195,10 @@ namespace Number
                 funcCount.Add(new List<String> { funcListDistinct[i], "0" });
             }
 
-            foreach (var room in RoomListElement)
+            foreach (var room in flagList)
             {
                 PNR_Function = room.LookupParameter("PNR_Функция помещения").AsString();
+                PNR_Name = room.LookupParameter("PNR_Имя помещения").AsString();
                 PNR_Floor = room.LookupParameter("ADSK_Этаж").AsString();
                 if (PNR_Floor.Substring(0, 1) == "-")
                 {
@@ -201,7 +213,7 @@ namespace Number
                 }
                 catch { PNR_Building = ""; }
 
-                SetFunc(PNR_Function, out PNR_Funс);
+                SetFunc(PNR_Function, PNR_Name, out PNR_Funс, out string flag);
 
                 Transaction tr = new Transaction(_doc, "Number room");
                 tr.Start();
@@ -231,6 +243,7 @@ namespace Number
             RaiseCloseRequest();
 
             String PNR_Function = string.Empty; //Функция помещения
+            String PNR_Name = string.Empty; //Имя помещения
             String PNR_Section = string.Empty; //Секция
             String PNR_Building = string.Empty; //Номер здания
             String PNR_Funс = string.Empty; //Сокращение функции
@@ -251,12 +264,14 @@ namespace Number
             }
 
             //Проверяем все параметры модели
-            CheckParameter(ApartListElement);
+            if(CheckParameter(ApartListElement) == 1)
+                return;
 
             //Заносим в переменные все нужные параметры
             foreach (var apart in ApartListElement)
             {
                 PNR_Function = apart.LookupParameter("PNR_Функция помещения").AsString();
+                PNR_Name = apart.LookupParameter("PNR_Имя помещения").AsString();
                 PNR_Floor = apart.LookupParameter("ADSK_Этаж").AsString();
                 if (PNR_Floor.Substring(0, 1) == "-")
                 {
@@ -295,7 +310,7 @@ namespace Number
             }
 
             //Сокращаем функцию
-            SetFunc(PNR_Function, out PNR_Funс);
+            SetFunc(PNR_Function, PNR_Name, out PNR_Funс, out string flag);
 
             //Для определения максимального номера считываем количество N и секционность
             CountNBoolSection(PNR_Funс, out int countN, out bool section);
@@ -312,7 +327,7 @@ namespace Number
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
             apartWindow.ShowDialog();
         }
-        public void CheckParameter(IList<Element> ApartListElement) //Проверка параметров
+        public int CheckParameter(IList<Element> ApartListElement) //Проверка параметров
         {
             Transaction tr = new Transaction(_doc, "Проверка параметров модели");
             tr.Start();
@@ -334,7 +349,7 @@ namespace Number
                             apart.LookupParameter("ADSK_Этаж").StorageType.ToString() != "String")
                         {
                             TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров СТРОКА");
-                            return;
+                            return 1;
                         }
 
                         if (apart.LookupParameter("ADSK_Площадь квартиры жилая").StorageType.ToString() != "Double" ||
@@ -342,17 +357,17 @@ namespace Number
                             apart.LookupParameter("ADSK_Количество комнат").StorageType.ToString() != "Integer")
                         {
                             TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров ЧИСЛО или ПЛОЩАДЬ");
-                            return;
+                            return 1;
                         }
                     }
-                    catch { TaskDialog.Show("Наличие параметров", "Проверьте наличие параметров"); return; }
+                    catch { TaskDialog.Show("Наличие параметров", "Проверьте наличие параметров"); return 1; }
 
                     if (apart.LookupParameter("ADSK_Этаж").AsString() == null || apart.LookupParameter("ADSK_Этаж").AsString() == "" ||
                         apart.LookupParameter("PNR_Функция помещения").AsString() == null || apart.LookupParameter("PNR_Функция помещения").AsString() == "" ||
                         apart.LookupParameter("PNR_Имя помещения").AsString() == null || apart.LookupParameter("PNR_Имя помещения").AsString() == "")
                     {
                         TaskDialog.Show("Заполнение параметров", "Заполните следующие параметры: ADSK_Этаж, PNR_Функция помещения, PNR_Имя помещения");
-                        return;
+                        return 1;
                     }
 
                     if (apart.LookupParameter("PNR_Номер помещения").AsString() == null ||
@@ -370,6 +385,7 @@ namespace Number
                 }
             }
             tr.Commit();
+            return 0;
         }
         public void CountNBoolSection(string PNR_Funс, out int countN, out bool section) //Количество N и секционность
         {
@@ -390,6 +406,8 @@ namespace Number
 
                     for (int i = 0; i <= rows; i++)
                     {
+                        if (Allvalues[i, 0].ToString() == "end")
+                            break;
                         if (Allvalues[i, 2].ToString() == PNR_Funс)
                         {
                             if (Allvalues[i, 7].ToString() != "-")
@@ -445,8 +463,9 @@ namespace Number
             }
             trn.Commit();
         }
-        public void SetFunc(string PNR_Function, out string PNR_Func) //Сокращение функции
+        public void SetFunc(string PNR_Function, string PNR_Name, out string PNR_Func, out string flag) //Сокращение функции и флаг шаблона
         {
+            flag = string.Empty;
             PNR_Func = null;
             List<String> function = new List<String>();
             var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
@@ -454,7 +473,7 @@ namespace Number
             {
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:C10000";
+                string range = "A2:J10000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -464,9 +483,12 @@ namespace Number
 
                     for (int i = 0; i <= rows; i++)
                     {
-                        if (Allvalues[i, 1].ToString() == PNR_Function)
+                        if (Allvalues[i, 0].ToString() == "end")
+                            break;
+                        if (Allvalues[i, 1].ToString() == PNR_Function && Allvalues[i, 0].ToString() == PNR_Name)
                         {
                             PNR_Func = Allvalues[i, 2].ToString();
+                            flag = Allvalues[i, 9].ToString();
                             break;
                         }
                     }
@@ -548,7 +570,7 @@ namespace Number
                     //Удаляем все "-"
                     apart.RemoveAll(a => a.ToString() == "-");
 
-                    //формируем объект-строку эксель с объектом комнатой
+                    //формируем объект-строку эксель с объектом комнатой по 1 варианту
                     if (apart.Last().ToString() == "1")
                     {
                         apart.RemoveAt(apart.Count() - 1);
@@ -557,6 +579,32 @@ namespace Number
                             if (j > 2)
                             {
                                 apartCode += apart[j].ToString();
+                            }
+                        }
+                    }
+
+                    //формируем объект-строку эксель с объектом комнатой по 0 варианту
+                    if (apart.Last().ToString() == "0")
+                    {
+                        apart.RemoveAt(apart.Count() - 1);
+                        string func = string.Empty;
+                        for (int j = 0; j <= apart.Count() - 1; j++)
+                        {
+                            if (j == 3)
+                            {
+                                func += apart[j].ToString() + ".";
+                            }
+                            if (j == 4)
+                            {
+                                apartCode += apart[j].ToString();
+                            }
+                            if (j == 5)
+                            {
+                                apartCode += apart[j].ToString() + "." + func;
+                            }
+                            if (j == 6)
+                            {
+                                apartCode += apart[j].ToString() ;
                             }
                         }
                     }
@@ -656,6 +704,11 @@ namespace Number
                     }
 
                     string Func = room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(0, 3);
+                    if (!Func.Contains("-"))
+                    {
+                        int i = room.LookupParameter("ADSK_Номер квартиры").AsString().IndexOf(".");
+                        Func = room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(i+1, 2);
+                    }
                     if (countN == 3 && Func == PNR_Funс)
                     {
                         int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
