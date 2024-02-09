@@ -527,6 +527,8 @@ namespace Number
                             int H = 7; //Номер квартиры
                             int I = 8; //Номер помещения
                             int J = 9; //Флаг
+                            if (AllRoows[n, A].ToString() == "end")
+                                break;
                             if (AllRoows[n, A].ToString() == aparts.LookupParameter("PNR_Имя помещения").AsString() && AllRoows[n, B].ToString() == aparts.LookupParameter("PNR_Функция помещения").AsString())
                             {
                                 List<object> apart = new List<object>
