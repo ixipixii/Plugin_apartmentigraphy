@@ -349,6 +349,7 @@ namespace Number
                             apart.LookupParameter("ADSK_Этаж").StorageType.ToString() != "String")
                         {
                             TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров СТРОКА");
+                            tr.RollBack();
                             return 1;
                         }
 
@@ -357,16 +358,18 @@ namespace Number
                             apart.LookupParameter("ADSK_Количество комнат").StorageType.ToString() != "Integer")
                         {
                             TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров ЧИСЛО или ПЛОЩАДЬ");
+                            tr.RollBack();
                             return 1;
                         }
                     }
-                    catch { TaskDialog.Show("Наличие параметров", "Проверьте наличие параметров"); return 1; }
+                    catch { TaskDialog.Show("Наличие параметров", "Проверьте наличие параметров"); tr.RollBack(); return 1; }
 
                     if (apart.LookupParameter("ADSK_Этаж").AsString() == null || apart.LookupParameter("ADSK_Этаж").AsString() == "" ||
                         apart.LookupParameter("PNR_Функция помещения").AsString() == null || apart.LookupParameter("PNR_Функция помещения").AsString() == "" ||
                         apart.LookupParameter("PNR_Имя помещения").AsString() == null || apart.LookupParameter("PNR_Имя помещения").AsString() == "")
                     {
                         TaskDialog.Show("Заполнение параметров", "Заполните следующие параметры: ADSK_Этаж, PNR_Функция помещения, PNR_Имя помещения");
+                        tr.RollBack();
                         return 1;
                     }
 
@@ -396,7 +399,7 @@ namespace Number
             {
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:J10000";
+                string range = "A2:I10000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -410,8 +413,8 @@ namespace Number
                             break;
                         if (Allvalues[i, 2].ToString() == PNR_Funс)
                         {
-                            if (Allvalues[i, 7].ToString() != "-")
-                                countN = Allvalues[i, 7].ToString().Count();
+                            if (Allvalues[i, 6].ToString() != "-")
+                                countN = Allvalues[i, 6].ToString().Count();
                             else
                                 countN = -1;
                             if (Allvalues[i, 5].ToString() != "-")
@@ -473,7 +476,7 @@ namespace Number
             {
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:J10000";
+                string range = "A2:I10000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
@@ -488,7 +491,7 @@ namespace Number
                         if (Allvalues[i, 1].ToString() == PNR_Function && Allvalues[i, 0].ToString() == PNR_Name)
                         {
                             PNR_Func = Allvalues[i, 2].ToString();
-                            flag = Allvalues[i, 9].ToString();
+                            flag = Allvalues[i, 8].ToString();
                             break;
                         }
                     }
@@ -504,7 +507,7 @@ namespace Number
             {
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
-                string range = "A2:J10000";
+                string range = "A2:I10000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] AllRoows = rangeCells.Value as object[,];
                 if (AllRoows != null)
@@ -523,10 +526,9 @@ namespace Number
                             int D = 3; //Здание
                             int E = 4; //Этаж
                             int F = 5; //Секция
-                            int G = 6; //Блок кладовых
-                            int H = 7; //Номер квартиры
-                            int I = 8; //Номер помещения
-                            int J = 9; //Флаг
+                            int G = 6; //Номер квартиры
+                            int H = 7; //Номер помещения
+                            int I = 8; //Флаг
                             if (AllRoows[n, A].ToString() == "end")
                                 break;
                             if (AllRoows[n, A].ToString() == aparts.LookupParameter("PNR_Имя помещения").AsString() && AllRoows[n, B].ToString() == aparts.LookupParameter("PNR_Функция помещения").AsString())
@@ -542,8 +544,7 @@ namespace Number
                                     AllRoows[n, F], //6
                                     AllRoows[n, G], //7
                                     AllRoows[n, H], //8
-                                    AllRoows[n, I], //9
-                                    AllRoows[n, J] //10
+                                    AllRoows[n, I]  //9
                                 };
                                 ApartCodeList.Add(apart);
                                 break;
@@ -633,7 +634,7 @@ namespace Number
                             num = "0" + number;
                     }
 
-                    if (apartCode.Count(c => c == 'N') == 2 && (number.ToString().Length == 1))
+                    if (apartCode.Count(c => c == 'N') == 2 && (number.ToString().Length == 1) || apartCode.Count(c => c == 'B') == 2 && (number.ToString().Length == 1))
                     {
                         num = "0" + number;
                     }
@@ -649,10 +650,18 @@ namespace Number
 
                     string aparatNumberRoom = aparatNumberApart + "." + i.ToString();
 
+                    if (apartCode.Count(c => c == 'K') == 3)
+                    {
+                        string index = i.ToString();
+                        if(i.ToString().Length == 1)
+                            index = "0" + i.ToString();
+                        aparatNumberRoom = aparatNumberApart + index;
+                    }
+
                     ((Element)apart[0]).LookupParameter("ADSK_Номер квартиры").Set(aparatNumberApart);
                     ((Element)apart[0]).LookupParameter("PNR_Номер помещения").Set(aparatNumberRoom);
 
-                    if (!bug && PNR_Funс == "КВ" || PNR_Funс == "АП")
+                    if (!bug && PNR_Funс == "КВ-" || !bug && PNR_Funс == "АП-")
                     {
                         if (i == 1)
                         {
@@ -681,7 +690,7 @@ namespace Number
             List<int> numberList = new List<int>();
             foreach (var room in AllRoomsWGroup)
             {
-                //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО СЕКЦИИ ДЛЯ КВ
+                //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО СЕКЦИИ
                 if (room.LookupParameter("ADSK_Номер секции").AsString() == _SelectedSectionValue && section == true)
                 {
                     if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
@@ -697,7 +706,7 @@ namespace Number
                     }
                 }
 
-                //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО ЭТАЖУ ДЛЯ АП, КМ, ХК, УК
+                //ВЫСЧИТЫВАЕМ МАКСИМАЛЬНЫЙ НОМЕР ПО ЭТАЖУ
                 if (room.LookupParameter("ADSK_Этаж").AsString() == PNR_Floor && section != true)
                 {
                     if (room.LookupParameter("ADSK_Номер квартиры").AsString() == null || room.LookupParameter("ADSK_Номер квартиры").AsString() == "")
@@ -731,58 +740,12 @@ namespace Number
                         numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 1, 1).Trim('0')));
                         continue;
                     }
-
-                    /*                        //Высчитываем максимальный номер АП
-                                            if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("АП"))
-                                            {
-                                                int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                                                numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0')));
-                                            }
-
-                                            //Высчитываем максимальный номер КМ
-                                            if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КМ"))
-                                            {
-                                                int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                                                numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0')));
-                                            }
-
-                                            //Высчитываем максимальный номер УК
-                                            if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("УК"))
-                                            {
-                                                int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                                                numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 1, 1).Trim('0')));
-                                            }
-
-                                            //Высчитываем максимальный номер ХК
-                                            if (room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("ХК"))
-                                            {
-                                                var numberString = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                                                if (numberString.Contains("/"))
-                                                {
-                                                    int index = numberString.IndexOf("/");
-                                                    numberList.Add(int.Parse(numberString.Substring(index + 1, 2).TrimStart('0')));
-                                                    continue;
-                                                }
-                                                if (numberString.Contains("/") == false)
-                                                {
-                                                    int index = numberString.IndexOf("-");
-                                                    numberList.Add(int.Parse(numberString.Substring(index + 1, 2).TrimStart('0')));
-                                                    continue;
-                                                }
-                                            }*/
                 }
             }
             if (numberList.Count() != 0)
                 number = numberList.Max();
             else number = 0;
             number++;
-            //}
-            /*            catch
-                        {
-                            number = 0;
-                            TaskDialog.Show("Не все параметры существуют в модели", "Проверьте существование параметров: ADSK_Номер секции, ADSK_Этаж, ADSK_Номер квартиры");
-                            return;
-                        }*/
         }
         private void Bug(Element room) //Марка-жучок квартир
         {

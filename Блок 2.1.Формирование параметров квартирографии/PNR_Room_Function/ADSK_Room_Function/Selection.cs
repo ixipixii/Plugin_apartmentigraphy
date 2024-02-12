@@ -82,6 +82,7 @@ namespace ADSK_Room_Function
                     else
                     {
                         TaskDialog.Show("Ошибка", "Выбранный элемент не является помещением");
+                        tr.RollBack();
                         OnContinue();
                         RaiseCloseRequest();
                         return;
