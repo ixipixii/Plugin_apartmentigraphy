@@ -37,7 +37,15 @@ namespace ADSK_Floor
             Document doc = _commandData.Application.ActiveUIDocument.Document;
 
             //Делаем активным вид, который выбрал пользователь
-            uidoc.ActiveView = LevelSelection.selectedLevel;
+            try
+            {
+                uidoc.ActiveView = LevelSelection.selectedLevel;
+            }
+            catch 
+            {
+                TaskDialog.Show("Ошибка выбора", "Пользователь не выбрал значение");
+                return;
+            }
 
             //Считываем помещения
             List<Room> collector = new FilteredElementCollector(doc, doc.ActiveView.Id)
@@ -63,6 +71,12 @@ namespace ADSK_Floor
                                                    categorySet,
                                                    BuiltInParameterGroup.PG_IDENTITY_DATA,
                                                    true);
+                    }
+                    if(LevelSelection.parameterValue == "" || LevelSelection.parameterValue == null)
+                    {
+                        TaskDialog.Show("Ошибка ввода", "Пользователь не ввёл значение");
+                        tr.RollBack();
+                        return;
                     }
                     room.LookupParameter("ADSK_Этаж").Set($"{LevelSelection.parameterValue}");
                 }

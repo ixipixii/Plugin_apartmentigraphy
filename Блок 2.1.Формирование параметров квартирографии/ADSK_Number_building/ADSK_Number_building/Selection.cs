@@ -77,26 +77,41 @@ namespace ADSK_Number_building
             Transaction tr = new Transaction(doc, "Create parameter");
             tr.Start();
 
+            if (GridSelection.nameSection == "" || GridSelection.nameSection == null)
+            {
+                TaskDialog.Show("Ошибка ввода", "Пользователь не ввёл значение");
+                tr.RollBack();
+                return;
+            }
             foreach (var element in elements)
             {
-                if (element.Y > GridSelection.valueY.Min() && element.Y < GridSelection.valueY.Max())
+                try
                 {
-                    if (element.X > GridSelection.valueX.Min() && element.X < GridSelection.valueX.Max())
+                    if (element.Y > GridSelection.valueY.Min() && element.Y < GridSelection.valueY.Max())
                     {
-                        if (element.Room.LookupParameter("ADSK_Номер здания") == null)
+                        if (element.X > GridSelection.valueX.Min() && element.X < GridSelection.valueX.Max())
                         {
-                            var categorySet = new CategorySet();
-                            categorySet.Insert(element.Room.Category);
-                            CreateShared createShared = new CreateShared();
-                            createShared.CreateSharedParameter(uiapp.Application,
-                                                       doc,
-                                                       "ADSK_Номер здания",
-                                                       categorySet,
-                                                       BuiltInParameterGroup.PG_IDENTITY_DATA,
-                                                       true);
+                            if (element.Room.LookupParameter("ADSK_Номер здания") == null)
+                            {
+                                var categorySet = new CategorySet();
+                                categorySet.Insert(element.Room.Category);
+                                CreateShared createShared = new CreateShared();
+                                createShared.CreateSharedParameter(uiapp.Application,
+                                                           doc,
+                                                           "ADSK_Номер здания",
+                                                           categorySet,
+                                                           BuiltInParameterGroup.PG_IDENTITY_DATA,
+                                                           true);
+                            }
+                            element.Room.LookupParameter("ADSK_Номер здания").Set(GridSelection.nameSection);
                         }
-                        element.Room.LookupParameter("ADSK_Номер здания").Set(GridSelection.nameSection);
                     }
+                }
+                catch
+                {
+                    TaskDialog.Show("Ошибка выбора", "Пользователь не выбрал значение");
+                    tr.RollBack();
+                    return;
                 }
             }
             GridSelection.valueX.Clear();

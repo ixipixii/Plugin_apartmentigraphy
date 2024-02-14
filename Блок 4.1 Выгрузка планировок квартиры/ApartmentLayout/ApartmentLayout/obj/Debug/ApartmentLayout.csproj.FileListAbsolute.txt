@@ -4,3 +4,9 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгр�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.csproj.CoreCompileInputs.cache
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentography\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\bin\Debug\ApartmentLayout.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\bin\Debug\ApartmentLayout.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.csproj.AssemblyReference.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.csproj.CoreCompileInputs.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.dll
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 4.1 Выгрузка планировок квартиры\ApartmentLayout\ApartmentLayout\obj\Debug\ApartmentLayout.pdb

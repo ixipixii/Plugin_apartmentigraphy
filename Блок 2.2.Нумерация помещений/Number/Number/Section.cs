@@ -46,6 +46,11 @@ namespace Number
         private void SetSelectSection()
         {
             RaiseCloseRequest();
+            if(SelectedSectionValue == null)
+            {
+                TaskDialog.Show("Ошибка выбора", "Не выбрана секция");
+                return;
+            }
             var apartWindow = new Apart(_uiapp, _uidoc, _doc, SelectedSectionValue, _v);
             apartWindow.ShowDialog();
         }

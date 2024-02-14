@@ -77,26 +77,41 @@ namespace ADSK_Section
             Transaction tr = new Transaction(doc, "Create parameter");
             tr.Start();
 
+            if (LevelSelection.nameSection == "" || LevelSelection.nameSection == null)
+            {
+                TaskDialog.Show("Ошибка ввода", "Пользователь не ввёл значение");
+                tr.RollBack();
+                return;
+            }
             foreach (var element in elements)
             {
-                if (element.Y > LevelSelection.valueY.Min() && element.Y < LevelSelection.valueY.Max())
+                try
                 {
-                    if(element.X > LevelSelection.valueX.Min() && element.X < LevelSelection.valueX.Max())
+                    if (element.Y > LevelSelection.valueY.Min() && element.Y < LevelSelection.valueY.Max())
                     {
-                        if(element.Room.LookupParameter("ADSK_Номер секции") == null)
+                        if (element.X > LevelSelection.valueX.Min() && element.X < LevelSelection.valueX.Max())
                         {
-                            var categorySet = new CategorySet();
-                            categorySet.Insert(element.Room.Category);
-                            CreateShared createShared = new CreateShared();
-                            createShared.CreateSharedParameter(uiapp.Application,
-                                                       doc,
-                                                       "ADSK_Номер секции",
-                                                       categorySet,
-                                                       BuiltInParameterGroup.PG_IDENTITY_DATA,
-                                                       true);
+                            if (element.Room.LookupParameter("ADSK_Номер секции") == null)
+                            {
+                                var categorySet = new CategorySet();
+                                categorySet.Insert(element.Room.Category);
+                                CreateShared createShared = new CreateShared();
+                                createShared.CreateSharedParameter(uiapp.Application,
+                                                           doc,
+                                                           "ADSK_Номер секции",
+                                                           categorySet,
+                                                           BuiltInParameterGroup.PG_IDENTITY_DATA,
+                                                           true);
+                            }
+                            element.Room.LookupParameter("ADSK_Номер секции").Set(LevelSelection.nameSection);
                         }
-                        element.Room.LookupParameter("ADSK_Номер секции").Set(LevelSelection.nameSection);
                     }
+                }
+                catch
+                {
+                    TaskDialog.Show("Ошибка выбора", "Пользователь не выбрал значение");
+                    tr.RollBack();
+                    return;
                 }
             }
             LevelSelection.valueX.Clear();

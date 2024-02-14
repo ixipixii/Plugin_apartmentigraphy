@@ -40,8 +40,8 @@ namespace Number
         public DelegateCommand EnterCommandRenumber { get; } //Делегат кнопки "Ввести"
         public List<Element> AllRoomsRenumberNew = new List<Element>(); //Новые квартиры для переименовки
         public String _SelectedSectionValue { get; set; } //Выбранная секция в ComboBox
-        private string NewValueNumberApart; //
-        public int index = 0;
+        private string NewValueNumberApart; //Новое значение номера квартир/помещения
+        public int index = 0; //Перенумеруем помещения или квартиры
         public string Text
         {
             get => NewValueNumberApart;
@@ -256,12 +256,24 @@ namespace Number
             IList<Autodesk.Revit.DB.Reference> refrence = new List<Autodesk.Revit.DB.Reference>();
             IList<Element> ApartListElement = new List<Element>();
 
-            var refElement = _uidoc.Selection.PickObjects(ObjectType.Element, roomFilter, "Выберите элементы");
-
-            foreach (var element in refElement)
+            try
             {
-                var apart = _doc.GetElement(element);
-                ApartListElement.Add(apart);
+                var refElement = _uidoc.Selection.PickObjects(ObjectType.Element, roomFilter, "Выберите элементы");
+                if(refElement.Count == 0)
+                {
+                    TaskDialog.Show("Ошибка выбора", "Помещения не выбраны");
+                    return;
+                }
+                foreach (var element in refElement)
+                {
+                    var apart = _doc.GetElement(element);
+                    ApartListElement.Add(apart);
+                }
+            }
+            catch
+            {
+                TaskDialog.Show("Ошибка выбора", "Помещения не выбраны");
+                return;
             }
 
             //Проверяем все параметры модели
@@ -312,10 +324,16 @@ namespace Number
             }
 
             //Сокращаем функцию
-            SetFunc(PNR_Function, PNR_Name, out PNR_Funс, out string flag);
+            if(SetFunc(PNR_Function, PNR_Name, out PNR_Funс, out string flag) == 1)
+            {
+                return;
+            };
 
             //Для определения максимального номера считываем количество N и секционность
-            CountNBoolSection(PNR_Funс, out int countN, out bool section);
+            if (CountNBoolSection(PNR_Funс, out int countN, out bool section) == 1) 
+            {
+                return;
+            }
 
             //Находим максимальный номер у помещений
             MaxNumberApart(AllRoomsWGroup, PNR_Floor_MAX, PNR_Funс, out int number, countN, section);
@@ -392,7 +410,7 @@ namespace Number
             tr.Commit();
             return 0;
         }
-        public void CountNBoolSection(string PNR_Funс, out int countN, out bool section) //Количество N и секционность
+        public int CountNBoolSection(string PNR_Funс, out int countN, out bool section) //Количество N и секционность
         {
             countN = 0;
             section = false;
@@ -402,30 +420,39 @@ namespace Number
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:I10000";
-                var rangeCells = worksheet.Cells[range];
-                object[,] Allvalues = rangeCells.Value as object[,];
-                if (Allvalues != null)
+                try
                 {
-                    int rows = Allvalues.GetLength(0);
-                    int columns = Allvalues.GetLength(1);
-
-                    for (int i = 0; i <= rows; i++)
+                    var rangeCells = worksheet.Cells[range];
+                    object[,] Allvalues = rangeCells.Value as object[,];
+                    if (Allvalues != null)
                     {
-                        if (Allvalues[i, 0].ToString() == "end")
-                            break;
-                        if (Allvalues[i, 2].ToString() == PNR_Funс)
+                        int rows = Allvalues.GetLength(0);
+                        int columns = Allvalues.GetLength(1);
+
+                        for (int i = 0; i <= rows; i++)
                         {
-                            if (Allvalues[i, 6].ToString() != "-")
-                                countN = Allvalues[i, 6].ToString().Count();
-                            else
-                                countN = -1;
-                            if (Allvalues[i, 5].ToString() != "-")
-                                section = true;
-                            break;
+                            if (Allvalues[i, 0].ToString() == "end")
+                                break;
+                            if (Allvalues[i, 2].ToString() == PNR_Funс)
+                            {
+                                if (Allvalues[i, 6].ToString() != "-")
+                                    countN = Allvalues[i, 6].ToString().Count();
+                                else
+                                    countN = -1;
+                                if (Allvalues[i, 5].ToString() != "-")
+                                    section = true;
+                                break;
+                            }
                         }
                     }
                 }
+                catch
+                {
+                    TaskDialog.Show("Ошибка чтения файла", "Проверьте файл - Имена помещений.xlsx");
+                    return 1;
+                }
             }
+            return 0;
         }
         public void SetParameterApart(IList<Element> ApartListElement, string PNR_Funс) //Параметры для апартов и квартир
         {
@@ -468,7 +495,7 @@ namespace Number
             }
             trn.Commit();
         }
-        public void SetFunc(string PNR_Function, string PNR_Name, out string PNR_Func, out string flag) //Сокращение функции и флаг шаблона
+        public int SetFunc(string PNR_Function, string PNR_Name, out string PNR_Func, out string flag) //Сокращение функции и флаг шаблона
         {
             flag = string.Empty;
             PNR_Func = null;
@@ -479,26 +506,35 @@ namespace Number
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:I10000";
-                var rangeCells = worksheet.Cells[range];
-                object[,] Allvalues = rangeCells.Value as object[,];
-                if (Allvalues != null)
+                try
                 {
-                    int rows = Allvalues.GetLength(0);
-                    int columns = Allvalues.GetLength(1);
-
-                    for (int i = 0; i <= rows; i++)
+                    var rangeCells = worksheet.Cells[range];
+                    object[,] Allvalues = rangeCells.Value as object[,];
+                    if (Allvalues != null)
                     {
-                        if (Allvalues[i, 0].ToString() == "end")
-                            break;
-                        if (Allvalues[i, 1].ToString() == PNR_Function && Allvalues[i, 0].ToString() == PNR_Name)
+                        int rows = Allvalues.GetLength(0);
+                        int columns = Allvalues.GetLength(1);
+
+                        for (int i = 0; i <= rows; i++)
                         {
-                            PNR_Func = Allvalues[i, 2].ToString();
-                            flag = Allvalues[i, 8].ToString();
-                            break;
+                            if (Allvalues[i, 0].ToString() == "end")
+                                break;
+                            if (Allvalues[i, 1].ToString() == PNR_Function && Allvalues[i, 0].ToString() == PNR_Name)
+                            {
+                                PNR_Func = Allvalues[i, 2].ToString();
+                                flag = Allvalues[i, 8].ToString();
+                                break;
+                            }
                         }
                     }
                 }
+                catch
+                {
+                    TaskDialog.Show("Ошибка чтения файла", "Проверьте файл - Имена помещений.xlsx");
+                    return 1;
+                }
             }
+            return 0;
         }
         public void NumberApart(IList<Element> ApartListElement, string PNR_Funс, string PNR_Building, string PNR_Section, string PNR_Floor, int number) //Метод, нумерующий квартиры
         {
@@ -510,32 +546,34 @@ namespace Number
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:I10000";
-                var rangeCells = worksheet.Cells[range];
-                object[,] AllRoows = rangeCells.Value as object[,];
-                if (AllRoows != null)
+                try
                 {
-                    int rows = AllRoows.GetLength(0);
-                    int columns = AllRoows.GetLength(1);
-
-                    //Собираем всю информацию - объект-помещение, кодировка
-                    foreach (var aparts in ApartListElement)
+                    var rangeCells = worksheet.Cells[range];
+                    object[,] AllRoows = rangeCells.Value as object[,];
+                    if (AllRoows != null)
                     {
-                        for (int n = 0; n <= rows; n++)
+                        int rows = AllRoows.GetLength(0);
+                        int columns = AllRoows.GetLength(1);
+
+                        //Собираем всю информацию - объект-помещение, кодировка
+                        foreach (var aparts in ApartListElement)
                         {
-                            int A = 0; //Имя 
-                            int B = 1; //Функция
-                            int C = 2; //Сокращение
-                            int D = 3; //Здание
-                            int E = 4; //Этаж
-                            int F = 5; //Секция
-                            int G = 6; //Номер квартиры
-                            int H = 7; //Номер помещения
-                            int I = 8; //Флаг
-                            if (AllRoows[n, A].ToString() == "end")
-                                break;
-                            if (AllRoows[n, A].ToString() == aparts.LookupParameter("PNR_Имя помещения").AsString() && AllRoows[n, B].ToString() == aparts.LookupParameter("PNR_Функция помещения").AsString())
+                            for (int n = 0; n <= rows; n++)
                             {
-                                List<object> apart = new List<object>
+                                int A = 0; //Имя 
+                                int B = 1; //Функция
+                                int C = 2; //Сокращение
+                                int D = 3; //Здание
+                                int E = 4; //Этаж
+                                int F = 5; //Секция
+                                int G = 6; //Номер квартиры
+                                int H = 7; //Номер помещения
+                                int I = 8; //Флаг
+                                if (AllRoows[n, A].ToString() == "end")
+                                    break;
+                                if (AllRoows[n, A].ToString() == aparts.LookupParameter("PNR_Имя помещения").AsString() && AllRoows[n, B].ToString() == aparts.LookupParameter("PNR_Функция помещения").AsString())
+                                {
+                                    List<object> apart = new List<object>
                                 {
                                     aparts,         //0
                                     AllRoows[n, A], //1
@@ -548,11 +586,17 @@ namespace Number
                                     AllRoows[n, H], //8
                                     AllRoows[n, I]  //9
                                 };
-                                ApartCodeList.Add(apart);
-                                break;
+                                    ApartCodeList.Add(apart);
+                                    break;
+                                }
                             }
                         }
                     }
+                }
+                catch
+                {
+                    TaskDialog.Show("Ошибка чтения файла", "Проверьте файл - Имена помещений.xlsx");
+                    return;
                 }
             }
 
@@ -845,7 +889,17 @@ namespace Number
             RaiseCloseRequest();
 
             try
-            { }
+            {
+                //Фильтр по всем квартирам - помещениям на данном виде
+                AllRoomsRenumberNew = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                    .WhereElementIsNotElementType()
+                    .OfCategory(BuiltInCategory.OST_Rooms)
+                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() == SelectedRoom.ADSK_Номер_квартиры)
+                    .ToList();
+
+                var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumberNew, 0);
+                renumber.ShowDialog();
+            }
             catch (Exception e)
             {
                 TaskDialog.Show("Ошибка", $"Выберите помещение");
@@ -853,42 +907,39 @@ namespace Number
                 apartWindow1.ShowDialog();
             }
 
-            //Фильтр по всем квартирам - помещениям на данном виде
-            AllRoomsRenumberNew = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
-                .WhereElementIsNotElementType()
-                .OfCategory(BuiltInCategory.OST_Rooms)
-                .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() == SelectedRoom.ADSK_Номер_квартиры)
-                .ToList();
-
-            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumberNew, 0);
-            renumber.ShowDialog();
         }
         public void RenumberRoom() //Перенумеровка комнат
         {
             RaiseCloseRequest();
 
             try
-            { }
+            {
+                //Фильтр по всем квартирам - помещениям на данном виде
+                AllRoomsRenumberNew = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
+                    .WhereElementIsNotElementType()
+                    .OfCategory(BuiltInCategory.OST_Rooms)
+                    .Where(g => g.Id == SelectedRoom.id)
+                    .ToList();
+
+                var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumberNew, 1);
+                renumber.ShowDialog();
+            }
             catch (Exception e)
             {
                 TaskDialog.Show("Ошибка", $"Выберите помещение");
                 var apartWindow1 = new Apart(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2);
                 apartWindow1.ShowDialog();
             }
-
-            //Фильтр по всем квартирам - помещениям на данном виде
-            AllRoomsRenumberNew = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
-                .WhereElementIsNotElementType()
-                .OfCategory(BuiltInCategory.OST_Rooms)
-                .Where(g => g.Id == SelectedRoom.id)
-                .ToList();
-
-            var renumber = new Renumber(_uiapp, _uidoc, _doc, _SelectedSectionValue, 2, AllRoomsRenumberNew, 1);
-            renumber.ShowDialog();
         }
         public void EnterRenumber()
         {
             RaiseCloseRequest();
+
+            if(NewValueNumberApart == "" || NewValueNumberApart == null)
+            {
+                TaskDialog.Show("Ошибка ввода", "Пользователь не ввёл значение");
+                return;
+            }
 
             if (index == 0)//Переименовываем квартиры
             {

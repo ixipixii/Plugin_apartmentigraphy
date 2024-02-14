@@ -50,7 +50,16 @@ namespace ApartmentLayout
             Transaction tr = new Transaction(doc, "view");
             tr.Start();
             // Назначение границ подрезки
-            uidoc.ActiveView.GetCropRegionShapeManager().SetCropShape(loop);
+            try
+            {
+                uidoc.ActiveView.GetCropRegionShapeManager().SetCropShape(loop);
+            }
+            catch
+            {
+                TaskDialog.Show("Ошибка обрезки вида", "Вид не является многоугольником");
+                tr.RollBack();
+                return Result.Succeeded;
+            }
             tr.Commit();
 
             return Result.Succeeded;

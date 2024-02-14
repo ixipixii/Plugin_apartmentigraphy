@@ -35,34 +35,43 @@ namespace ADSK_Room_Function
                 var count = package.Workbook.Worksheets.Count;
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:B10000";
-                var rangeCells = worksheet.Cells[range];
-                object[,] Allvalues = rangeCells.Value as object[,];
-                if (Allvalues != null)
+                try
                 {
-                    int rows = Allvalues.GetLength(0);
-                    int columns = Allvalues.GetLength(1);
-                    int start = 0;
+                    var rangeCells = worksheet.Cells[range];
+                    object[,] Allvalues = rangeCells.Value as object[,];
+                    if (Allvalues != null)
+                    {
+                        int rows = Allvalues.GetLength(0);
+                        int columns = Allvalues.GetLength(1);
+                        int start = 0;
 
-                    for (int i = 0; i <= rows; i++)
-                    {
-                        int j = 1;
-                        if (Allvalues[i, j].ToString() == "Квартиры бед доп. отделки")
+                        for (int i = 0; i <= rows; i++)
                         {
-                            start = i;
-                            break;
-                        }
-                    }
-                    for (int i = start; i < 10000; i++)
-                    {
-                        try
-                        {
-                            if (Allvalues[i, 1].ToString() == "end")
+                            int j = 1;
+                            if (Allvalues[i, j].ToString() == "Квартиры бед доп. отделки")
+                            {
+                                start = i;
                                 break;
-                            function.Add(Allvalues[i, 1].ToString());
+                            }
                         }
-                        catch { break; }
+                        for (int i = start; i < 10000; i++)
+                        {
+                            try
+                            {
+                                if (Allvalues[i, 1].ToString() == "end")
+                                    break;
+                                function.Add(Allvalues[i, 1].ToString());
+                            }
+                            catch { break; }
+                        }
                     }
                 }
+                catch
+                {
+                    TaskDialog.Show("Ошибка чтения файла", "Проверьте файл - Имена помещений.xlsx");
+                    return;
+                }
+
             }
 
             List<string> func = function.Distinct().ToList();

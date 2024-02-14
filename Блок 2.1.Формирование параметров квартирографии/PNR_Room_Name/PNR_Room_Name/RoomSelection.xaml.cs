@@ -49,36 +49,44 @@ namespace PNR_Room_Name
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:B1000";
-                var rangeCells = worksheet.Cells[range];
-                object[,] Allvalues = rangeCells.Value as object[,];
-                if (Allvalues != null)
+                try
                 {
-                    int rows = Allvalues.GetLength(0);
-                    int columns = Allvalues.GetLength(1);
-                    int start = 0;
+                    var rangeCells = worksheet.Cells[range];
+                    object[,] Allvalues = rangeCells.Value as object[,];
+                    if (Allvalues != null)
+                    {
+                        int rows = Allvalues.GetLength(0);
+                        int columns = Allvalues.GetLength(1);
+                        int start = 0;
 
-                    for (int i = 0; i <= rows; i++)
-                    {
-                        int j = 1;
-                        if (Allvalues[i, j].ToString() == functionRoom)
+                        for (int i = 0; i <= rows; i++)
                         {
-                            start = i;
-                            break;
-                        }
-                    }
-                    for (int i = start; i < rows; i++)
-                    {
-                        try
-                        {
-                            if (Allvalues[i, 1] != null && Allvalues[i, 1] != DBNull.Value)
+                            int j = 1;
+                            if (Allvalues[i, j].ToString() == functionRoom)
                             {
-                                if (Allvalues[i, 1].ToString() != functionRoom)
-                                    break;
-                                LVR.Items.Add(Allvalues[i, 0].ToString());
+                                start = i;
+                                break;
                             }
                         }
-                        catch { break; }
+                        for (int i = start; i < rows; i++)
+                        {
+                            try
+                            {
+                                if (Allvalues[i, 1] != null && Allvalues[i, 1] != DBNull.Value)
+                                {
+                                    if (Allvalues[i, 1].ToString() != functionRoom)
+                                        break;
+                                    LVR.Items.Add(Allvalues[i, 0].ToString());
+                                }
+                            }
+                            catch { break; }
+                        }
                     }
+                }
+                catch
+                {
+                    TaskDialog.Show("Ошибка чтения файла", "Проверьте файл - Имена помещений.xlsx");
+                    return;
                 }
             }
             /*switch (functionRoom)
