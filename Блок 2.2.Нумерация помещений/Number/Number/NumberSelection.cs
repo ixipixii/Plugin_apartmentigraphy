@@ -248,6 +248,7 @@ namespace Number
             String PNR_Building = string.Empty; //Номер здания
             String PNR_Funс = string.Empty; //Сокращение функции
             String PNR_Floor = string.Empty; //Этаж
+            string PNR_Floor_MAX = string.Empty;//Этаж для сравнения
 
             var roomFilter = new RoomPickFilter();
 
@@ -273,6 +274,7 @@ namespace Number
                 PNR_Function = apart.LookupParameter("PNR_Функция помещения").AsString();
                 PNR_Name = apart.LookupParameter("PNR_Имя помещения").AsString();
                 PNR_Floor = apart.LookupParameter("ADSK_Этаж").AsString();
+                PNR_Floor_MAX = apart.LookupParameter("ADSK_Этаж").AsString();
                 if (PNR_Floor.Substring(0, 1) == "-")
                 {
                     PNR_Floor = "П" + PNR_Floor.Substring(1, PNR_Floor.Length - 1);
@@ -298,7 +300,7 @@ namespace Number
             AllRooms = new FilteredElementCollector(_doc)
                          .WhereElementIsNotElementType()
                          .OfCategory(BuiltInCategory.OST_Rooms)
-                         .Where(r => r.LookupParameter("ADSK_Номер секции").AsString() == PNR_Section || r.LookupParameter("ADSK_Этаж").AsString() == PNR_Floor)
+                         .Where(r => r.LookupParameter("ADSK_Номер секции").AsString() == PNR_Section || r.LookupParameter("ADSK_Этаж").AsString() == PNR_Floor_MAX)
                          .ToList();
 
             //Для поиска максимального номера создаём лист со всеми помещениями на модели
@@ -316,7 +318,7 @@ namespace Number
             CountNBoolSection(PNR_Funс, out int countN, out bool section);
 
             //Находим максимальный номер у помещений
-            MaxNumberApart(AllRoomsWGroup, PNR_Floor, PNR_Funс, out int number, countN, section);
+            MaxNumberApart(AllRoomsWGroup, PNR_Floor_MAX, PNR_Funс, out int number, countN, section);
 
             //Заносим параметры апартов и квартир
             SetParameterApart(ApartListElement, PNR_Funс);
