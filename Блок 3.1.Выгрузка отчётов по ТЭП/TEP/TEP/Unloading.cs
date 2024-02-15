@@ -83,7 +83,7 @@ namespace TEP
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
             {
                 // Выбираем лист
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Отчёт"];
 
                 // Координаты ячейки, которую вы хотите изменить
                 int rowNumber = rowIndex;
@@ -394,7 +394,7 @@ namespace TEP
             using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                string range = "A2:B172";
+                string range = "A2:B1000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
                 if (Allvalues != null)
