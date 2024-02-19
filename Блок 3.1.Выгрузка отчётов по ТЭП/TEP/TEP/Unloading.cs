@@ -78,8 +78,12 @@ namespace TEP
                 package.Save();
             }
         }
-        public void FillCellParameter(int rowIndex, int columnIndex, String cellValue, String excelPath, string value_1, string value_3) //Заполнить ячейку
+        public int FillCellParameter(int rowIndex, int columnIndex, String cellValue, String excelPath, string value_1, string value_3) //Заполнить ячейку
         {
+            //Пустые данные не заносим
+            if(cellValue == "0")
+                return rowIndex;
+
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
             {
                 // Выбираем лист
@@ -99,7 +103,10 @@ namespace TEP
 
                 // Сохраняем изменения
                 package.Save();
+
+                rowIndex++;
             }
+            return rowIndex;
         }
 
         //Методы Elements возвращают лист определённых элементов
@@ -220,19 +227,26 @@ namespace TEP
             int rowName = rowFunc + 1;
             double areaName = 0.0;
             double areaFunc = 0.0;
+            int j = 0;
             String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
+            //Проходимся по всем именам найденных помещений
             for (int i = 0; i < roomName.Count(); i++)
             {
-                for (int j = 0; j < roomList.Count(); j++)
+                //Сравниваем помещения на нужное имя
+                for (j = 0; j < roomList.Count(); j++)
                 {
                     String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
+                    //Если у помещения нужное имя, суммируем его площадь
                     if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
                     {
                         areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        double areaOneRoom = UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        //Если функция у помещений не меняется, суммируем её
                         if (nameFuncNew == nameFunc)
                         {
-                            areaFunc += areaName;
+                            areaFunc += areaOneRoom;
                         }
+                        //Если функция поменялась, заносим в ячейку сведения о функции
                         else
                         {
                             areaFunc= areaFunc.Round(3);
@@ -241,12 +255,13 @@ namespace TEP
                             worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
                             nameFunc = nameFuncNew;
-                            areaFunc = areaName;
+                            areaFunc = areaOneRoom;
                             rowFunc = rowName;
                             rowName++;
                         }
                     }
                 }
+                //После того, как прошлись по всем помещениям и сравнили их на имя заносим в строку сведения о площади помещения
                 areaFunc = areaFunc.Round(3);
                 areaName = areaName.Round(3);
                 worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
@@ -254,11 +269,74 @@ namespace TEP
                 worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
                 areaName = 0;
                 rowName++;
-                if (i == roomList.Count - 1)
+
+                //Если имён больше нет, заносим сведения о последней функции
+                if (i == roomName.Count - 1)
                 {
                     areaFunc = areaFunc.Round(3);
                     areaName = areaName.Round(3);
                     worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
+                    worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
+                    worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
+                }
+            }
+
+            Style(worksheet1, rowName);
+            return rowName;
+        }
+        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList, string nameFuncRow)
+        {
+            int rowName = rowFunc + 1;
+            double areaName = 0.0;
+            double areaFunc = 0.0;
+            int j = 0;
+            String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
+            //Проходимся по всем именам найденных помещений
+            for (int i = 0; i < roomName.Count(); i++)
+            {
+                //Сравниваем помещения на нужное имя
+                for (j = 0; j < roomList.Count(); j++)
+                {
+                    String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
+                    //Если у помещения нужное имя, суммируем его площадь
+                    if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
+                    {
+                        areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        double areaOneRoom = UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        //Если функция у помещений не меняется, суммируем её
+                        if (nameFuncNew == nameFunc)
+                        {
+                            areaFunc += areaOneRoom;
+                        }
+                        //Если функция поменялась, заносим в ячейку сведения о функции
+                        else
+                        {
+                            areaFunc = areaFunc.Round(3);
+                            areaName = areaName.Round(3);
+                            worksheet1.Cells[rowFunc, 1].Value = nameFuncRow; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
+                            worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
+                            worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
+                            areaFunc = areaOneRoom;
+                            rowFunc = rowName;
+                            rowName++;
+                        }
+                    }
+                }
+                //После того, как прошлись по всем помещениям и сравнили их на имя заносим в строку сведения о площади помещения
+                areaFunc = areaFunc.Round(3);
+                areaName = areaName.Round(3);
+                worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
+                worksheet1.Cells[rowName, 2].Value = areaName; worksheet1.Cells[rowName, 2].Style.Font.Italic = true;
+                worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
+                areaName = 0;
+                rowName++;
+
+                //Если имён больше нет, заносим сведения о последней функции
+                if (i == roomName.Count - 1)
+                {
+                    areaFunc = areaFunc.Round(3);
+                    areaName = areaName.Round(3);
+                    worksheet1.Cells[rowFunc, 1].Value = nameFuncRow; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                     worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
                 }

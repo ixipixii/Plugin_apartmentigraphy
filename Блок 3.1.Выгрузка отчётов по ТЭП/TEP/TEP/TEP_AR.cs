@@ -272,7 +272,7 @@ namespace TEP
         }
         private void B29(Document doc, String path, string value)
         {
-            FillCell(29, 2, (double.Parse(value)*0.3).ToString(), path);
+            FillCell(29, 2, (double.Parse(value) * 0.3).ToString(), path);
         }
         private void B30(Document doc, String path, out string value)
         {
@@ -608,7 +608,7 @@ namespace TEP
             {
                 if (v != null)
                 {
-                    if(v.Name == "Обычные малые")
+                    if (v.Name == "Обычные малые")
                         count_1++;
                     if (v.Name == "Обычные средние")
                         count_2++;
@@ -652,7 +652,7 @@ namespace TEP
                 "гостевых больших",
                 "мотоместа"
             };
-            for (var i = 0; i < 13; i ++)
+            for (var i = 0; i < 13; i++)
             {
                 FillCellParameter(91, 2, value, path, nameCells[i], "шт.");
             }
@@ -1253,12 +1253,12 @@ namespace TEP
         {
             //Суммарная площадь МОП, в том числе:
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Номер помещения", "МОП"), doc).ToString();
-            FillCellParameter(number, 2, value, path, "Суммарная площадь МОП, в том числе:", "кв.м.");
+            number = FillCellParameter(number, 2, value, path, "Суммарная площадь МОП, в том числе:", "кв.м.");
 
-            //Помещения входной группы (1й этаж)
-            number++;
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
+            //ВСЕ МОПЫ
+            using (var pack = new ExcelPackage(new FileInfo(path)))
             {
+                //Помещения входной группы (1й этаж)
                 //Получаем лист с нужными комнатами по определённым категориям 
                 List<Element> roomList = RoomList(doc, Func("МОП входной группы 1 этажа", "МОП типовых этажей"));
 
@@ -1267,59 +1267,34 @@ namespace TEP
 
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
-                
+
                 //Если такие помещения есть
-                if(roomList.Count != 0)
+                if (roomList.Count != 0)
                     number = FillCellsArea(worksheet1, number, roomName, roomList);
 
-                // Сохраняем изменения
-                pack.Save();
-            }
-
-            //МОП типовых этажей
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //МОП типовых этажей
                 //Получаем лист с нужными комнатами по определённым категориям 
-                List<Element> roomList = RoomList(doc, Func("МОП типовых этажей", "МОП входной группы -1 этажа"));
+                roomList = RoomList(doc, Func("МОП типовых этажей", "МОП входной группы -1 этажа"));
 
                 //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);
-
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                roomName = RoomNames(roomList);
 
                 //Если такие помещения есть
                 if (roomList.Count != 0)
                     number = FillCellsArea(worksheet1, number, roomName, roomList);
 
                 // Сохраняем изменения
-                pack.Save();
-            }
 
-            //Помещения входной группы паркинг (-1й этаж)
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //Помещения входной группы паркинг (-1й этаж)
                 //Получаем лист с нужными комнатами по определённым категориям 
-                List<Element> roomList = RoomList(doc, Func("МОП входной группы -1 этажа", "Помещения кладовых"));
+                roomList = RoomList(doc, Func("МОП входной группы -1 этажа", "Помещения кладовых"));
 
                 //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);    
-
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
-
+                roomName = RoomNames(roomList);
 
                 //Если такие помещения есть
                 if (roomList.Count != 0)
                     number = FillCellsArea(worksheet1, number, roomName, roomList);
-
-                //Добавляем помещение хранения велосипедов
-                value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Инвентарная(помещение хранения велосипедов)"), doc).ToString();
-                if (value != "")
-                {
-                    FillCellParameter(number, 2, value, path, "Инвентарная(помещение хранения велосипедов)", "кв.м.");
-                    number++;
-                }
 
                 // Сохраняем изменения
                 pack.Save();
@@ -1327,11 +1302,7 @@ namespace TEP
 
             //Проход блока кладовых
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Проход блока кладовых"), doc).ToString();
-            if (value != "")
-            {
-                FillCellParameter(number, 2, value, path, "Проход блока кладовых", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Проход блока кладовых", "кв.м.");
 
             //Площадь лестниц и эвакуации (с -1го до последнего этажа)
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
@@ -1345,7 +1316,6 @@ namespace TEP
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
-
                 //Если такие помещения есть
                 if (roomList.Count != 0)
                     number = FillCellsArea(worksheet1, number, roomName, roomList);
@@ -1357,146 +1327,83 @@ namespace TEP
             //Лестничная клетка (1го этажа)
             double value_1 = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "НЛК (наземная лестничная клетка)", "ADSK_Этаж", "1"), doc);
             value = value_1.ToString();
-            if (value != "")
-            {
-                FillCellParameter(number, 2, value, path, "Лестничная клетка (1го этажа)", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Лестничная клетка (1го этажа)", "кв.м.");
 
             //Лестничная клетка типового этажа
             value = (Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "НЛК (наземная лестничная клетка)"), doc) - value_1).ToString();
-    
-            {
-                FillCellParameter(number, 2, value, path, "Лестничная клетка типового этажа", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Лестничная клетка типового этажа", "кв.м.");
 
             //Лестничная клетка (-1го этажа)
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПЛК (подземная лестничная клетка)"), doc).ToString();
-            if (value != "")
-            {
-                FillCellParameter(number, 2, value, path, "Лестничная клетка (-1го этажа)", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Лестничная клетка (-1го этажа)", "кв.м.");
 
             //Помещения загрузки, в том числе:
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения загрузки"), doc).ToString();
+            number = FillCellParameter(number, 2, value, path, "Помещения загрузки, в том числе:", "кв.м.");
+
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
             {
-                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomList(doc, Func("Помещения загрузки", "Помещения мусороудаления"));
-
-                //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);
-
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
-                //Если такие помещения есть
-                if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
-
-                // Сохраняем изменения
-                pack.Save();
-            }
-
-            //Подземный этаж
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
                 List<Element> roomList = RoomListUnder(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
 
                 //Получаем список названий помещений с определёнными категориями
                 List<String> roomName = RoomNames(roomList);
 
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
-
                 //Если такие помещения есть
                 if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
+                    number = FillCellsArea(worksheet1, number, roomName, roomList, "Подземный этаж");
 
-                // Сохраняем изменения
-                pack.Save();
-            }
-
-            //Первый этаж
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //ПЕРВЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomListEquals(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
+                roomList = RoomListEquals(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
 
                 //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);
-
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
-
+                roomName = RoomNames(roomList);
 
                 //Если такие помещения есть
                 if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
+                    number = FillCellsArea(worksheet1, number, roomName, roomList, "Первый этаж");
 
                 // Сохраняем изменения
                 pack.Save();
+
             }
 
             //Помещения мусороудаления, в том числе:
+            //Помещения загрузки, в том числе:
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения мусороудаления"), doc).ToString();
+            number = FillCellParameter(number, 2, value, path, "Помещения мусороудаления, в том числе:", "кв.м.");
+
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
             {
-                //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomList(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"));
-
-                //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);
-
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
-
-                //Если такие помещения есть
-                if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
-
-                // Сохраняем изменения
-                pack.Save();
-            }
-
-            //Подземный этаж
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
                 List<Element> roomList = RoomListUnder(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
 
                 //Получаем список названий помещений с определёнными категориями
                 List<String> roomName = RoomNames(roomList);
 
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
-
-
                 //Если такие помещения есть
                 if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
+                    number = FillCellsArea(worksheet1, number, roomName, roomList, "Подземный этаж");
 
-                // Сохраняем изменения
-                pack.Save();
-            }
-
-            //Первый этаж
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
-            {
+                //Первый этаж
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomListEquals(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
+                roomList = RoomListEquals(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
 
                 //Получаем список названий помещений с определёнными категориями
-                List<String> roomName = RoomNames(roomList);
-
-                //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                roomName = RoomNames(roomList);
 
                 //Если такие помещения есть
                 if (roomList.Count != 0)
-                    number = FillCellsArea(worksheet1, number, roomName, roomList);
+                    number = FillCellsArea(worksheet1, number, roomName, roomList, "Первый этаж");
 
                 // Сохраняем изменения
                 pack.Save();
@@ -1504,19 +1411,11 @@ namespace TEP
 
             //Въездная рампа
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Рампа"), doc).ToString();
-            if (value != "")
-            {
-                FillCellParameter(number, 2, value, path, "Въездная рампа", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Въездная рампа", "кв.м.");
 
             //Площадь подземного паркинга
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение автостоянки"), doc).ToString();
-            if (value != "")
-            {
-                FillCellParameter(number, 2, value, path, "Помещение автостоянки", "кв.м.");
-                number++;
-            }
+            number = FillCellParameter(number, 2, value, path, "Помещение автостоянки", "кв.м.");
 
             return number;
         }
