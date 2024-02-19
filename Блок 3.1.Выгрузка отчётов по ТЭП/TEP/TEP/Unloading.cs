@@ -211,6 +211,40 @@ namespace TEP
             area = area.Round(3);
             return area;
         }
+        public virtual double AreasHeigher(List<Element> elements, Document doc, string height)
+        {
+            double area = 0;
+            foreach (Element element in elements)
+            {
+                try
+                {
+                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && int.Parse(element.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString()) > int.Parse(height))
+                    {
+                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    }
+                }
+                catch { }
+            }
+            area = area.Round(3);
+            return area;
+        }
+        public virtual double AreasLower(List<Element> elements, Document doc, string height)
+        {
+            double area = 0;
+            foreach (Element element in elements)
+            {
+                try
+                {
+                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && int.Parse(element.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString()) < int.Parse(height))
+                    {
+                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    }
+                }
+                catch { }
+            }
+            area = area.Round(3);
+            return area;
+        }
         public virtual List<String> Values(String parameter, List<Element> elements)
         {
             List<String> values = new List<String>();           

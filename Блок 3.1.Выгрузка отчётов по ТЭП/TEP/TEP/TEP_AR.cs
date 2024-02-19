@@ -57,19 +57,19 @@ namespace TEP
             B36(doc, path, CountPantry, CountApart);
 
             //Создаём отчёт по коммерции
-
-
+            int number = Commerce(doc, path, 37);
 
             //Создаём отчёт по МОП
-            МОП(doc, path, 37);
-
+            number = МОП(doc, path, number);
 
             //Создаём отчёт по машиноместам
-            //B90(doc, path);
+            number = Auto(doc, path, number, int.Parse(CountApart));
 
             //Создаём отчёт по всем оставшимся категорям
+            number = Engineer_infinity(doc, path, number);
 
             //Создаём отчёт по типовым этажам
+            //TypeFloor(doc, path, number);
 
             System.Diagnostics.Process.Start(path);
         }
@@ -588,155 +588,7 @@ namespace TEP
             FillCell(cells, 2, value.Count.ToString(), path);
             cells++;
         }*/
-        private void B91(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            int count_1 = 0;
-            int count_2 = 0;
-            int count_3 = 0;
-            int count_4 = 0;
-            int count_5 = 0;
-            int count_6 = 0;
-            int count_7 = 0;
-            int count_8 = 0;
-            int count_9 = 0;
-            int count_10 = 0;
-            int count_11 = 0;
-            int count_12 = 0;
-            int count_13 = 0;
-            foreach (var v in list)
-            {
-                if (v != null)
-                {
-                    if (v.Name == "Обычные малые")
-                        count_1++;
-                    if (v.Name == "Обычные средние")
-                        count_2++;
-                    if (v.Name == "Обычные большие")
-                        count_3++;
-                    if (v.Name == "Зависимые малые")
-                        count_4++;
-                    if (v.Name == "Зависимые средние")
-                        count_5++;
-                    if (v.Name == "Зависимые большие")
-                        count_6++;
-                    if (v.Name == "С зарядкой малые")
-                        count_7++;
-                    if (v.Name == "С зарядкой средние")
-                        count_8++;
-                    if (v.Name == "С зарядкой большие")
-                        count_9++;
-                    if (v.Name == "Гостевые малые")
-                        count_10++;
-                    if (v.Name == "Гостевые средние")
-                        count_11++;
-                    if (v.Name == "Гостевые большие")
-                        count_12++;
-                    if (v.Name == "Мотоместа")
-                        count_13++;
-                }
-            }
-            List<string> nameCells = new List<string>
-            {
-                "обычных малых",
-                "обычных средних",
-                "обычных больших",
-                "зависимых малых",
-                "зависимых средних",
-                "зависимых больших",
-                "с зарядкой малых",
-                "с зарядкой средних",
-                "с зарядкой больших",
-                "гостевых малых",
-                "гостевых средних",
-                "гостевых больших",
-                "мотоместа"
-            };
-            for (var i = 0; i < 13; i++)
-            {
-                FillCellParameter(91, 2, value, path, nameCells[i], "шт.");
-            }
-        }
-        private void B92(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(92, 2, value, path);
-        }
-        private void B93(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(93, 2, value, path);
-        }
-        private void B94(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(94, 2, value, path);
-        }
-        private void B95(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(95, 2, value, path);
-        }
-        private void B96(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(96, 2, value, path);
-        }
-        private void B97(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(97, 2, value, path);
-        }
-        private void B98(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(98, 2, value, path);
-        }
-        private void B99(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(99, 2, value, path);
-        }
-        private void B100(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(100, 2, value, path);
-        }
-        private void B101(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(101, 2, value, path);
-        }
-        private void B102(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(102, 2, value, path);
-        }
-        private void B103(Document doc, String path, List<FamilyInstance> list)
-        {
-            string value = string.Empty;
-            FillCell(103, 2, value, path);
-        }
-        private void B104(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(104, 2, value, path);
-        }
-        private void B105(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(105, 2, value, path);
-        }
-        private void B106(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(106, 2, value, path);
-        }
-        private void B107(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(107, 2, value, path);
-        }
+        
         /*private void B108(Document doc, String path)
         {
             string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Инженерно-технические помещения", "ADSK_Этаж", "-1"), doc).ToString();
@@ -1249,6 +1101,126 @@ namespace TEP
             string value = string.Empty;
             FillCell(210, 2, value, path);
         }*/
+        private int Auto(Document doc, String path, int number, int countApart)
+        {
+            double areasFloorP = 0;
+            var list = new FilteredElementCollector(doc)
+                .OfClass(typeof(FamilyInstance))
+                .OfCategory(BuiltInCategory.OST_Parking)
+                .WhereElementIsNotElementType()
+                .Cast<FamilyInstance>()
+                .ToList();
+
+            string value = string.Empty;
+            List<int> numbers = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            foreach (var v in list)
+            {
+                if (v != null)
+                {
+                    if (v.Name == "Обычные малые")
+                        numbers[0]++;
+                    if (v.Name == "Обычные средние")
+                        numbers[1]++;
+                    if (v.Name == "Обычные большие")
+                        numbers[2]++;
+                    if (v.Name == "Зависимые малые")
+                        numbers[3]++;
+                    if (v.Name == "Зависимые средние")
+                        numbers[4]++;
+                    if (v.Name == "Зависимые большие")
+                        numbers[5]++;
+                    if (v.Name == "С зарядкой малые")
+                        numbers[6]++;
+                    if (v.Name == "С зарядкой средние")
+                        numbers[7]++;
+                    if (v.Name == "С зарядкой большие")
+                        numbers[8]++;
+                    if (v.Name == "Гостевые малые")
+                        numbers[9]++;
+                    if (v.Name == "Гостевые средние")
+                        numbers[10]++;
+                    if (v.Name == "Гостевые большие")
+                        numbers[11]++;
+                    if (v.Name == "Мотоместа")
+                        numbers[12]++;
+                }
+            }
+            List<string> nameCells = new List<string>
+            {
+                "обычных малых",
+                "обычных средних",
+                "обычных больших",
+                "зависимых малых",
+                "зависимых средних",
+                "зависимых больших",
+                "с зарядкой малых",
+                "с зарядкой средних",
+                "с зарядкой больших",
+                "гостевых малых",
+                "гостевых средних",
+                "гостевых больших",
+                "мотоместа"
+            };
+
+            if(list.Count != 0)
+                number = FillCellParameter(number, 2, list.Count.ToString(), path, "Количество машино/мото-мест в подземном паркинге, в том числе:", "шт.");
+
+            for (var i = 0; i < nameCells.Count; i++)
+            {
+                if (numbers[i] != 0)
+                    number = FillCellParameter(number, 2, numbers[i].ToString(), path, nameCells[i], "шт.");
+            }
+
+            if(list.Count != 0)
+            {
+                number = FillCellParameter(number, 2, (list.Count / countApart).ToString(), path, "коэффициент обеспеченности", "шт/кв");
+                number = FillCellParameter(number, 2, (areasFloorP / list.Count).ToString(), path, "Отношение кол-ва мест к площади паркинга", "м2/место");
+                number = FillCellParameter(number, 2, (areasFloorP / list.Count).ToString(), path, "Отношение кол-ва мест к ОП этажа", "м2/место");
+            }
+
+            return number;
+        }
+        private int Commerce(Document doc, String path, int number)
+        {
+            //Суммарная площадь коммерческих помещений, в том числе:
+            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Номер помещения", "КМ"), doc).ToString();
+            number = FillCellParameter(number, 2, value, path, "Суммарная площадь коммерческих помещений, в том числе:", "кв.м.");
+
+            //Одно-уровневые коммерческие пом-я 
+            string value_with_technology = (AreasLower(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Кафе"), doc, "5500")
+                    + AreasLower(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Ресторан"), doc, "5500")
+                    + AreasLower(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Супермаркет"), doc, "5500")
+                    + AreasLower(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Фитнес"), doc, "5500")).ToString();
+
+            string value_without_technology = (AreasLower(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения общественного назначения"), doc, "5500")).ToString();
+
+            number = FillCellParameter(number, 2, (int.Parse(value_with_technology) + int.Parse(value_without_technology)).ToString(), path, "Одно-уровневые коммерческие пом-я:", "кв.м.");
+            number = FillCellParameter(number, 2, value_with_technology, path, "Помещения с технологией", "кв.м.");
+            number = FillCellParameter(number, 2, value_without_technology, path, "Помещения без технологии", "кв.м.");
+
+            //Двух-уровневые коммерческие пом-я 
+            value_with_technology = (AreasHeigher(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Кафе"), doc, "5500")
+                    + AreasHeigher(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Ресторан"), doc, "5500")
+                    + AreasHeigher(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Супермаркет"), doc, "5500")
+                    + AreasHeigher(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Фитнес"), doc, "5500")).ToString();
+
+            value_without_technology = (AreasHeigher(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения общественного назначения"), doc, "5500")).ToString();
+
+            number = FillCellParameter(number, 2, (int.Parse(value_with_technology) + int.Parse(value_without_technology)).ToString(), path, "Двух-уровневые коммерческие пом-я:", "кв.м.");
+            number = FillCellParameter(number, 2, value_with_technology, path, "Помещения с технологией", "кв.м.");
+            number = FillCellParameter(number, 2, value_without_technology, path, "Помещения без технологии", "кв.м.");
+
+            //Детский сад
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "ДОО"), doc).ToString();
+            number = FillCellParameter(number, 2, value, path, "Детский сад", "кв.м.");
+
+            //Количество помещений ритейла
+            //value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "ДОО"), doc).ToString();
+            //number = FillCellParameter(number, 2, value, path, "Количество помещений ритейла", "кв.м.");
+
+            return number;
+        }
         private int МОП(Document doc, String path, int number)
         {
             //Суммарная площадь МОП, в том числе:
@@ -1419,7 +1391,7 @@ namespace TEP
 
             return number;
         }
-        private void Engineer_infinity(Document doc, String path, int number)
+        private int Engineer_infinity(Document doc, String path, int number)
         {
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
@@ -1430,11 +1402,16 @@ namespace TEP
                 List<String> roomName = RoomNames(roomList);
 
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
-                FillCellsArea(worksheet1, number, roomName, roomList);
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+
+                //Если такие помещения есть
+                if (roomList.Count != 0)
+                    number = FillCellsArea(worksheet1, number, roomName, roomList);
+
                 // Сохраняем изменения
                 pack.Save();
             }
+            return number;
         }
         private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor)
         {
