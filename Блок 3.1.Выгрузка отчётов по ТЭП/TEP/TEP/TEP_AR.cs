@@ -19,6 +19,9 @@ namespace TEP
     {
         public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc)
         {
+            //Дописать список всех мопов в мини отчёте
+            //и Количество помещений ритейла в коммерции
+
             //CopyFile("ТЭП_АР");
             String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx");
 
@@ -69,7 +72,7 @@ namespace TEP
             number = Engineer_infinity(doc, path, number);
 
             //Создаём отчёт по типовым этажам
-            //TypeFloor(doc, path, number);
+            TypeFloor(doc, path, number.);
 
             System.Diagnostics.Process.Start(path);
         }
@@ -312,795 +315,6 @@ namespace TEP
         }
 
         #endregion 
-        //КМ
-        /*private void B37(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "КМ"), doc).ToString();
-            FillCell(37, 2, value, path);
-        }
-        private void B38(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(38, 2, value, path);
-        }
-        private void B39(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(39, 2, value, path);
-        }
-        private void B40(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(40, 2, value, path);
-        }
-        private void B41(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(41, 2, value, path);
-        }
-        private void B42(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(42, 2, value, path);
-        }
-        private void B43(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(43, 2, value, path);
-        }
-        private void B44(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNG_Имя помещения", "Детский сад"), doc).ToString();
-            FillCell(44, 2, value, path);
-        }
-        private void B45(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(45, 2, value, path);
-        }*/
-        /*private void B46(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "МОП"), doc).ToString();
-            FillCell(46, 2, value, path);
-        }
-        private void B47(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "МОП", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(47, 2, value, path);
-        }
-        private void B48(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Вестибюль", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(48, 2, value, path);
-        }
-        private void B49(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лифтовой холл", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(49, 2, value, path);
-        }
-        private void B50(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Почтовая комната", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(50, 2, value, path);
-        }
-        private void B51(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Санузел", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(51, 2, value, path);
-        }
-        private void B52(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Инвентарная (помещение хранения детского оборудования)", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(52, 2, value, path);
-        }
-        private void B53(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Тамбур", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(53, 2, value, path);
-        }
-        private void B54(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей"), doc).ToString();
-            FillCell(54, 2, value, path);
-        }
-        private void B55(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "Лифтовой холл (ПБЗ)"), doc).ToString();
-            FillCell(55, 2, value, path);
-        }
-        private void B56(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "Коридор"), doc).ToString();
-            FillCell(56, 2, value, path);
-        }
-        private void B57(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "ПУИ"), doc).ToString();
-            FillCell(57, 2, value, path);
-        }
-        private void B58(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "Лестничная клетка/ПБЗ"), doc).ToString();
-            FillCell(58, 2, value, path);
-        }
-        private void B59(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "Сервисный коридор"), doc).ToString();
-            FillCell(59, 2, value, path);
-        }
-        private void B60(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "МОП типовых этажей", "PNR_Имя помещения", "Помещение ревизии инженерных коммуникаций"), doc).ToString();
-            FillCell(60, 2, value, path);
-        }
-        private void B61(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Паркинг", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(61, 2, value, path);
-        }
-        private void B62(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лифтовой холл (тамбур-шлюз)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(62, 2, value, path);
-        }
-        private void B63(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Инвентарная(помещение хранения велосипедов)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(63, 2, value, path);
-        }
-        private void B64(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Коридор", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(64, 2, value, path);
-        }
-        private void B65(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Проход блока кладовых", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(65, 2, value, path);
-        }
-        private void B66(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лестничная клетка"), doc).ToString();
-            FillCell(66, 2, value, path);
-        }
-        private void B67(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лестничная клетка", "PNR_Функция помещения", "МОП типовых этажей"), doc).ToString();
-            FillCell(67, 2, value, path);
-        }
-        private void B68(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лестничная клетка", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(68, 2, value, path);
-        }
-        private void B69(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лестничная клетка", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(69, 2, value, path);
-        }
-        private void B70(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения загрузки"), doc).ToString();
-            FillCell(70, 2, value, path);
-        }
-        private void B71(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения загрузки", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(71, 2, value, path);
-        }
-        private void B72(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Зона / коридор загрузки ", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(72, 2, value, path);
-        }
-        private void B73(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение временного хранения", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(73, 2, value, path);
-        }
-        private void B74(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лифтовой холл сервисного лифта", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(74, 2, value, path);
-        }
-        private void B75(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения загрузки", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(75, 2, value, path);
-        }
-        private void B76(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Зона / коридор загрузки ", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(76, 2, value, path);
-        }
-        private void B77(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение временного хранения", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(77, 2, value, path);
-        }
-        private void B78(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Лифтовой холл сервисного лифта", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(78, 2, value, path);
-        }
-        private void B79(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения мусороудаления"), doc).ToString();
-            FillCell(79, 2, value, path);
-        }
-        private void B80(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения мусороудаления", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(80, 2, value, path);
-        }
-        private void B81(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Мусорокамера хранения ТБО", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(81, 2, value, path);
-        }
-        private void B82(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение временного хранения", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(82, 2, value, path);
-        }
-        private void B83(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Коридор", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(83, 2, value, path);
-        }
-        private void B84(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения мусороудаления", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(84, 2, value, path);
-        }
-        private void B85(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Мусорокамера хранения ТБО", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(85, 2, value, path);
-        }
-        private void B86(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение временного хранения", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(86, 2, value, path);
-        }
-        private void B87(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Коридор", "ADSK_Этаж", "1"), doc).ToString();
-            FillCell(87, 2, value, path);
-        }
-        private void B88(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Рампа"), doc).ToString();
-            FillCell(88, 2, value, path);
-        }
-        private void B89(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Паркинг", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(89, 2, value, path);
-        }*/
-        /*private void B90(Document doc, String path, out List<FamilyInstance> value, out int cells)
-        {
-            value = new FilteredElementCollector(doc)
-                            .OfClass(typeof(FamilyInstance))
-                            .OfCategory(BuiltInCategory.OST_Parking)
-                            .Cast<FamilyInstance>()
-                            .ToList();
-            FillCell(cells, 2, value.Count.ToString(), path);
-            cells++;
-        }*/
-        
-        /*private void B108(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Инженерно-технические помещения", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(108, 2, value, path);
-        }
-        private void B109(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение кабельного ввода", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(109, 2, value, path);
-        }
-        private void B110(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение венткамеры ОВ (принадлежность обслуживаемой зоны: автостоянка,ТП, ДОО, холодильного центра, ИТП...)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(110, 2, value, path);
-        }
-        private void B111(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение венткамеры ПДВ (принадлежность обслуживаемой зоны: автостоянки, ТП, ДОО, холодильного центра, ИТП...)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(111, 2, value, path);
-        }
-        private void B112(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Кроссовая (узел, связи, СС, А/с, АР1, помещение домофонной сети и пр.)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(112, 2, value, path);
-        }
-        private void B113(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение ввода СС", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(113, 2, value, path);
-        }
-        private void B114(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ВРУ (принадлежность обслуживаемой зоны: ТП, ДОО, холодильного центра, ИТП...)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(114, 2, value, path);
-        }
-        private void B115(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ВРУ жилья", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(115, 2, value, path);
-        }
-        private void B116(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ВРУ автостоянки", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(116, 2, value, path);
-        }
-        private void B117(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ВРУ ПОН", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(117, 2, value, path);
-        }
-        private void B118(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ТП", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(118, 2, value, path);
-        }
-        private void B119(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Трансформаторная камера", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(119, 2, value, path);
-        }
-        private void B120(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "РУНН", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(120, 2, value, path);
-        }
-        private void B121(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "РУВН", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(121, 2, value, path);
-        }
-        private void B122(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Холодильный центр", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(122, 2, value, path);
-        }
-        private void B123(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Водомерный узел", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(123, 2, value, path);
-        }
-        private void B124(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Серверная", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(124, 2, value, path);
-        }
-        private void B125(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение выпуска (ВК, ливневка и т.д)", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(125, 2, value, path);
-        }
-        private void B126(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ИТП", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(126, 2, value, path);
-        }
-        private void B127(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Насосная", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(127, 2, value, path);
-        }
-        private void B128(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Насосная АУПТ", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(128, 2, value, path);
-        }
-        private void B129(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Помещение очистки воды", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(129, 2, value, path);
-        }
-        private void B130(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "КНС", "ADSK_Этаж", "-1"), doc).ToString();
-            FillCell(130, 2, value, path);
-        }
-        private void B131(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(131, 2, value, path);
-        }
-        private void B132(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(132, 2, value, path);
-        }
-        private void B133(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(133, 2, value, path);
-        }
-        private void B134(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Тамбур", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(134, 2, value, path);
-        }
-        private void B135(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Вестибюль", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(135, 2, value, path);
-        }
-        private void B136(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Переговорная комната для приема населения", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(136, 2, value, path);
-        }
-        private void B137(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Переговорная комната рабочая", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(137, 2, value, path);
-        }
-        private void B138(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Рабочее место менеджера по работе с клиентами", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(138, 2, value, path);
-        }
-        private void B139(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Санузел", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(139, 2, value, path);
-        }
-        private void B140(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Коридор", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(140, 2, value, path);
-        }
-        private void B141(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(141, 2, value, path);
-        }
-        private void B142(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Кабинет управляющего", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(142, 2, value, path);
-        }
-        private void B143(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Зал менеджеров ", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(143, 2, value, path);
-        }
-        private void B144(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Комната для отдыха и приема пищи ", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(144, 2, value, path);
-        }
-        private void B145(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(14, 2, value, path);
-        }
-        private void B146(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Серверная", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(146, 2, value, path);
-        }
-        private void B147(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Архив", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(147, 2, value, path);
-        }
-        private void B148(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Коридор", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(148, 2, value, path);
-        }
-        private void B149(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Объединенный диспетчерский пункт"), doc).ToString();
-            FillCell(149, 2, value, path);
-        }
-        private void B150(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Объединенный диспетчерский пункт", "PNR_Функция помещения", "Объединенный диспетчерский пункт"), doc).ToString();
-            FillCell(150, 2, value, path);
-        }
-        private void B151(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Тамбур", "PNR_Функция помещения", "Помещение управляющей компании"), doc).ToString();
-            FillCell(151, 2, value, path);
-        }
-        private void B152(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "Серверная", "PNR_Функция помещения", "Объединенный диспетчерский пункт"), doc).ToString();
-            FillCell(152, 2, value, path);
-        }
-        private void B153(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "С/у", "PNR_Функция помещения", "Объединенный диспетчерский пункт"), doc).ToString();
-            FillCell(153, 2, value, path);
-        }
-        private void B154(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Объединенный диспетчерский пункт"), doc).ToString();
-            FillCell(154, 2, value, path);
-        }
-        private void B155(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Функция помещения", "Помещения линейного и обслуживающего персонала"), doc).ToString();
-            FillCell(155, 2, value, path);
-        }
-        private void B156(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString();
-            FillCell(156, 2, value, path);
-        }
-        private void B157(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString();
-            FillCell(157, 2, value, path);
-        }
-        private void B158(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); 
-            FillCell(158, 2, value, path);
-        }
-        private void B159(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(159, 2, value, path);
-        }
-        private void B160(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(160, 2, value, path);
-        }
-        private void B161(Document doc, String path)
-        {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Имя помещения", "ПУИ", "PNR_Функция помещения", "Помещение для размещения круглосуточного дежурного техника"), doc).ToString(); FillCell(161, 2, value, path);
-        }
-        private void B162(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(162, 2, value, path);
-        }
-        private void B163(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(163, 2, value, path);
-        }
-        private void B164(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(164, 2, value, path);
-        }
-        private void B165(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(165, 2, value, path);
-        }
-        private void B166(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(166, 2, value, path);
-        }
-        private void B167(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(167, 2, value, path);
-        }
-        private void B168(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(168, 2, value, path);
-        }
-        private void B169(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(169, 2, value, path);
-        }
-        private void B170(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(170, 2, value, path);
-        }
-        private void B171(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(171, 2, value, path);
-        }
-        private void B172(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(172, 2, value, path);
-        }
-        private void B173(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(173, 2, value, path);
-        }
-        private void B174(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(174, 2, value, path);
-        }
-        private void B175(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(175, 2, value, path);
-        }
-        private void B176(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(176, 2, value, path);
-        }
-        private void B177(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(177, 2, value, path);
-        }
-        private void B178(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(178, 2, value, path);
-        }
-        private void B179(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(179, 2, value, path);
-        }
-        private void B180(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(180, 2, value, path);
-        }
-        private void B181(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(181, 2, value, path);
-        }
-        private void B182(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(182, 2, value, path);
-        }
-        private void B183(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(183, 2, value, path);
-        }
-        private void B184(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(184, 2, value, path);
-        }
-        private void B185(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(185, 2, value, path);
-        }
-        private void B186(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(186, 2, value, path);
-        }
-        private void B187(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(187, 2, value, path);
-        }
-        private void B188(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(188, 2, value, path);
-        }
-        private void B189(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(189, 2, value, path);
-        }
-        private void B190(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(190, 2, value, path);
-        }
-        private void B191(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(191, 2, value, path);
-        }
-        private void B192(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(192, 2, value, path);
-        }
-        private void B193(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(193, 2, value, path);
-        }
-        private void B194(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(194, 2, value, path);
-        }
-        private void B195(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(195, 2, value, path);
-        }
-        private void B196(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(196, 2, value, path);
-        }
-        private void B197(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(197, 2, value, path);
-        }
-        private void B198(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(198, 2, value, path);
-        }
-        private void B199(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(199, 2, value, path);
-        }
-        private void B200(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(200, 2, value, path);
-        }
-        private void B201(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(201, 2, value, path);
-        }
-        private void B202(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(202, 2, value, path);
-        }
-        private void B203(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(203, 2, value, path);
-        }
-        private void B204(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(204, 2, value, path);
-        }
-        private void B205(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(205, 2, value, path);
-        }
-        private void B206(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(206, 2, value, path);
-        }
-        private void B207(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(207, 2, value, path);
-        }
-        private void B208(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(208, 2, value, path);
-        }
-        private void B209(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(209, 2, value, path);
-        }
-        private void B210(Document doc, String path)
-        {
-            string value = string.Empty;
-            FillCell(210, 2, value, path);
-        }*/
         private int Auto(Document doc, String path, int number, int countApart)
         {
             double areasFloorP = 0;
@@ -1419,57 +633,48 @@ namespace TEP
 
             //Типовой этаж
             value = (int.Parse(StartFloor) - int.Parse(EndFloor)).ToString();
-            FillCellParameter(number, 2, value, path, "Типовой этаж " + StartFloor + " - " + EndFloor, "шт.");
-            number++;
+            number = FillCellParameter(number, 2, value, path, "Типовой этаж " + StartFloor + " - " + EndFloor, "шт.");
 
+            List<Element> roomListFloor = new List<Element>();
             //Количество квартир
-            var roomListFloor = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ", "ADSK_Этаж", StartFloor);
+            int start = int.Parse(StartFloor);
+            int end = int.Parse(EndFloor);
+            
+            while (start == end)
+            {
+                roomListFloor.AddRange(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ", "ADSK_Этаж", start.ToString()));
+                start++;
+            }
+            
             var nameKV = Values("ADSK_Номер квартиры", roomListFloor);
             var name = nameKV.Distinct().ToList();
-            value = "0";
-            foreach (var n in name)
-            {
-                var maxN = n.Substring(n.Length - 3).TrimStart('0');
-                if (maxN != null)
-                {
-                    if (int.Parse(maxN) > int.Parse(value))
-                    {
-                        value = (int.Parse(maxN)).ToString();
-                    }
-                }
-            }
-            value = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "Количество квартир", "шт.");
-            number++;
+            value = name.Count.ToString();
+            number = FillCellParameter(number, 2, value, path, "Количество квартир", "шт.");
 
             //На этаж
             value = (int.Parse(value) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "На этаж", "шт.");
-            number++;
+            number = FillCellParameter(number, 2, value, path, "На этаж", "шт.");
 
             //Площадь квартир
             value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ", "ADSK_Этаж", StartFloor), doc).ToString();
-            value = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "Площадь квартир", "кв.м.");
-            number++;
+            string AreaApart = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
+            number = FillCellParameter(number, 2, AreaApart, path, "Площадь квартир", "кв.м.");
 
             //На этаж
-            value = (int.Parse(value) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "На этаж", "кв.м.");
-            number++;
+            value = (int.Parse(AreaApart) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
+            number = FillCellParameter(number, 2, value, path, "На этаж", "кв.м.");
 
             //Площадь МОП
-            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "МОП", "ADSK_Этаж", StartFloor), doc).ToString();
+            value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "PNR_Номер помещения", "МОП", "ADSK_Этаж", StartFloor), doc).ToString();
             value = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "Площадь МОП", "кв.м.");
-            number++;
+            number = FillCellParameter(number, 2, value, path, "Площадь МОП", "кв.м.");
 
             //Площадь МОП на этаж, в т.ч.:
             value = (int.Parse(value) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
             FillCellParameter(number, 2, value, path, "Площадь МОП на этаж, в т.ч.:", "кв.м.");
 
             //Список всех мопов на 1 этаж
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(path))))
             {
                 //Получаем лист с нужными комнатами по определённым категориям 
                 List<Element> roomList = RoomListFloor(doc, Func("Инженерно-технические помещения", ""), StartFloor);
@@ -1478,8 +683,8 @@ namespace TEP
                 List<String> roomName = RoomNames(roomList);
 
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets[2];
-                FillCellsArea(worksheet1, number, roomName, roomList);
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                number = FillCellsArea(worksheet1, number, roomName, roomList);
                 // Сохраняем изменения
                 pack.Save();
             }
@@ -1487,13 +692,32 @@ namespace TEP
             //Общая площадь
             value = Areas(ElementsEquals(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", StartFloor), doc).ToString();
             value = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "Общая площадь", "кв.м.");
+            number = FillCellParameter(number, 2, value, path, "Общая площадь", "кв.м.");
 
             //Общая площадь этажа
-            value = (int.Parse(value) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
-            FillCellParameter(number, 2, value, path, "Общая площадь этажа", "кв.м.");
+            string OP = (int.Parse(value) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
+            number = FillCellParameter(number, 2, OP, path, "Общая площадь этажа", "кв.м.");
 
+            //Суммарная поэтажная площадь в габаритах наружных стен
+            value = Areas(Elements(BuiltInCategory.OST_Areas, doc, "ADSK_Этаж", StartFloor), doc, "ГНС").ToString();
+            string SPP = (int.Parse(value) * (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
+            number = FillCellParameter(number, 2, SPP, path, "Суммарная поэтажная площадь в габаритах наружных стен", "кв.м.");
 
+            //СПП в ГНС этажа
+            string SPP_Floor = (int.Parse(SPP) / (int.Parse(EndFloor) - int.Parse(StartFloor))).ToString();
+            number = FillCellParameter(number, 2, SPP_Floor, path, "СПП в ГНС этажа", "кв.м.");
+
+            //Отношение Площади квартир к СПП ГНС
+            value = (int.Parse(AreaApart) / int.Parse(SPP)).ToString();
+            number = FillCellParameter(number, 2, value, path, "Отношение Площади квартир к СПП ГНС", "кв.м.");
+
+            //Отношение ОП к СПП ГНС
+            value = (int.Parse(OP) / int.Parse(SPP)).ToString();
+            number = FillCellParameter(number, 2, value, path, "Отношение ОП к СПП ГНС", "кв.м.");
+
+            //Отношение Площади квартир к ОП
+            value = (int.Parse(AreaApart) / int.Parse(OP)).ToString();
+            number = FillCellParameter(number, 2, value, path, "Отношение Площади квартир к ОП", "кв.м.");
         }
     }
 }
