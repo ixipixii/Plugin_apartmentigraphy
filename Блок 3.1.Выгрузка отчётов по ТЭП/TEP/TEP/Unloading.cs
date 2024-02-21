@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
 
 namespace TEP
 {
@@ -113,41 +114,12 @@ namespace TEP
         //Методы Area возвращают площади элементов
         //Метод Values возвращает лист значений определённых параметров определённых элементов
 
+        //Список элементов нужной категории
         public virtual List<Element> Elements(BuiltInCategory category, Document doc)
         {
             List<Element> elements = new FilteredElementCollector(doc)
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
-                                                    .ToList();
-
-            return elements;
-        }
-        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, String valueFilterParameter)
-        {
-            List<Element> elements = new FilteredElementCollector(doc)
-                                                    .OfCategory(category)
-                                                    .WhereElementIsNotElementType()
-                                                    .Where(e => e != null 
-                                                        && e.LookupParameter(filterParameter) != null 
-                                                        && e.LookupParameter(filterParameter).AsString() != null
-                                                        && e.LookupParameter(filterParameter).AsString() != "")
-                                                    .Where(e => e.LookupParameter(filterParameter).AsString().Contains(valueFilterParameter))
-                                                    .ToList();
-
-            return elements;
-        }
-        public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter_1, String valueFilterParameter_1,
-                                                                                      String filterParameter_2, String valueFilterParameter_2)
-        {
-            List<Element> elements = new FilteredElementCollector(doc)
-                                                    .OfCategory(category)
-                                                    .WhereElementIsNotElementType()
-                                                    .Where(e => e != null
-                                                        && e.LookupParameter(filterParameter_1) != null && e.LookupParameter(filterParameter_2) != null 
-                                                        && e.LookupParameter(filterParameter_2).AsString() != null && e.LookupParameter(filterParameter_1).AsString() != null
-                                                        && e.LookupParameter(filterParameter_2).AsString() != "" && e.LookupParameter(filterParameter_1).AsString() != "")
-                                                    .Where(e => e.LookupParameter(filterParameter_1).AsString().Contains(valueFilterParameter_1) &&
-                                                                e.LookupParameter(filterParameter_2).AsString() == valueFilterParameter_2)
                                                     .ToList();
 
             return elements;
@@ -174,16 +146,40 @@ namespace TEP
                 return elements;
             }
         }
-        public virtual List<Element> ElementsEquals(BuiltInCategory category, Document doc, String filterParameter, String valueFilterParameter)
+        
+        //Формируем списки по нужным параметрам
+        public virtual List<Element> ParameterValueEquals(List<Element> list, string parameter, string value)
         {
-            List<Element> elements = new FilteredElementCollector(doc)
-                                                    .OfCategory(category)
-                                                    .WhereElementIsNotElementType()
-                                                    .Where(e => e.LookupParameter(filterParameter).AsString() == valueFilterParameter)
-                                                    .ToList();
-
-            return elements;
+            List<Element> newList = new List<Element>();
+            if(list != null)
+            {
+                foreach(Element element in list)
+                {
+                    if (element.LookupParameter(parameter).AsString() == value)
+                    {
+                        newList.Add(element);
+                    }
+                }
+            }
+            return newList;
         }
+        public virtual List<Element> ParameterValueContains(List<Element> list, string parameter, string value)
+        {
+            List<Element> newList = new List<Element>();
+            if (list != null)
+            {
+                foreach (Element element in list)
+                {
+                    if (element.LookupParameter(parameter).AsString().Contains(value))
+                    {
+                        newList.Add(element);
+                    }
+                }
+            }
+            return newList;
+        }
+
+        //Расчитываем площадь по списку элементов
         public virtual double Areas(List<Element> elements, Document doc)
         {
             double area = 0;
@@ -245,6 +241,8 @@ namespace TEP
             area = area.Round(3);
             return area;
         }
+
+        //Достаём из списка элементов значения параметров
         public virtual List<String> Values(String parameter, List<Element> elements)
         {
             List<String> values = new List<String>();           
@@ -256,6 +254,7 @@ namespace TEP
             return values;
         }
 
+        //Расчитываем площадь списка помещений
         public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList)
         {
             int rowName = rowFunc + 1;
@@ -318,6 +317,7 @@ namespace TEP
             Style(worksheet1, rowName);
             return rowName;
         }
+        //Расчитываем площадь списка помещений с названием функции
         public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList, string nameFuncRow)
         {
             int rowName = rowFunc + 1;
@@ -379,72 +379,7 @@ namespace TEP
             Style(worksheet1, rowName);
             return rowName;
         }
-        public int FillCellsAreaUnder(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList, String nameCells)
-        {
-            int rowName = rowFunc + 1;
-            double areaName = 0.0;
-            double areaFunc = 0.0;
-            String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
-            for (int i = 0; i < roomName.Count(); i++)
-            {
-                for (int j = 0; j < roomList.Count(); j++)
-                {
-                    String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
-                    if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
-                    {
-                        areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                        if (nameFuncNew == nameFunc)
-                        {
-                            areaFunc += areaName;
-                        }
-                        else
-                        {
-                            areaFunc = areaFunc.Round(3);
-                            areaName = areaName.Round(3);
-                            worksheet1.Cells[rowFunc, 1].Value = nameCells; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
-                            worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
-                            worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
-                            nameFunc = nameFuncNew;
-                            areaFunc = areaName;
-                            rowFunc = rowName;
-                            rowName++;
-                        }
-                    }
-                }
-                areaFunc = areaFunc.Round(3);
-                areaName = areaName.Round(3);
-                worksheet1.Cells[rowName, 1].Value = roomName[i]; worksheet1.Cells[rowName, 1].Style.Font.Italic = true;
-                worksheet1.Cells[rowName, 2].Value = areaName; worksheet1.Cells[rowName, 2].Style.Font.Italic = true;
-                worksheet1.Cells[rowName, 3].Value = "кв.м"; worksheet1.Cells[rowName, 3].Style.Font.Italic = true;
-                areaName = 0.0;
-                rowName++;
-                if (i == roomList.Count - 1)
-                {
-                    areaFunc = areaFunc.Round(3);
-                    areaName = areaName.Round(3);
-                    worksheet1.Cells[rowFunc, 1].Value = nameCells; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
-                    worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
-                    worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
-                }
-            }
-
-            Style(worksheet1, rowName);
-            return rowName;
-        }
-        public List<Element> RoomList(Document doc, List<string> func)
-        {
-            var allFuncRoom = new FilteredElementCollector(doc);
-            //Лист всех комнат
-            List<Element> roomList = new List<Element>();
-            foreach (var f in func)
-            {
-                roomList.AddRange(allFuncRoom
-                    .WhereElementIsNotElementType()
-                    .OfCategory(BuiltInCategory.OST_Rooms)
-                    .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f).ToList());
-            }
-            return roomList;
-        }
+        
         public List<Element> RoomListFloor(Document doc, List<string> func, string nameFloor)
         {
             var allFuncRoom = new FilteredElementCollector(doc);
@@ -553,6 +488,24 @@ namespace TEP
             rangeStyleC.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
             rangeStyleC.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
             rangeStyleC.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+        }
+        public void StyleCell(ExcelWorksheet worksheet1, int rowName, System.Drawing.Color color)
+        {
+            var rangeStyleA = worksheet1.Cells["A" + (rowName).ToString()];
+            var rangeStyleB = worksheet1.Cells["B" + (rowName).ToString()];
+            var rangeStyleC = worksheet1.Cells["C" + (rowName).ToString()];
+
+            rangeStyleA.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            rangeStyleB.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+            rangeStyleC.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+
+            rangeStyleA.Style.Fill.BackgroundColor.SetColor(color);
+            rangeStyleB.Style.Fill.BackgroundColor.SetColor(color);
+            rangeStyleC.Style.Fill.BackgroundColor.SetColor(color);
+
+            rangeStyleA.Style.Font.Bold = true;
+            rangeStyleB.Style.Font.Bold = true;
+            rangeStyleC.Style.Font.Bold = true;
         }
     }
 }

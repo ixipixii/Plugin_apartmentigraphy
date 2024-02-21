@@ -17,7 +17,10 @@ namespace TEP
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            TEP_AR tEP_AR = new TEP_AR(uiapp, uidoc, doc);
+            TypeFloor typeFloor = new TypeFloor();
+            typeFloor.ShowDialog();
+
+            TEP_AR tEP_AR = new TEP_AR(uiapp, uidoc, doc, typeFloor.Start, typeFloor.End, typeFloor.Sect);
 
             return Result.Succeeded;
         }

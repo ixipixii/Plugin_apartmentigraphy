@@ -221,3 +221,8 @@ C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгр�
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP.csproj.CopyComplete
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP.dll
 C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP.pdb
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TypeFloor.g.cs
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP_MarkupCompile.cache
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP_MarkupCompile.lref
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TypeFloor.baml
+C:\Users\k.sinyagina\source\repos\Plugin_apartmentigraphy\Блок 3.1.Выгрузка отчётов по ТЭП\TEP\TEP\obj\Debug\TEP.g.resources
