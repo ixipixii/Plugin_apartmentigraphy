@@ -120,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apartmentography.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="Detailed_apartmentography.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

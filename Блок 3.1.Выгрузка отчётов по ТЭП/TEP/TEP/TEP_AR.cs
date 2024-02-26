@@ -20,7 +20,7 @@ namespace TEP
     {
         public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc, string Start, string End, string Sect)
         {
-            if(Start == null && End == null && Sect == null || Start == "" && End == "" && Sect == "")
+            if(Start == null || End == null || Sect == null || Start == "" || End == "" || Sect == "")
             {
                 TaskDialog.Show("Ошибка ввода", "Введите необходимые данные");
                 return;
@@ -32,15 +32,15 @@ namespace TEP
             String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx");
 
             //Считываем все помещения в модели
-            List<Element> aparts = Elements(BuiltInCategory.OST_Rooms, doc);
+            List<Data> rooms = Elements(BuiltInCategory.OST_Rooms, doc);
             
             //Создаём отчёт для квартир
-            var CellB6 = B6(doc, path, aparts);
-            var CellB7 = B7(doc, path, aparts);
+            var CellB6 = B6(doc, path, rooms);
+            var CellB7 = B7(doc, path, rooms);
             B8(doc, path, CellB6, CellB7);
 
             //для расчёта ГНС считываем все ГНС
-            List<Element> GNS = Elements(BuiltInCategory.OST_Areas, doc);
+            List<Data> GNS = Elements(BuiltInCategory.OST_Areas, doc);
             B9(doc, path, GNS);
             B10(doc, path, GNS);
             B11(doc, path, GNS);
@@ -48,50 +48,50 @@ namespace TEP
             B13(doc, path, GNS); 
 
             //Продолжение квартир
-            B14(doc, path, aparts);
-            B15(doc, path, aparts);
-            B16(doc, path, aparts);
-            B17(doc, path, aparts);
-            B18(doc, path);
-            B19(doc, path, aparts);
-            string CountApart = B20(doc, path, aparts);
-            string CountApartWithFinishing = B21(doc, path, aparts);
-            string CountApartWhiteBox = B22(doc, path, aparts);
-            string CountApartWithoutFinishing = B23(doc, path, aparts);
+            B14(doc, path, rooms);
+            B15(doc, path, rooms);
+            B16(doc, path, rooms);
+            B17(doc, path, rooms);
+            B18(doc, path, rooms);
+            B19(doc, path, rooms);
+            string CountApart = B20(doc, path, rooms);
+            string CountApartWithFinishing = B21(doc, path, rooms);
+            string CountApartWhiteBox = B22(doc, path, rooms);
+            string CountApartWithoutFinishing = B23(doc, path, rooms);
             B24(doc, path, CountApart);
             B25(doc, path, CountApartWithFinishing);
             B26(doc, path, CountApartWhiteBox);
             B27(doc, path, CountApartWithoutFinishing);
             string value = string.Empty;
-            B28(doc, path, out value, aparts);
+            B28(doc, path, out value, rooms);
             B29(doc, path, value);
-            B30(doc, path, out value, aparts);
+            B30(doc, path, out value, rooms);
             B31(doc, path, value);
-            B32(doc, path, out value, aparts);
+            B32(doc, path, out value, rooms);
             B33(doc, path, value);
-            string CountPantry = B34(doc, path, aparts);
+            string CountPantry = B34(doc, path, rooms);
             B35(doc, path, CountPantry);
             B36(doc, path, CountPantry, CountApart);
 
             //Создаём отчёт по коммерции
-            int number = Commerce(doc, path, 37, aparts);
+            int number = Commerce(doc, path, 37, rooms);
 
             //Создаём отчёт по МОП
-            number = МОП(doc, path, number, aparts);
+            number = МОП(doc, path, number, rooms);
 
             //Создаём отчёт по машиноместам
             number = Auto(doc, path, number, int.Parse(CountApart));
 
             //Создаём отчёт по всем оставшимся категорям
-            number = Engineer_infinity(doc, path, number, aparts);
+            number = Engineer_infinity(doc, path, number, rooms);
 
             //Создаём отчёт по типовым этажам
-            TypeFloor(doc, path, number, Start, End, Sect, aparts);
+            TypeFloor(doc, path, number, Start, End, Sect, rooms);
 
             System.Diagnostics.Process.Start(path);
         }
         #region всё для квартир
-        private string CountApart(List<Element> list)
+        private string CountApart(List<Data> list)
         {
             //Определяем количество квартир
             List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
@@ -135,14 +135,14 @@ namespace TEP
 
             return result.Select(s => s.Skip(1).Sum(i => int.Parse(i))).Sum().ToString();
         }
-        private string B6(Document doc, String path, List<Element> elements)
+        private string B6(Document doc, String path, List<Data> elements)
         {
             List<String> values = Values("ADSK_Этаж", elements);
             string value = values.Distinct().Count().ToString();
             FillCell(6, 2, value, path);
             return value;
         }
-        private string B7(Document doc, String path, List<Element> elements)
+        private string B7(Document doc, String path, List<Data> elements)
         {
             //elements = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ");
             elements = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");
@@ -156,52 +156,62 @@ namespace TEP
             var value = int.Parse(CellB6) - int.Parse(CellB7);
             FillCell(8, 2, value.ToString(), path);
         }
-        private void B9(Document doc, String path, List<Element> elements) //Сравниваем ГНС с параметром "PNR_Имя помещения"
+        private void B9(Document doc, String path, List<Data> elements) //Сравниваем ГНС с параметром "PNR_Имя помещения"
         {
             string value = Areas(elements, doc, "ГНС").ToString();
             FillCell(9, 2, value, path);
         }
-        private void B10(Document doc, String path, List<Element> elements)
+        private void B10(Document doc, String path, List<Data> elements)
         {
             string value = (Areas(elements, doc, "ГНС")
                             - Areas(elements, doc, "нежилая")).ToString();
             FillCell(10, 2, value, path);
         }
-        private void B11(Document doc, String path, List<Element> elements)
+        private void B11(Document doc, String path, List<Data> elements)
         {
             string value = (Areas(elements, doc, "ГНС")
                             - Areas(elements, doc, "нежилая")
                             - Areas(elements, doc, "входная")).ToString();
             FillCell(11, 2, value, path);
         }
-        private void B12(Document doc, String path, List<Element> elements)
+        private void B12(Document doc, String path, List<Data> elements)
         {
             string value = Areas(elements, doc, "входная").ToString();
             FillCell(12, 2, value, path);
         }
-        private void B13(Document doc, String path, List<Element> elements)
+        private void B13(Document doc, String path, List<Data> elements)
         {
             string value = Areas(elements, doc, "нежилая").ToString();
             FillCell(13, 2, value, path);
         }
-        private void B14(Document doc, String path, List<Element> elements)
+        private void B14(Document doc, String path, List<Data> elements)
         {
             string value = Areas(elements, doc).ToString();
             FillCell(14, 2, value, path);
         }
-        private void B15(Document doc, String path, List<Element> elements)//Переписать elements
+        private void B15(Document doc, String path, List<Data> elements)//Переписать elements
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", 1, true), doc).ToString();
+            double area = 0.0;
+            foreach (var element in elements)
+            {
+                if (element != null)
+                {
+                    if(int.Parse(element.floor) >= 1)
+                    {
+                        area += element.area;
+                    }
+                }
+            }
+            string value = area.ToString();
             FillCell(15, 2, value, path);
         }
-        private void B16(Document doc, String path, List<Element> elements)
+        private void B16(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");
-            
+            var list = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");            
             List<String> floors = new List<string>();
             foreach (var room in list)
             {
-                floors.Add(room.LookupParameter("ADSK_Этаж").AsString());
+                floors.Add(room.floor);
             }
             List<String> floor = floors.Distinct().ToList();
             double area = 0.0;
@@ -211,17 +221,28 @@ namespace TEP
             }
             FillCell(16, 2, area.ToString(), path);
         }
-        private void B17(Document doc, String path, List<Element> elements)
+        private void B17(Document doc, String path, List<Data> elements)
         {
             string value = Areas(ParameterValueEquals(elements, "ADSK_Этаж", "1"), doc).ToString();
             FillCell(17, 2, value, path);
         }
-        private void B18(Document doc, String path)//Переписать elements
+        private void B18(Document doc, String path, List<Data> elements)//Переписать elements
         {
-            string value = Areas(Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Этаж", 1, false), doc).ToString();
+            double area = 0.0;
+            foreach (var element in elements)
+            {
+                if (element != null)
+                {
+                    if (int.Parse(element.floor) < 1)
+                    {
+                        area += element.area;
+                    }
+                }
+            }
+            string value = area.ToString();
             FillCell(18, 2, value, path);
         }
-        private void B19(Document doc, String path, List<Element> elements)
+        private void B19(Document doc, String path, List<Data> elements)
         {
             string value = (Areas(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), doc)
                           + Areas(ParameterValueContains(elements, "ADSK_Номер квартиры", "КМ"), doc)
@@ -229,28 +250,28 @@ namespace TEP
                           + Areas(ParameterValueContains(elements, "ADSK_Номер квартиры", "АП"), doc)).ToString();
             FillCell(19, 2, value, path);
         }
-        private string B20(Document doc, String path, List<Element> elements)
+        private string B20(Document doc, String path, List<Data> elements)
         {
             var list = ParameterValueEquals(elements, "ADSK_Номер квартиры", "КВ");
             string value = Areas(list, doc).ToString();
             FillCell(20, 2, value, path);
             return CountApart(list);
         }
-        private string B21(Document doc, String path, List<Element> elements)
+        private string B21(Document doc, String path, List<Data> elements)
         {
             var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ");
             string value = Areas(list, doc).ToString();
             FillCell(21, 2, value, path);
             return CountApart(list);
         }
-        private string B22(Document doc, String path, List<Element> elements)
+        private string B22(Document doc, String path, List<Data> elements)
         {
             var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "WHITEBOX");
             string value = Areas(list, doc).ToString();
             FillCell(22, 2, value, path);
             return CountApart(list);
         }
-        private string B23(Document doc, String path, List<Element> elements)
+        private string B23(Document doc, String path, List<Data> elements)
         {
             var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ");
             string value = Areas(list, doc).ToString();
@@ -278,7 +299,7 @@ namespace TEP
             string value = count;
             FillCell(27, 2, value, path);
         }
-        private void B28(Document doc, String path, out string value, List<Element> elements)
+        private void B28(Document doc, String path, out string value, List<Data> elements)
         {
             value = Areas(ParameterValueEquals(elements, "PNR_Имя помещения", "Балкон"), doc).ToString();
             FillCell(28, 2, value, path);
@@ -287,7 +308,7 @@ namespace TEP
         {
             FillCell(29, 2, (double.Parse(value) * 0.3).ToString(), path);
         }
-        private void B30(Document doc, String path, out string value, List<Element> elements)
+        private void B30(Document doc, String path, out string value, List<Data> elements)
         {
             value = Areas(ParameterValueEquals(elements, "PNR_Имя помещения", "Лоджия"), doc).ToString();
             FillCell(30, 2, value, path);
@@ -296,7 +317,7 @@ namespace TEP
         {
             FillCell(31, 2, (double.Parse(value) * 0.5).ToString(), path);
         }
-        private void B32(Document doc, String path, out string value, List<Element> elements)
+        private void B32(Document doc, String path, out string value, List<Data> elements)
         {
             value = Areas(ParameterValueEquals(elements, "PNR_Имя помещения", "Терраса"), doc).ToString();
             FillCell(32, 2, value, path);
@@ -305,7 +326,7 @@ namespace TEP
         {
             FillCell(33, 2, (double.Parse(value) * 0.3).ToString(), path);
         }
-        private string B34(Document doc, String path, List<Element> elements)
+        private string B34(Document doc, String path, List<Data> elements)
         {
             var list = ParameterValueEquals(ParameterValueEquals(elements, "PNR_Имя помещения", "Кладовая"), "PNR_Функция помещения", "Помещения кладовых");
             string value = Areas(list, doc).ToString();
@@ -405,7 +426,7 @@ namespace TEP
 
             return number;
         }
-        private int Commerce(Document doc, String path, int number, List<Element> elements)
+        private int Commerce(Document doc, String path, int number, List<Data> elements)
         {
             //Суммарная площадь коммерческих помещений, в том числе:
             string value = Areas(ParameterValueContains(elements, "PNR_Номер помещения", "КМ"), doc).ToString();
@@ -445,7 +466,7 @@ namespace TEP
 
             return number;
         }
-        private int МОП(Document doc, String path, int number, List<Element> elements)
+        private int МОП(Document doc, String path, int number, List<Data> elements)
         {
             //Суммарная площадь МОП, в том числе:
             string value = Areas(ParameterValueContains(elements, "PNR_Номер помещения", "МОП"), doc).ToString();
@@ -458,7 +479,7 @@ namespace TEP
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
                 //Лист, с нужными комнатами
-                List<Element> roomList = new List<Element>();
+                List<Data> roomList = new List<Data>();
 
                 //Помещения входной группы (1й этаж)
                 //Получаем лист с нужными комнатами по определённым категориям
@@ -529,7 +550,7 @@ namespace TEP
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
                 //Лист, с нужными комнатами
-                List<Element> roomList = new List<Element>();
+                List<Data> roomList = new List<Data>();
 
                 //Получаем лист с нужными комнатами по определённым категориям 
                 List<string> function = Func("Лестницы эвакуации  (с -1го до последнего этажа)", "Помещения загрузки");
@@ -576,7 +597,7 @@ namespace TEP
 
                 //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomListUnder(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
+                List<Data> roomList = RoomListUnder(doc, Func("Помещения загрузки", "Помещения мусороудаления"), elements);
 
                 //Получаем список названий помещений с определёнными категориями
                 List<String> roomName = RoomNames(roomList);
@@ -587,7 +608,7 @@ namespace TEP
 
                 //ПЕРВЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                roomList = RoomListEquals(doc, Func("Помещения загрузки", "Помещения мусороудаления"), "ADSK_Этаж", 1);
+                roomList = RoomListEquals(doc, Func("Помещения загрузки", "Помещения мусороудаления"), elements);
 
                 //Получаем список названий помещений с определёнными категориями
                 roomName = RoomNames(roomList);
@@ -613,7 +634,7 @@ namespace TEP
 
                 //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                List<Element> roomList = RoomListUnder(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
+                List<Data> roomList = RoomListUnder(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), elements);
 
                 //Получаем список названий помещений с определёнными категориями
                 List<String> roomName = RoomNames(roomList);
@@ -624,7 +645,7 @@ namespace TEP
 
                 //Первый этаж
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
-                roomList = RoomListEquals(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), "ADSK_Этаж", 1);
+                roomList = RoomListEquals(doc, Func("Помещения мусороудаления", "Инженерно-технические помещения"), elements);
 
                 //Получаем список названий помещений с определёнными категориями
                 roomName = RoomNames(roomList);
@@ -647,7 +668,7 @@ namespace TEP
 
             return number;
         }
-        private int Engineer_infinity(Document doc, String path, int number, List<Element> elements)
+        private int Engineer_infinity(Document doc, String path, int number, List<Data> elements)
         {
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
@@ -655,7 +676,7 @@ namespace TEP
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
 
                 //Лист, с нужными комнатами
-                List<Element> roomList = new List<Element>();
+                List<Data> roomList = new List<Data>();
 
                 //Получаем лист с нужными комнатами по определённым категориям 
                 List<string> function = Func("Инженерно-технические помещения", "end");
@@ -676,7 +697,7 @@ namespace TEP
             }
             return number;
         }
-        private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor, string section, List<Element> elements)
+        private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor, string section, List<Data> elements)
         {
             string value = string.Empty;
 
@@ -698,7 +719,7 @@ namespace TEP
             value = (int.Parse(EndFloor) - int.Parse(StartFloor) + 1).ToString();
             number = FillCellParameter(number, 2, value, path, "Типовой этаж " + StartFloor + " - " + EndFloor, "шт.");
 
-            List<Element> roomListFloor = new List<Element>();
+            List<Data> roomListFloor = new List<Data>();
             //Количество квартир
             int start = int.Parse(StartFloor);
             int end = int.Parse(EndFloor);
@@ -742,7 +763,7 @@ namespace TEP
                 List<String> function = Func("Лестницы эвакуации  (с -1го до последнего этажа)", "Помещения загрузки");
                 function.AddRange(Func("МОП входной группы 1 этажа", "Паркинг"));
                 //Лист, с нужными комнатами
-                List<Element> roomList = new List<Element>();
+                List<Data> roomList = new List<Data>();
 
                 //Получаем лист с нужными комнатами по определённым категориям 
                 foreach (var func in function)

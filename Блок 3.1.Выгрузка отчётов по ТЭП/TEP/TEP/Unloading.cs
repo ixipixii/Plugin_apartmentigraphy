@@ -115,14 +115,29 @@ namespace TEP
         //Метод Values возвращает лист значений определённых параметров определённых элементов
 
         //Список элементов нужной категории
-        public virtual List<Element> Elements(BuiltInCategory category, Document doc)
+        public virtual List<Data> Elements(BuiltInCategory category, Document doc)
         {
             List<Element> elements = new FilteredElementCollector(doc)
                                                     .OfCategory(category)
                                                     .WhereElementIsNotElementType()
                                                     .ToList();
+            List<Data> rooms = new List<Data>();
+            foreach (var room in elements)
+            {
+                Data data = new Data();
+                data.element = room;
+                data.function = room.LookupParameter("PNR_Функция помещения").AsString();
+                data.name = room.LookupParameter("PNR_Имя помещения").AsString();
+                data.section = room.LookupParameter("ADSK_Номер секции").AsString();
+                data.number_apart = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                data.number_room = room.LookupParameter("PNR_Номер помещения").AsString();
+                data.floor = room.LookupParameter("ADSK_Этаж").AsString();
+                data.area = UnitUtils.ConvertFromInternalUnits(room.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                data.height = int.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
+                rooms.Add(data);
+            }
 
-            return elements;
+            return rooms;
         }
         public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter, bool valeuCompare)
         {
@@ -148,14 +163,14 @@ namespace TEP
         }
         
         //Формируем списки по нужным параметрам
-        public virtual List<Element> ParameterValueEquals(List<Element> list, string parameter, string value)
+        public virtual List<Data> ParameterValueEquals(List<Data> list, string parameter, string value)
         {
-            List<Element> newList = new List<Element>();
+            List<Data> newList = new List<Data>();
             if(list != null)
             {
-                foreach(Element element in list)
+                foreach(var element in list)
                 {
-                    if (element.LookupParameter(parameter).AsString() == value)
+                    if (element.element.LookupParameter(parameter).AsString() == value)
                     {
                         newList.Add(element);
                     }
@@ -163,14 +178,14 @@ namespace TEP
             }
             return newList;
         }
-        public virtual List<Element> ParameterValueContains(List<Element> list, string parameter, string value)
+        public virtual List<Data> ParameterValueContains(List<Data> list, string parameter, string value)
         {
-            List<Element> newList = new List<Element>();
+            List<Data> newList = new List<Data>();
             if (list != null)
             {
-                foreach (Element element in list)
+                foreach (var element in list)
                 {
-                    if (element.LookupParameter(parameter).AsString().Contains(value))
+                    if (element.element.LookupParameter(parameter).AsString().Contains(value))
                     {
                         newList.Add(element);
                     }
@@ -180,26 +195,26 @@ namespace TEP
         }
 
         //Расчитываем площадь по списку элементов
-        public virtual double Areas(List<Element> elements, Document doc)
+        public virtual double Areas(List<Data> elements, Document doc)
         {
             double area = 0;
-            foreach (Element element in elements)
+            foreach (var element in elements)
             {
-                    area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    area += element.area;
             }
             area = area.Round(3);
             return area;
         }
-        public virtual double Areas(List<Element> elements, Document doc, String PARAMETER)
+        public virtual double Areas(List<Data> elements, Document doc, String PARAMETER)
         {
             double area = 0;
-            foreach (Element element in elements)
+            foreach (var element in elements)
             {
                 try
                 {
-                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && element.LookupParameter("PNR_Имя помещения").AsString().Contains(PARAMETER))
+                    if (element.name != null && element.name.Contains(PARAMETER))
                     {
-                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        area += element.area;
                     }
                 }
                 catch { }
@@ -207,16 +222,16 @@ namespace TEP
             area = area.Round(3);
             return area;
         }
-        public virtual double AreasHeigher(List<Element> elements, Document doc, string height)
+        public virtual double AreasHeigher(List<Data> elements, Document doc, string height)
         {
             double area = 0;
-            foreach (Element element in elements)
+            foreach (var element in elements)
             {
                 try
                 {
-                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && int.Parse(element.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString()) > int.Parse(height))
+                    if (element.name != null && element.height > int.Parse(height))
                     {
-                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        area += element.area;
                     }
                 }
                 catch { }
@@ -224,16 +239,16 @@ namespace TEP
             area = area.Round(3);
             return area;
         }
-        public virtual double AreasLower(List<Element> elements, Document doc, string height)
+        public virtual double AreasLower(List<Data> elements, Document doc, string height)
         {
             double area = 0;
-            foreach (Element element in elements)
+            foreach (var element in elements)
             {
                 try
                 {
-                    if (element.LookupParameter("PNR_Имя помещения").AsString() != null && int.Parse(element.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString()) < int.Parse(height))
+                    if (element.name != null && element.height < int.Parse(height))
                     {
-                        area += UnitUtils.ConvertFromInternalUnits(element.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        area += element.area;
                     }
                 }
                 catch { }
@@ -243,37 +258,37 @@ namespace TEP
         }
 
         //Достаём из списка элементов значения параметров
-        public virtual List<String> Values(String parameter, List<Element> elements)
+        public virtual List<String> Values(String parameter, List<Data> elements)
         {
             List<String> values = new List<String>();           
-            foreach (Element element in elements)
+            foreach (var element in elements)
             {
-                Room room = element as Room;
+                Room room = element.element as Room;
                 values.Add(room.LookupParameter(parameter).AsString());
             }
             return values;
         }
 
         //Расчитываем площадь списка помещений
-        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList)
+        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Data> roomList)
         {
             int rowName = rowFunc + 1;
             double areaName = 0.0;
             double areaFunc = 0.0;
             int j = 0;
-            String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
+            String nameFunc = roomList[0].function;
             //Проходимся по всем именам найденных помещений
             for (int i = 0; i < roomName.Count(); i++)
             {
                 //Сравниваем помещения на нужное имя
                 for (j = 0; j < roomList.Count(); j++)
                 {
-                    String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
+                    String nameFuncNew = roomList[j].function;
                     //Если у помещения нужное имя, суммируем его площадь
-                    if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
+                    if (roomList[j].name == roomName[i])
                     {
-                        areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                        double areaOneRoom = UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        areaName += roomList[j].area;
+                        double areaOneRoom = roomList[j].area;
                         //Если функция у помещений не меняется, суммируем её
                         if (nameFuncNew == nameFunc)
                         {
@@ -318,25 +333,25 @@ namespace TEP
             return rowName;
         }
         //Расчитываем площадь списка помещений с названием функции
-        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Element> roomList, string nameFuncRow)
+        public int FillCellsArea(ExcelWorksheet worksheet1, int rowFunc, List<String> roomName, List<Data> roomList, string nameFuncRow)
         {
             int rowName = rowFunc + 1;
             double areaName = 0.0;
             double areaFunc = 0.0;
             int j = 0;
-            String nameFunc = roomList[0].LookupParameter("PNR_Функция помещения").AsString();
+            String nameFunc = roomList[0].function;
             //Проходимся по всем именам найденных помещений
             for (int i = 0; i < roomName.Count(); i++)
             {
                 //Сравниваем помещения на нужное имя
                 for (j = 0; j < roomList.Count(); j++)
                 {
-                    String nameFuncNew = roomList[j].LookupParameter("PNR_Функция помещения").AsString();
+                    String nameFuncNew = roomList[j].function;
                     //Если у помещения нужное имя, суммируем его площадь
-                    if (roomList[j].LookupParameter("PNR_Имя помещения").AsString() == roomName[i])
+                    if (roomList[j].name == roomName[i])
                     {
-                        areaName += UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                        double areaOneRoom = UnitUtils.ConvertFromInternalUnits(roomList[j].get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                        areaName += roomList[j].area;
+                        double areaOneRoom = roomList[j].area;
                         //Если функция у помещений не меняется, суммируем её
                         if (nameFuncNew == nameFunc)
                         {
@@ -396,42 +411,48 @@ namespace TEP
             }
             return roomList;
         }
-        public List<Element> RoomListUnder(Document doc, List<string> func, string parameter, int value)
+        public List<Data> RoomListUnder(Document doc, List<string> func, List<Data> element)
         {
-            var allFuncRoom = new FilteredElementCollector(doc);
             //Лист всех комнат
-            List<Element> roomList = new List<Element>();
+            List<Data> roomList = new List<Data>();
+            int i = 0;
             foreach (var f in func)
             {
-                roomList.AddRange(allFuncRoom
-                    .WhereElementIsNotElementType()
-                    .OfCategory(BuiltInCategory.OST_Rooms)
-                    .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f)
-                    .Where(g => int.Parse(g.LookupParameter(parameter).AsString()) < value).ToList());
+                if (element[i].function == f)
+                {
+                    if(int.Parse(element[i].floor) < 1)
+                    {
+                        roomList.Add(element[i]);
+                    }
+                }
+                i++;
             }
             return roomList;
         }
-        public List<Element> RoomListEquals(Document doc, List<string> func, string parameter, int value)
+        public List<Data> RoomListEquals(Document doc, List<string> func, List<Data> element)
         {
-            var allFuncRoom = new FilteredElementCollector(doc);
             //Лист всех комнат
-            List<Element> roomList = new List<Element>();
+            List<Data> roomList = new List<Data>();
+            int i = 0;
             foreach (var f in func)
             {
-                roomList.AddRange(allFuncRoom
-                    .WhereElementIsNotElementType()
-                    .OfCategory(BuiltInCategory.OST_Rooms)
-                    .Where(g => g.LookupParameter("PNR_Функция помещения").AsString() == f)
-                    .Where(g => int.Parse(g.LookupParameter(parameter).AsString()) == value).ToList());
+                if (element[i].function == f)
+                {
+                    if (int.Parse(element[i].floor) == 1)
+                    {
+                        roomList.Add(element[i]);
+                    }
+                }
+                i++;
             }
             return roomList;
         }
-        public List<String> RoomNames(List<Element> roomList)
+        public List<String> RoomNames(List<Data> roomList)
         {
             var roomNames = new List<String>();
             foreach (var room in roomList)
             {
-                roomNames.Add(room.LookupParameter("PNR_Имя помещения").AsString());
+                roomNames.Add(room.name);
             }
             return roomNames.Distinct().ToList();
         }
