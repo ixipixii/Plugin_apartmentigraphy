@@ -20,6 +20,12 @@ namespace TEP
     {
         public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc, string Start, string End, string Sect)
         {
+            if(Start == null && End == null && Sect == null || Start == "" && End == "" && Sect == "")
+            {
+                TaskDialog.Show("Ошибка ввода", "Введите необходимые данные");
+                return;
+            }
+           
             //и Количество помещений ритейла в коммерции
 
             //CopyFile("ТЭП_АР");

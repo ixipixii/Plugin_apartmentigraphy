@@ -81,6 +81,11 @@ namespace Plugin_apartmentography
             path8 = Path.GetFullPath(path8);
             string pathImg8 = Path.Combine(absPath, @"Resources\выгрузка.png");
 
+            string relPath9 = @"9\";
+            string path9 = Path.Combine(absPath, relPath9);
+            path9 = Path.GetFullPath(path9);
+            string pathImg9 = Path.Combine(absPath, @"Resources\отчёт.png");
+
 
 
             //Создаём панель с кнопками создания параметров
@@ -170,6 +175,26 @@ namespace Plugin_apartmentography
                 Path.Combine(path8, "UnloadingPlan.dll"),
                 "UnloadingPlan.MainPDF");
             var new_button_8_2 = group.AddPushButton(button_8_2) as PushButton;
+
+            //Создаём панель с кнопками отчётов
+            var panel_3 = application.CreateRibbonPanel(tabName, "Создание и выгрузка отчётов");
+
+            //ПАНЕЛЬ ОТЧЁТОВ
+            var pulldownButtonData_1 = new PulldownButtonData("Выгрузка отчёта", "Выгрузка отчёта");
+            Uri uriImage9 = new Uri(pathImg9, UriKind.Absolute);
+            BitmapImage largeImage9 = new BitmapImage(uriImage9);
+            pulldownButtonData_1.LargeImage = largeImage9;
+            var group_1 = panel_3.AddItem(pulldownButtonData_1) as PulldownButton;
+
+            var button_9_1 = new PushButtonData("Отчёт ТЭП", "Отчёт ТЭП",
+                Path.Combine(path9, "TEP.dll"),
+                "TEP.Main");
+            var new_button_9_1 = group_1.AddPushButton(button_9_1) as PushButton;
+
+            var button_9_2 = new PushButtonData("Отчёт УК", "Отчёт УК",
+                Path.Combine(path9, "TEP.dll"),
+                "TEP.REPORT_YK");
+            var new_button_9_2 = group_1.AddPushButton(button_9_2) as PushButton;
 
             return Result.Succeeded;
         }
