@@ -2,7 +2,6 @@
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.Exceptions;
 using Autodesk.Revit.UI;
-using MathNet.Numerics;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -25,17 +24,17 @@ namespace TEP
                 TaskDialog.Show("Ошибка ввода", "Введите необходимые данные");
                 return;
             }
-           
+
             //и Количество помещений ритейла в коммерции
 
-            //CopyFile("ТЭП_АР");
-            String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ТЭП_АР.xlsx");
+            //String path = CopyFile("Отчёты");
+            String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Отчёты.xlsx");
 
             //Считываем все помещения в модели
             List<Data> rooms = Elements(BuiltInCategory.OST_Rooms, doc);
             
             //Создаём отчёт для квартир
-            var CellB6 = B6(doc, path, rooms);
+            var CellB6 = B6(doc, path, rooms); 
             var CellB7 = B7(doc, path, rooms);
             B8(doc, path, CellB6, CellB7);
 
@@ -252,28 +251,28 @@ namespace TEP
         }
         private string B20(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueEquals(elements, "ADSK_Номер квартиры", "КВ");
+            var list = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");
             string value = Areas(list, doc).ToString();
             FillCell(20, 2, value, path);
             return CountApart(list);
         }
         private string B21(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ");
+            var list = ParameterValueContains(elements, "ADSK_Позиция отделки", "С ОТДЕЛКОЙ");
             string value = Areas(list, doc).ToString();
             FillCell(21, 2, value, path);
             return CountApart(list);
         }
         private string B22(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "WHITEBOX");
+            var list = ParameterValueContains(elements, "ADSK_Позиция отделки", "WHITEBOX");
             string value = Areas(list, doc).ToString();
             FillCell(22, 2, value, path);
             return CountApart(list);
         }
         private string B23(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueEquals(elements, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ");
+            var list = ParameterValueContains(elements, "ADSK_Позиция отделки", "БЕЗ ОТДЕЛКИ");
             string value = Areas(list, doc).ToString();
             FillCell(23, 2, value, path);
             return CountApart(list);
@@ -476,7 +475,7 @@ namespace TEP
             using (var pack = new ExcelPackage(new FileInfo(path)))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 //Лист, с нужными комнатами
                 List<Data> roomList = new List<Data>();
@@ -547,7 +546,7 @@ namespace TEP
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 //Лист, с нужными комнатами
                 List<Data> roomList = new List<Data>();
@@ -589,11 +588,10 @@ namespace TEP
             //Помещения загрузки, в том числе:
             value = Areas(ParameterValueContains(elements, "PNR_Функция помещения", "Помещения загрузки"), doc).ToString();
             number = FillCellParameter(number, 2, value, path, "Помещения загрузки, в том числе:", "кв.м.");
-
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
@@ -623,14 +621,13 @@ namespace TEP
             }
 
             //Помещения мусороудаления, в том числе:
-            //Помещения загрузки, в том числе:
             value = Areas(ParameterValueContains(elements, "PNR_Функция помещения", "Помещения мусороудаления"), doc).ToString();
             number = FillCellParameter(number, 2, value, path, "Помещения мусороудаления, в том числе:", "кв.м.");
 
             using (var pack = new ExcelPackage(new System.IO.FileInfo(path)))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 //ПОДЗЕМНЫЙ ЭТАЖ
                 //Получаем лист с нужными комнатами по определённым категориям в подземных этажах
@@ -673,7 +670,7 @@ namespace TEP
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 //Лист, с нужными комнатами
                 List<Data> roomList = new List<Data>();
@@ -708,7 +705,7 @@ namespace TEP
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(path))))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
                 //Красим ячейку
                 StyleCell(worksheet1, number - 1, System.Drawing.Color.LightGreen);
                 // Сохраняем изменения
@@ -726,7 +723,7 @@ namespace TEP
             
             while (start != end)
             {
-                roomListFloor.AddRange(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", start.ToString()), "ADSK_Номер секции", "2"));
+                roomListFloor.AddRange(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", start.ToString()), "ADSK_Номер секции", section));
                 start++;
             }
             
@@ -740,7 +737,7 @@ namespace TEP
             number = FillCellParameter(number, 2, value, path, "На этаж", "шт.");
 
             //Площадь квартир
-            value = Areas(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", StartFloor), doc).ToString();
+            value = Areas(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc).ToString();
             string AreaApart = (double.Parse(value) * (double.Parse(EndFloor) - double.Parse(StartFloor))).ToString();
             number = FillCellParameter(number, 2, AreaApart, path, "Площадь квартир", "кв.м.");
 
@@ -749,7 +746,7 @@ namespace TEP
             number = FillCellParameter(number, 2, value, path, "На этаж", "кв.м.");
 
             //Площадь МОП
-            value = Areas(ParameterValueEquals(ParameterValueContains(elements, "PNR_Номер помещения", "МОП"), "ADSK_Этаж", StartFloor), doc).ToString();
+            value = Areas(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "PNR_Номер помещения", "МОП"), "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc).ToString();
             value = (double.Parse(value) * (double.Parse(EndFloor) - double.Parse(StartFloor))).ToString();
             number = FillCellParameter(number, 2, value, path, "Площадь МОП", "кв.м.");
 
@@ -768,14 +765,14 @@ namespace TEP
                 //Получаем лист с нужными комнатами по определённым категориям 
                 foreach (var func in function)
                 {
-                    roomList.AddRange(ParameterValueEquals(ParameterValueEquals(elements, "PNR_Функция помещения", func), "ADSK_Этаж", StartFloor));
+                    roomList.AddRange(ParameterValueEquals(ParameterValueEquals(ParameterValueEquals(elements, "PNR_Функция помещения", func), "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section));
                 }
 
                 //Получаем список названий помещений с определёнными категориями
                 List<String> roomName = RoomNames(roomList);
 
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
                 if (roomList.Count != 0)
                     number = FillCellsArea(worksheet1, number, roomName, roomList);
                 // Сохраняем изменения
@@ -783,7 +780,7 @@ namespace TEP
             }
 
             //Общая площадь
-            value = Areas(ParameterValueEquals(elements, "ADSK_Этаж", StartFloor), doc).ToString();
+            value = Areas(ParameterValueEquals(ParameterValueEquals(elements, "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc).ToString();
             value = (double.Parse(value) * (double.Parse(EndFloor) - double.Parse(StartFloor))).ToString();
             number = FillCellParameter(number, 2, value, path, "Общая площадь", "кв.м.");
 
@@ -816,7 +813,7 @@ namespace TEP
             using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(path))))
             {
                 //Тот лист, на котором будет выводиться отчёт
-                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
 
                 Style(worksheet1, number);
                 // Сохраняем изменения

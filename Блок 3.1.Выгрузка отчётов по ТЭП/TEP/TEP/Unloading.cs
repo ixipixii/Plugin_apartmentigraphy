@@ -63,7 +63,7 @@ namespace TEP
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
             {
                 // Выбираем лист
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["ТЭП по модели АР"];
 
                 // Координаты ячейки, которую вы хотите изменить
                 int rowNumber = rowIndex;
@@ -88,7 +88,7 @@ namespace TEP
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
             {
                 // Выбираем лист
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Отчёт"];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["ТЭП по модели АР"];
 
                 // Координаты ячейки, которую вы хотите изменить
                 int rowNumber = rowIndex;
@@ -418,14 +418,16 @@ namespace TEP
             int i = 0;
             foreach (var f in func)
             {
-                if (element[i].function == f)
+                foreach (var e in element)
                 {
-                    if(int.Parse(element[i].floor) < 1)
+                    if (e.function == f)
                     {
-                        roomList.Add(element[i]);
+                        if (int.Parse(e.floor) < 1)
+                        {
+                            roomList.Add(e);
+                        }
                     }
                 }
-                i++;
             }
             return roomList;
         }
@@ -433,17 +435,18 @@ namespace TEP
         {
             //Лист всех комнат
             List<Data> roomList = new List<Data>();
-            int i = 0;
             foreach (var f in func)
             {
-                if (element[i].function == f)
+                foreach (var e in element)
                 {
-                    if (int.Parse(element[i].floor) == 1)
+                    if (e.function == f)
                     {
-                        roomList.Add(element[i]);
+                        if (int.Parse(e.floor) == 1)
+                        {
+                            roomList.Add(e);
+                        }
                     }
                 }
-                i++;
             }
             return roomList;
         }
@@ -458,10 +461,11 @@ namespace TEP
         }
         public List<string> Func(String NameFuncStart, String NameFuncEnd)
         {
-            List<String> function = new List<String>();
-            using (var package = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            List<String> function = new List<String>(); 
+            var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
+            using (var package = new ExcelPackage(path))
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                ExcelWorksheet worksheet = package.Workbook.Worksheets["Name"];
                 string range = "A2:B1000";
                 var rangeCells = worksheet.Cells[range];
                 object[,] Allvalues = rangeCells.Value as object[,];
