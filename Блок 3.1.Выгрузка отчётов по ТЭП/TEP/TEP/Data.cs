@@ -17,6 +17,6 @@ namespace TEP
         public string floor { get; set; }
         public string section { get; set; } 
         public double area { get; set; }
-        public int height { get; set; }
+        public double height { get; set; }
     }
 }

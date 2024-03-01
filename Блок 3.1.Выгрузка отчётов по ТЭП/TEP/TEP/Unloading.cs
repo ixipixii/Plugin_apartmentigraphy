@@ -54,7 +54,11 @@ namespace TEP
             }
 
             //Копируем в выбранную папку
-            fileInf.CopyTo(selectedFilePath);
+            try
+            {
+                fileInf.CopyTo(selectedFilePath);
+            }
+            catch {}
             //Возвращаем путь
             return selectedFilePath;
         }
@@ -133,7 +137,7 @@ namespace TEP
                 data.number_room = room.LookupParameter("PNR_Номер помещения").AsString();
                 data.floor = room.LookupParameter("ADSK_Этаж").AsString();
                 data.area = UnitUtils.ConvertFromInternalUnits(room.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                data.height = int.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
+                data.height = double.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
                 rooms.Add(data);
             }
 
@@ -229,7 +233,7 @@ namespace TEP
             {
                 try
                 {
-                    if (element.name != null && element.height > int.Parse(height))
+                    if (element.name != null && element.height > double.Parse(height))
                     {
                         area += element.area;
                     }
@@ -246,7 +250,7 @@ namespace TEP
             {
                 try
                 {
-                    if (element.name != null && element.height < int.Parse(height))
+                    if (element.name != null && element.height < double.Parse(height))
                     {
                         area += element.area;
                     }
