@@ -27,8 +27,8 @@ namespace TEP
 
             //и Количество помещений ритейла в коммерции
 
-            //String path = CopyFile("Отчёты");
-            String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Отчёты.xlsx");
+            String path = CopyFile("Отчёты");
+            //String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Отчёты.xlsx");
 
             //Считываем все помещения в модели
             List<Data> rooms = Elements(BuiltInCategory.OST_Rooms, doc);

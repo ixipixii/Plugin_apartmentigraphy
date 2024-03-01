@@ -9406,6 +9406,11 @@
             Access to text body properties
             </summary>
         </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartAxis.TextSettings">
+            <summary>
+            Text settings like fills, text outlines and effects 
+            </summary>
+        </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartAxis.Deleted">
             <summary>
             If the axis is deleted
@@ -9740,7 +9745,7 @@
         </member>
         <member name="T:OfficeOpenXml.Drawing.Chart.ExcelChartDataLabel">
             <summary>
-            Datalabel on chart level. 
+            Data labels on the chart level. 
             This class is inherited by ExcelChartSerieDataLabel
             </summary>
         </member>
@@ -9822,6 +9827,11 @@
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartDataLabel.Font">
             <summary>
             Access font properties
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartDataLabel.TextSettings">
+            <summary>
+            Text settings like fills, text outlines and effects 
             </summary>
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartDataLabel.TextBody">
@@ -10071,6 +10081,11 @@
             Access to text body properties
             </summary>
         </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartDataTable.TextSettings">
+            <summary>
+            Text settings like fills, text outlines and effects 
+            </summary>
+        </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartDataTable.Effect">
             <summary>
             Effects
@@ -10188,7 +10203,13 @@
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartLegend.Effect">
             <summary>
-            Effects
+            Effects on the legend shape. 
+            Note that the Text effects are set using the <see cref="P:OfficeOpenXml.Drawing.Chart.ExcelChartLegend.TextSettings"/> property.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartLegend.TextSettings">
+            <summary>
+            Text settings like fills, text outlines and effects 
             </summary>
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartLegend.ThreeD">
@@ -10847,6 +10868,11 @@
             Access to text body properties
             </summary>
         </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitle.TextSettings">
+            <summary>
+            Text settings like fills, text outlines and effects 
+            </summary>
+        </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitle.Effect">
             <summary>
             Effects
@@ -10864,7 +10890,7 @@
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitle.Overlay">
             <summary>
-            Show without overlaping the chart.
+            Show without overlaping the _chart.
             </summary>
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitle.AnchorCtr">
@@ -10894,7 +10920,7 @@
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitleStandard.Text">
             <summary>
-            The chart title text
+            The _chart title text
             </summary>
         </member>
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelChartTitleStandard.LinkedCell">
@@ -11069,6 +11095,26 @@
         <member name="P:OfficeOpenXml.Drawing.Chart.ExcelDoughnutChart.HoleSize">
             <summary>
             Size of the doubnut hole
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.Drawing.Chart.ExcelDrawingTextSettings">
+            <summary>
+            Text settings for drawing objects.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelDrawingTextSettings.Fill">
+            <summary>
+            The Fill style
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelDrawingTextSettings.Outline">
+            <summary>
+            The text outline style.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Drawing.Chart.ExcelDrawingTextSettings.Effect">
+            <summary>
+            Text effects
             </summary>
         </member>
         <member name="T:OfficeOpenXml.Drawing.Chart.ExcelHistogramChartSeries">
@@ -22811,6 +22857,11 @@
             Disposes the object
             </summary>
         </member>
+        <member name="M:OfficeOpenXml.Drawing.ExcelDrawings.ReadPositionsAndSize">
+            <summary>
+            Read the drawings coordinates, height and width.
+            </summary>
+        </member>
         <member name="T:OfficeOpenXml.Drawing.ExcelDrawingSize">
             <summary>
             The size of the drawing 
@@ -27468,17 +27519,17 @@
             Print header and footer 
             </summary>
         </member>
-        <member name="F:OfficeOpenXml.ExcelHeaderFooterText.LeftAlignedText">
+        <member name="P:OfficeOpenXml.ExcelHeaderFooterText.LeftAlignedText">
             <summary>
             Get/set the text to appear on the left hand side of the header (or footer) on the worksheet.
             </summary>
         </member>
-        <member name="F:OfficeOpenXml.ExcelHeaderFooterText.CenteredText">
+        <member name="P:OfficeOpenXml.ExcelHeaderFooterText.CenteredText">
             <summary>
             Get/set the text to appear in the center of the header (or footer) on the worksheet.
             </summary>
         </member>
-        <member name="F:OfficeOpenXml.ExcelHeaderFooterText.RightAlignedText">
+        <member name="P:OfficeOpenXml.ExcelHeaderFooterText.RightAlignedText">
             <summary>
             Get/set the text to appear on the right hand side of the header (or footer) on the worksheet.
             </summary>
@@ -29359,6 +29410,13 @@
             <param name="ToRow">End Row</param>
             <param name="ToCol">End Column</param>
             <returns></returns>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelRange.SetFormula(System.String,System.Boolean)">
+            <summary>
+            Set the formula for the range.
+            </summary>
+            <param name="formula">The formula for the range.</param>
+            <param name="asSharedFormula">If the formula should be created as a shared formula. If false each cell will be set individually. This can be useful if the formula returns a dynamic array result.</param>
         </member>
         <member name="T:OfficeOpenXml.ExcelRangeBase">
             <summary>
@@ -32852,6 +32910,14 @@
             <param name="OpenSerie">The opening price serie. Supplying this serie will create a StockOHLC or StockVOHLC chart</param>
             <param name="VolumeSerie">The volume represented as a column chart. Supplying this serie will create a StockVHLC or StockVOHLC chart</param>
             <returns></returns>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheets.GetNextVisibleSheetIndex(System.Int32)">
+            <summary>
+            Get first visible index counted from input index.
+            </summary>
+            <param name="index">The index to start checking from</param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="M:OfficeOpenXml.ExcelWorksheets.ValidateName(System.String)">
             <summary>
@@ -36998,6 +37064,12 @@
             In some functions EPPlus will round double values to 15 significant figures before the value is handled. This is an option for Excel compatibility.
             </summary>
         </member>
+        <member name="P:OfficeOpenXml.FormulaParsing.ExcelCalculationOption.FollowDependencyChain">
+            <summary>
+            If true, EPPlus will calculate the cells in order calculating any dependent cells.
+            If false, EPPlus will calculate the cells without calculating dependent cells.
+            </summary>
+        </member>
         <member name="T:OfficeOpenXml.FormulaParsing.ExcelDataProvider">
             <summary>
             This class should be implemented to be able to deliver excel data
@@ -38624,12 +38696,13 @@
             Contains information about filters on a workbook's worksheets.
             </summary>
         </member>
-        <member name="M:OfficeOpenXml.FormulaParsing.FormulaParser.Parse(System.String,System.String)">
+        <member name="M:OfficeOpenXml.FormulaParsing.FormulaParser.Parse(System.String,System.String,OfficeOpenXml.FormulaParsing.ExcelCalculationOption)">
             <summary>
             Parses a formula at a specific address
             </summary>
             <param name="formula">A string containing the formula</param>
             <param name="address">Address of the formula</param>
+            <param name="options">Calculation options</param>
             <returns></returns>
         </member>
         <member name="M:OfficeOpenXml.FormulaParsing.FormulaParser.Parse(System.String)">
@@ -67017,11 +67090,12 @@
             <param name="encodeTabLF"></param>
             <returns></returns>
         </member>
-        <member name="M:OfficeOpenXml.Utils.ConvertUtil.ExcelEncodeString(System.String)">
+        <member name="M:OfficeOpenXml.Utils.ConvertUtil.ExcelEncodeString(System.String,System.Boolean)">
             <summary>
             Return true if preserve space attribute is set.
             </summary>
             <param name="t"></param>
+            <param name="crLfEncode"></param>
             <returns></returns>
         </member>
         <member name="M:OfficeOpenXml.Utils.ConvertUtil.GetTypedCellValue``1(System.Object)">
