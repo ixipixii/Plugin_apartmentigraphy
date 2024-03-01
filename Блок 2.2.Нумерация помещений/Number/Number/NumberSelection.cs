@@ -490,7 +490,7 @@ namespace Number
                 {
                     apart.LookupParameter("ADSK_Тип квартиры").Set(areaParamter.selectedType);
                     apart.LookupParameter("ADSK_Диапазон").Set(areaParamter.selectedRange);
-                    apart.LookupParameter("ADSK_Количество комнат").Set(areaParamter.selectedCount);
+                    apart.LookupParameter("ADSK_Количество комнат").Set(int.Parse(areaParamter.selectedCount));
                 }
             }
             trn.Commit();
@@ -678,11 +678,18 @@ namespace Number
 
                         if (number.ToString().Length == 2)
                             num = "0" + number;
+
+                        if (number.ToString().Length == 3)
+                            num = number.ToString();
                     }
 
-                    if (apartCode.Count(c => c == 'N') == 2 && (number.ToString().Length == 1) || apartCode.Count(c => c == 'B') == 2 && (number.ToString().Length == 1))
+                    if (apartCode.Count(c => c == 'N') == 2 || apartCode.Count(c => c == 'B') == 2)
                     {
-                        num = "0" + number;
+                        if (number.ToString().Length == 1)
+                            num = "0" + number;
+
+                        if (number.ToString().Length == 2)
+                            num = number.ToString();
                     }
 
                     string aparatNumberApart = apartCode.Replace("Y/", PNR_Building)
