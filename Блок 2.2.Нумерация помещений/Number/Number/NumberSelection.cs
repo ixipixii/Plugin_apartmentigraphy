@@ -754,7 +754,7 @@ namespace Number
                     if (countN == 3 && Func == PNR_Funс)
                     {
                         int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0')));
+                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0')));
                         continue;
                     }
                 }
@@ -776,21 +776,21 @@ namespace Number
                     if (countN == 3 && Func == PNR_Funс)
                     {
                         int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0')));
+                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0')));
                         continue;
                     }
 
                     if (countN == 2 && Func == PNR_Funс)
                     {
                         int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0')));
+                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).TrimStart('0')));
                         continue;
                     }
 
                     if (countN == 1 && Func == PNR_Funс)
                     {
                         int length = room.LookupParameter("ADSK_Номер квартиры").AsString().Length;
-                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 1, 1).Trim('0')));
+                        numberList.Add(int.Parse(room.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 1, 1).TrimStart('0')));
                         continue;
                     }
                 }
@@ -971,7 +971,7 @@ namespace Number
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0') == NewValueNumberApart)
+                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).TrimStart('0') == NewValueNumberApart)
                    .ToList();
                 }
                 if (func == "КВ")
@@ -983,7 +983,7 @@ namespace Number
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == NewValueNumberApart)
+                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0') == NewValueNumberApart)
                     .ToList();
                 }
 
@@ -1079,11 +1079,11 @@ namespace Number
                     func = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Substring(0, 2);
                     if (func == "КВ")
                     {
-                        OldValueNumberApart = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0');
+                        OldValueNumberApart = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0');
                     }
                     if (func != "КВ")
                     {
-                        OldValueNumberApart = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0');
+                        OldValueNumberApart = selectedRoom.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).TrimStart('0');
                     }
                 }
 
@@ -1099,7 +1099,7 @@ namespace Number
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0') == NewValueNumberApart)
+                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).TrimStart('0') == NewValueNumberApart)
                    .ToList();
 
                     OldRooms = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
@@ -1109,7 +1109,7 @@ namespace Number
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).Trim('0') == OldValueNumberApart)
+                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 2, 2).TrimStart('0') == OldValueNumberApart)
                    .ToList();
                 }
                 if (func == "КВ")
@@ -1121,7 +1121,7 @@ namespace Number
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                     .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == NewValueNumberApart)
+                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0') == NewValueNumberApart)
                     .ToList();
 
                     OldRooms = new FilteredElementCollector(_doc, _uidoc.ActiveView.Id)
@@ -1131,7 +1131,7 @@ namespace Number
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != null)
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString() != "")
                    .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Length == length)
-                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).Trim('0') == OldValueNumberApart)
+                   .Where(g => g.LookupParameter("ADSK_Номер квартиры").AsString().Substring(length - 3, 3).TrimStart('0') == OldValueNumberApart)
                    .ToList();
                 }
 
