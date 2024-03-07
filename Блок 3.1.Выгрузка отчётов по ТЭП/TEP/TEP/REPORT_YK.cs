@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static OfficeOpenXml.ExcelErrorValue;
 
 namespace TEP
@@ -17,8 +18,26 @@ namespace TEP
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Отчёты.xlsx");          
-            using (var package = new ExcelPackage(new FileInfo(path)))
+            //String path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Отчёты.xlsx");
+
+            //Открываем диалог выбора сохранения отчёта
+            var saveDialogImg = new SaveFileDialog
+            {
+                OverwritePrompt = true,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Filter = "All files (*.*)|*.*",
+                FileName = "Отчёты.xlsx",
+                DefaultExt = ".xlsx"
+            };
+
+            string selectedFilePath = string.Empty;
+
+            if (saveDialogImg.ShowDialog() == DialogResult.OK)
+            {
+                selectedFilePath = saveDialogImg.FileName;
+            }
+
+            using (var package = new ExcelPackage(new FileInfo(selectedFilePath)))
             {
                 // Выбираем лист
                 ExcelWorksheet worksheet = package.Workbook.Worksheets["ТЭП по модели АР"];
@@ -72,7 +91,7 @@ namespace TEP
                 package.Save();
             }
 
-            System.Diagnostics.Process.Start(path);
+            System.Diagnostics.Process.Start(selectedFilePath);
 
             return Result.Succeeded;
         }

@@ -92,47 +92,58 @@ namespace TEP
         #region всё для квартир
         private string CountApart(List<Data> list)
         {
-            //Определяем количество квартир
-            List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
-            var listADSK_KV = valuesADSK_KV.Distinct().ToList();
+            /*            //Определяем количество квартир
+                        List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
+                        var listADSK_KV = valuesADSK_KV.Distinct().ToList();
 
-            //Лист, где будут хранится все скции и квартиры
-            List<List<string>> section_and_number = new List<List<string>>();
-            string section = string.Empty;
-            foreach (var kv in listADSK_KV)
+                        //Лист, где будут хранится все скции и квартиры
+                        List<List<string>> section_and_number = new List<List<string>>();
+                        string section = string.Empty;
+                        foreach (var kv in listADSK_KV)
+                        {
+                            string number = string.Empty;
+                            if(kv.Contains("КВ"))
+                                number = kv.Substring(kv.Length - 3).TrimStart('0');
+                            if (kv.Contains("АП"))
+                                number = kv.Substring(kv.Length - 2).TrimStart('0');
+                            section = kv.Substring(kv.Length - 5, 2).TrimStart('0');
+                            section_and_number.Add(new List<string> { section, number });
+                        }
+
+                        //Словарь для хранения максимальных номеров каждой секции
+                        Dictionary<string, int> maxNumbers = new Dictionary<string, int>();
+
+                        foreach (var sect in section_and_number)
+                        {
+                            string sectionName = sect[0];
+                            int num = int.Parse(sect[1]);
+
+                            //Обновляем максимальный номер для текущей секции
+                            if (maxNumbers.ContainsKey(sectionName))
+                            {
+                                maxNumbers[sectionName] = Math.Max(maxNumbers[sectionName], num);
+                            }
+                            else
+                            {
+                                maxNumbers[sectionName] = num;
+                            }
+                        }
+
+                        //Создаём новый список с одним элементом с максимальным порядковым номером для каждой секции
+                        List<List<string>> result = new List<List<string>>();
+                        foreach (var kvp in maxNumbers)
+                        {
+                            result.Add(new List<string> { kvp.Key, kvp.Value.ToString() });
+                        }
+
+                        return result.Select(s => s.Skip(1).Sum(i => int.Parse(i))).Sum().ToString();*/
+            List<string> result = new List<string>();
+            foreach (var element in list)
             {
-                var number = kv.Substring(kv.Length - 3).TrimStart('0');
-                section = kv.Substring(kv.Length - 5, 2).TrimStart('0');
-                section_and_number.Add(new List<string> { section, number });
+                if(!result.Contains(element.number_apart))
+                    result.Add(element.number_apart);
             }
-
-            //Словарь для хранения максимальных номеров каждой секции
-            Dictionary<string, int> maxNumbers = new Dictionary<string, int>();
-
-            foreach (var sect in section_and_number)
-            {
-                string sectionName = sect[0];
-                int num = int.Parse(sect[1]);
-
-                //Обновляем максимальный номер для текущей секции
-                if (maxNumbers.ContainsKey(sectionName))
-                {
-                    maxNumbers[sectionName] = Math.Max(maxNumbers[sectionName], num);
-                }
-                else
-                {
-                    maxNumbers[sectionName] = num;
-                }
-            }
-
-            //Создаём новый список с одним элементом с максимальным порядковым номером для каждой секции
-            List<List<string>> result = new List<List<string>>();
-            foreach (var kvp in maxNumbers)
-            {
-                result.Add(new List<string> { kvp.Key, kvp.Value.ToString() });
-            }
-
-            return result.Select(s => s.Skip(1).Sum(i => int.Parse(i))).Sum().ToString();
+            return result.Count.ToString();
         }
         private string B6(Document doc, String path, List<Data> elements)
         {
@@ -143,8 +154,7 @@ namespace TEP
         }
         private string B7(Document doc, String path, List<Data> elements)
         {
-            //elements = Elements(BuiltInCategory.OST_Rooms, doc, "ADSK_Номер квартиры", "КВ");
-            elements = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");
+            elements = ParameterValueContainsOr(elements, "ADSK_Номер квартиры", "КВ", "АП");
             List<String> values = Values("ADSK_Этаж", elements);
             string value = values.Distinct().Count().ToString();
             FillCell(7, 2, value, path);
@@ -206,7 +216,7 @@ namespace TEP
         }
         private void B16(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");            
+            var list = ParameterValueContainsOr(elements, "ADSK_Номер квартиры", "КВ", "АП");
             List<String> floors = new List<string>();
             foreach (var room in list)
             {
@@ -251,7 +261,7 @@ namespace TEP
         }
         private string B20(Document doc, String path, List<Data> elements)
         {
-            var list = ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ");
+            var list = ParameterValueContainsOr(elements, "ADSK_Номер квартиры", "КВ", "АП");
             string value = Areas(list, doc).ToString();
             FillCell(20, 2, value, path);
             return CountApart(list);
@@ -667,7 +677,7 @@ namespace TEP
         }
         private int Engineer_infinity(Document doc, String path, int number, List<Data> elements)
         {
-            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Имена помещений.xlsx"))))
+            using (var pack = new ExcelPackage(new System.IO.FileInfo(Path.Combine(path))))
             {
                 //Тот лист, на котором будет выводиться отчёт
                 ExcelWorksheet worksheet1 = pack.Workbook.Worksheets["ТЭП по модели АР"];
@@ -723,7 +733,7 @@ namespace TEP
             
             while (start != end)
             {
-                roomListFloor.AddRange(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", start.ToString()), "ADSK_Номер секции", section));
+                roomListFloor.AddRange(ParameterValueEquals(ParameterValueEquals(ParameterValueContainsOr(elements, "ADSK_Номер квартиры", "КВ", "АП"), "ADSK_Этаж", start.ToString()), "ADSK_Номер секции", section));
                 start++;
             }
             
@@ -737,7 +747,7 @@ namespace TEP
             number = FillCellParameter(number, 2, value, path, "На этаж", "шт.");
 
             //Площадь квартир
-            value = Areas(ParameterValueEquals(ParameterValueEquals(ParameterValueContains(elements, "ADSK_Номер квартиры", "КВ"), "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc).ToString();
+            value = (Areas(ParameterValueEquals(ParameterValueEquals(ParameterValueContainsOr(elements, "ADSK_Номер квартиры", "КВ", "АП"), "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc).ToString());
             string AreaApart = (double.Parse(value) * (double.Parse(EndFloor) - double.Parse(StartFloor))).ToString();
             number = FillCellParameter(number, 2, AreaApart, path, "Площадь квартир", "кв.м.");
 

@@ -36,6 +36,8 @@ namespace TEP
 
             FileInfo fileInf = new FileInfo(pathFile);
 
+            //var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
+
             //Открываем диалог выбора сохранения отчёта
             var saveDialogImg = new SaveFileDialog
             {
@@ -58,7 +60,8 @@ namespace TEP
             {
                 fileInf.CopyTo(selectedFilePath);
             }
-            catch {}
+            catch 
+            {}
             //Возвращаем путь
             return selectedFilePath;
         }
@@ -170,13 +173,27 @@ namespace TEP
         public virtual List<Data> ParameterValueEquals(List<Data> list, string parameter, string value)
         {
             List<Data> newList = new List<Data>();
-            if(list != null)
+            if (list != null)
             {
-                foreach(var element in list)
+                foreach (var element in list)
                 {
-                    if (element.element.LookupParameter(parameter).AsString() == value)
+                    if (element.element.LookupParameter(parameter) != null)
                     {
-                        newList.Add(element);
+                        if (element.element.LookupParameter(parameter).AsString() != null || element.element.LookupParameter(parameter).AsString() != "")
+                        {
+                            if (parameter == "ADSK_Этаж")
+                            {
+                                if (element.floor.TrimStart('0') == value)
+                                {
+                                    newList.Add(element);
+                                    continue;
+                                }
+                            }
+                            if (element.element.LookupParameter(parameter).AsString() == value)
+                            {
+                                newList.Add(element);
+                            }
+                        }
                     }
                 }
             }
@@ -189,9 +206,51 @@ namespace TEP
             {
                 foreach (var element in list)
                 {
-                    if (element.element.LookupParameter(parameter).AsString().Contains(value))
+                    if (element.element.LookupParameter(parameter) != null)
                     {
-                        newList.Add(element);
+                        if (element.element.LookupParameter(parameter).AsString() != null || element.element.LookupParameter(parameter).AsString() != "")
+                        {
+                            try
+                            {
+                                if (element.element.LookupParameter(parameter).AsString().Contains(value))
+                                {
+                                    newList.Add(element);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+            return newList;
+        }
+
+        public virtual List<Data> ParameterValueContainsOr(List<Data> list, string parameter, string value1, string value2)
+        {
+            List<Data> newList = new List<Data>();
+            if (list != null)
+            {
+                foreach (var element in list)
+                {
+                    if (element.element.LookupParameter(parameter) != null)
+                    {
+                        if (element.element.LookupParameter(parameter).AsString() != null || element.element.LookupParameter(parameter).AsString() != "")
+                        {
+                            try
+                            {
+                                if (element.element.LookupParameter(parameter).AsString().Contains(value1) || element.element.LookupParameter(parameter).AsString().Contains(value2))
+                                {
+                                    newList.Add(element);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
                     }
                 }
             }

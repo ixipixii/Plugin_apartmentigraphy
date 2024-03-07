@@ -504,8 +504,8 @@ namespace Number
                 TaskDialog.Show("Ошибка имени и функции файла", "Проверьте имя и функцию помещений - они должны совападать с файлом Имена помещений.xlsx");
                 return 1;
             }
-            return 1;
             trn.Commit();
+            return 1;
         }
         public int SetFunc(string PNR_Function, string PNR_Name, out string PNR_Func, out string flag) //Сокращение функции и флаг шаблона
         {
