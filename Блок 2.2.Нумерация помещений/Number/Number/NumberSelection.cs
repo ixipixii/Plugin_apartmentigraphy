@@ -371,7 +371,7 @@ namespace Number
                             apart.LookupParameter("ADSK_Позиция отделки").StorageType.ToString() != "String" ||
                             apart.LookupParameter("ADSK_Этаж").StorageType.ToString() != "String")
                         {
-                            TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров СТРОКА");
+                            TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров ТЕКСТ");
                             tr.RollBack();
                             return 1;
                         }
@@ -380,7 +380,7 @@ namespace Number
                             apart.LookupParameter("ADSK_Площадь квартиры общая").StorageType.ToString() != "Double" ||
                             apart.LookupParameter("ADSK_Количество комнат").StorageType.ToString() != "Integer")
                         {
-                            TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров ЧИСЛО или ПЛОЩАДЬ");
+                            TaskDialog.Show("Тип параметра", "Проверьте типы данных параметров ЦЕЛОЕ или ПЛОЩАДЬ");
                             tr.RollBack();
                             return 1;
                         }
@@ -505,7 +505,7 @@ namespace Number
                 return 1;
             }
             trn.Commit();
-            return 1;
+            return 0;
         }
         public int SetFunc(string PNR_Function, string PNR_Name, out string PNR_Func, out string flag) //Сокращение функции и флаг шаблона
         {

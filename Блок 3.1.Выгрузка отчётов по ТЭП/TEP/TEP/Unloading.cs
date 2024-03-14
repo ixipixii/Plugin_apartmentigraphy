@@ -183,7 +183,7 @@ namespace TEP
                         {
                             if (parameter == "ADSK_Этаж")
                             {
-                                if (element.floor.TrimStart('0') == value)
+                                if (element.floor != null && element.floor.TrimStart('0') == value)
                                 {
                                     newList.Add(element);
                                     continue;

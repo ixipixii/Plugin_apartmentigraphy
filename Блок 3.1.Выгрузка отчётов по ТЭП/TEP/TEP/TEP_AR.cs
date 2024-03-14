@@ -19,7 +19,7 @@ namespace TEP
     {
         public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc, string Start, string End, string Sect)
         {
-            if(Start == null || End == null || Sect == null || Start == "" || End == "" || Sect == "")
+            if(Start == null || End == null || Start == "" || End == "")
             {
                 TaskDialog.Show("Ошибка ввода", "Введите необходимые данные");
                 return;
@@ -40,11 +40,17 @@ namespace TEP
 
             //для расчёта ГНС считываем все ГНС
             List<Data> GNS = Elements(BuiltInCategory.OST_Areas, doc);
-            B9(doc, path, GNS);
-            B10(doc, path, GNS);
+            string gns = B9(doc, path, GNS);
+            B2(doc, path, gns);
+            
+            gns = B10(doc, path, GNS);
+            B3(doc, path, gns);
+
             B11(doc, path, GNS);
             B12(doc, path, GNS);
-            B13(doc, path, GNS); 
+            
+            gns = B13(doc, path, GNS);
+            B4(doc, path, gns);
 
             //Продолжение квартир
             B14(doc, path, rooms);
@@ -85,58 +91,13 @@ namespace TEP
             number = Engineer_infinity(doc, path, number, rooms);
 
             //Создаём отчёт по типовым этажам
-            TypeFloor(doc, path, number, Start, End, Sect, rooms);
+            TypeFloor(doc, path, number, Start, End, Sect, rooms, GNS);
 
             System.Diagnostics.Process.Start(path);
         }
         #region всё для квартир
         private string CountApart(List<Data> list)
         {
-            /*            //Определяем количество квартир
-                        List<string> valuesADSK_KV = Values("ADSK_Номер квартиры", list);
-                        var listADSK_KV = valuesADSK_KV.Distinct().ToList();
-
-                        //Лист, где будут хранится все скции и квартиры
-                        List<List<string>> section_and_number = new List<List<string>>();
-                        string section = string.Empty;
-                        foreach (var kv in listADSK_KV)
-                        {
-                            string number = string.Empty;
-                            if(kv.Contains("КВ"))
-                                number = kv.Substring(kv.Length - 3).TrimStart('0');
-                            if (kv.Contains("АП"))
-                                number = kv.Substring(kv.Length - 2).TrimStart('0');
-                            section = kv.Substring(kv.Length - 5, 2).TrimStart('0');
-                            section_and_number.Add(new List<string> { section, number });
-                        }
-
-                        //Словарь для хранения максимальных номеров каждой секции
-                        Dictionary<string, int> maxNumbers = new Dictionary<string, int>();
-
-                        foreach (var sect in section_and_number)
-                        {
-                            string sectionName = sect[0];
-                            int num = int.Parse(sect[1]);
-
-                            //Обновляем максимальный номер для текущей секции
-                            if (maxNumbers.ContainsKey(sectionName))
-                            {
-                                maxNumbers[sectionName] = Math.Max(maxNumbers[sectionName], num);
-                            }
-                            else
-                            {
-                                maxNumbers[sectionName] = num;
-                            }
-                        }
-
-                        //Создаём новый список с одним элементом с максимальным порядковым номером для каждой секции
-                        List<List<string>> result = new List<List<string>>();
-                        foreach (var kvp in maxNumbers)
-                        {
-                            result.Add(new List<string> { kvp.Key, kvp.Value.ToString() });
-                        }
-
-                        return result.Select(s => s.Skip(1).Sum(i => int.Parse(i))).Sum().ToString();*/
             List<string> result = new List<string>();
             foreach (var element in list)
             {
@@ -165,16 +126,18 @@ namespace TEP
             var value = int.Parse(CellB6) - int.Parse(CellB7);
             FillCell(8, 2, value.ToString(), path);
         }
-        private void B9(Document doc, String path, List<Data> elements) //Сравниваем ГНС с параметром "PNR_Имя помещения"
+        private string B9(Document doc, String path, List<Data> elements) //Сравниваем ГНС с параметром "PNR_Имя помещения"
         {
             string value = Areas(elements, doc, "ГНС").ToString();
             FillCell(9, 2, value, path);
+            return value;
         }
-        private void B10(Document doc, String path, List<Data> elements)
+        private string B10(Document doc, String path, List<Data> elements)
         {
             string value = (Areas(elements, doc, "ГНС")
                             - Areas(elements, doc, "нежилая")).ToString();
             FillCell(10, 2, value, path);
+            return value;
         }
         private void B11(Document doc, String path, List<Data> elements)
         {
@@ -188,10 +151,23 @@ namespace TEP
             string value = Areas(elements, doc, "входная").ToString();
             FillCell(12, 2, value, path);
         }
-        private void B13(Document doc, String path, List<Data> elements)
+        private string B13(Document doc, String path, List<Data> elements)
         {
             string value = Areas(elements, doc, "нежилая").ToString();
             FillCell(13, 2, value, path);
+            return value;
+        }
+        private void B2(Document doc, String path, string GNS)
+        {
+            FillCell(2, 2, GNS, path);
+        }
+        private void B3(Document doc, String path, string GNS)
+        {
+            FillCell(3, 2, GNS, path);
+        }
+        private void B4(Document doc, String path, string GNS)
+        {
+            FillCell(4, 2, GNS, path);
         }
         private void B14(Document doc, String path, List<Data> elements)
         {
@@ -704,9 +680,14 @@ namespace TEP
             }
             return number;
         }
-        private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor, string section, List<Data> elements)
+        private void TypeFloor(Document doc, String path, int number, string StartFloor, string EndFloor, string section, List<Data> elements, List<Data> GNS)
         {
             string value = string.Empty;
+
+            if(section == null)
+            {
+                section = "";
+            }
 
             //Показатели эффективности
             //Делаем красиво
@@ -799,7 +780,7 @@ namespace TEP
             number = FillCellParameter(number, 2, OP, path, "Общая площадь этажа", "кв.м.");
 
             //Суммарная поэтажная площадь в габаритах наружных стен
-            value = Areas(ParameterValueEquals(elements, "ADSK_Этаж", StartFloor), doc, "ГНС").ToString();
+            value = Areas(ParameterValueEquals(ParameterValueEquals(GNS, "ADSK_Этаж", StartFloor), "ADSK_Номер секции", section), doc, "ГНС").ToString();
             string SPP = (double.Parse(value) * (double.Parse(EndFloor) - double.Parse(StartFloor))).ToString();
             number = FillCellParameter(number, 2, SPP, path, "Суммарная поэтажная площадь в габаритах наружных стен", "кв.м.");
 
