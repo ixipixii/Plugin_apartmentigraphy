@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +18,12 @@ namespace TEP
     {
         class Info
         {
-            string CounrRoom { get; set; }
-            string Range { get; set; }
+            public string CountRoom { get; set; }
+            public string Range { get; set; }
             string Floor { get; set; }
-            string Section { get; set; }
-            public Info(string countRoom, string range, string floor, string section) => (CounrRoom, Range, Floor, Section) = (countRoom, range, floor, section);
+            public string Section { get; set; }
+            public string Number { get; set; }
+            public Info(string countRoom, string range, string floor, string section, string number) => (CountRoom, Range, Floor, Section, Number) = (countRoom, range, floor, section, number);
         }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -29,8 +31,8 @@ namespace TEP
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            //Открываем файл-шаблон с детальной квартирографией
-            //String pathTemplate = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Отчёты.xlsx");
+            //файл-шаблон с детальной квартирографией
+            String pathTemplate = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Детальная квартирография.xlsx");
 
             //Открываем диалог выбора сохранения отчёта
             var saveDialogImg = new SaveFileDialog
@@ -53,87 +55,129 @@ namespace TEP
                             .OfCategory(BuiltInCategory.OST_Rooms)
                             .WhereElementIsNotElementType()
                             .ToList();
-            
+
             List<string> listParameter = new List<string>();
             List<string> listSections = new List<string>();
             List<string> listFloor = new List<string>();
 
-            foreach ( var room in rooms )
+            List<Info> info = new List<Info>();
+            foreach (var room in rooms)
             {
-                listParameter.Add(room.LookupParameter("ADSK_Номер квартиры").AsString());
-                listSections.Add(room.LookupParameter("ADSK_Номер секции").AsString());
-                listFloor.Add(room.LookupParameter("ADSK_Этаж").AsString());
-            }
-
-            IEnumerable<string> uniqueParameterValueParameter = listParameter.Distinct();
-            IEnumerable<string> uniqueParameterValueSections  = listSections.Distinct();
-            IEnumerable<string> uniqueParameterValueFloor     = listFloor.Distinct();
-
-            Dictionary<string, string> sectionCounts = new Dictionary<string, string>();
-
-            foreach(var section in uniqueParameterValueSections)
-            {
-                string s = (section.Length == 1) ? "0" + section : section;
-                int count = uniqueParameterValueParameter.Count(room => room.Substring(room.Length - 5, 2) == section);
-                sectionCounts.Add(s, count.ToString());
-            }
-
-            using (var package = new ExcelPackage(new FileInfo(selectedFilePath)))
-            {
-                // Выбираем лист
-                ExcelWorksheet worksheet = package.Workbook.Worksheets["Выгрузка на корпус"];
-
-                //Диапазон для чтения
-                string range = "A2:S100";
-
-                //Координаты для записи
-                int row = 2;
-                int col_1 = 1;
-                int col_3 = 3;
-                int col_4 = 4;
-
-                // Координаты для чтения
-                var rangeCells = worksheet.Cells[range];
-                object[,] Allvalues = rangeCells.Value as object[,];
-
-                int start = 0;
-                if (Allvalues != null)
+                if (info.Count != 0)
                 {
-                    int rows = Allvalues.GetLength(0);
-
-                    for (int i = 0; i <= rows; i++)
+                    if (info.Any(i => i.Number != room.LookupParameter("ADSK_Номер квартиры").AsString()))
                     {
-                        if (Allvalues[i, 0].ToString() == "Количество квартир")
-                        {
-                            worksheet_YK.Cells[row, col_1].Value = Allvalues[i, 0].ToString();
-                            worksheet_YK.Cells[row, col_3].Value = Allvalues[i, 1].ToString();
-                            worksheet_YK.Cells[row, col_4].Value = Allvalues[i, 2].ToString();
-                            row++;
-                        }
-                        if (Allvalues[i, 0].ToString() == "Суммарная площадь МОП, в том числе:")
-                        {
-                            start = i;
-                            break;
-                        }
-                    }
-
-                    for (int i = start; i <= rows; i++)
-                    {
-                        if (Allvalues[i, 0].ToString().Contains("ПОКАЗАТЕЛИ ЭФФЕКТИВНОСТИ"))
-                            break;
-                        worksheet_YK.Cells[row, col_1].Value = Allvalues[i, 0].ToString();
-                        worksheet_YK.Cells[row, col_3].Value = Allvalues[i, 1].ToString();
-                        worksheet_YK.Cells[row, col_4].Value = Allvalues[i, 2].ToString();
-                        row++;
+                        Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsString(),
+                                                    room.LookupParameter("ADSK_Позиция отделки").AsString(),
+                                                    room.LookupParameter("ADSK_Этаж").AsString(),
+                                                    room.LookupParameter("ADSK_Номер секции").AsString(),
+                                                    room.LookupParameter("ADSK_Номер квартиры").AsString());
+                        info.Add(InfoElement);
                     }
                 }
-                // Сохраняем изменения
-                package.Save();
+                else
+                {
+                    Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsString(),
+                                                room.LookupParameter("ADSK_Позиция отделки").AsString(),
+                                                room.LookupParameter("ADSK_Этаж").AsString(),
+                                                room.LookupParameter("ADSK_Номер секции").AsString(),
+                                                room.LookupParameter("ADSK_Номер квартиры").AsString());
+                    info.Add(InfoElement);
+                }
+
+            }
+
+            List<string> countSection = info.GroupBy(i => i.Section)
+                .Select(group => group.Key)
+                .ToList();
+
+            List<string> column = new List<string>
+            {
+                "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R"
+            };
+
+            //Открываем файл-шаблон
+            using (var packageTemplate = new ExcelPackage(new FileInfo(pathTemplate)))
+            {
+                //Создаём и копируем информацию
+                ExcelWorksheet worksheetTemplate = packageTemplate.Workbook.Worksheets["Выгрузка на корпус"];
+
+                //Диапазон для чтения
+                string rangeTemplate = "A2:S100";
+
+                //Открываем файл для записи
+                using (var package = new ExcelPackage(new FileInfo(selectedFilePath)))
+                {
+                    // Выбираем лист
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets["Выгрузка на корпус"];
+
+                    int row = 21; //Начинаем заполнение с 21 строки
+                    foreach(var section in countSection)
+                    {
+                        worksheet.Cells["А" + row.ToString()].Value = "Секция номер" + section; 
+
+                        //Однокомнатные
+                        if (info.Any(apart => apart.CountRoom == "1"))
+                        {
+                            worksheet.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S");
+                            worksheet.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M");
+                        }
+
+                        //Двухкомнатные
+                        countApartCountRoom("2", worksheet, column, row, info);
+
+                        //3
+                        countApartCountRoom("3", worksheet, column, row, info);
+
+                        //4
+                        countApartCountRoom("4", worksheet, column, row, info);
+
+                        //5
+                        countApartCountRoom("5", worksheet, column, row, info);
+
+                        //6
+                        countApartCountRoom("6", worksheet, column, row, info);
+
+                        row++;  
+                    }
+
+                    // Сохраняем изменения
+                    package.Save();
+                }
             }
 
             System.Diagnostics.Process.Start(selectedFilePath);
 
             return Result.Succeeded;
+        }
+        private void countApartCountRoom(string countRoom, ExcelWorksheet worksheet, List<string> column, int row, List<Info> info)
+        {
+            int col = 0;
+            switch (countRoom)
+            {
+                case "2":
+                    col = 2;
+                    break;
+                case "3":
+                    col = 5;
+                    break;
+                case "4":
+                    col = 8;
+                    break;
+                case "5":
+                    col = 11;
+                    break;
+                case "6":
+                    col = 14;
+                    break;
+
+            }
+            if (info.Any(apart => apart.CountRoom == countRoom))
+            {
+                worksheet.Cells[column[col]     + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "S");
+                worksheet.Cells[column[col + 1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "M");
+                worksheet.Cells[column[col + 2] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "L");
+            }
         }
     }
 }
