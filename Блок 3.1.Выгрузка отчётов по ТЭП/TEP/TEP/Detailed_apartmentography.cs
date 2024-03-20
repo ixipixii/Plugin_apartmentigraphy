@@ -20,7 +20,7 @@ namespace TEP
         {
             public string CountRoom { get; set; }
             public string Range { get; set; }
-            string Floor { get; set; }
+            public string Floor { get; set; }
             public string Section { get; set; }
             public string Number { get; set; }
             public Info(string countRoom, string range, string floor, string section, string number) => (CountRoom, Range, Floor, Section, Number) = (countRoom, range, floor, section, number);
@@ -32,7 +32,7 @@ namespace TEP
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
             //файл-шаблон с детальной квартирографией
-            String pathTemplate = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Детальная квартирография.xlsx");
+            String pathTemplate = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Отчёты.xlsx");
 
             //Открываем диалог выбора сохранения отчёта
             var saveDialogImg = new SaveFileDialog
@@ -65,29 +65,45 @@ namespace TEP
             {
                 if (info.Count != 0)
                 {
-                    if (info.Any(i => i.Number != room.LookupParameter("ADSK_Номер квартиры").AsString()))
+                    if (room.LookupParameter("ADSK_Номер квартиры") != null &&
+                       room.LookupParameter("ADSK_Номер квартиры").AsString() != null &&
+                       room.LookupParameter("ADSK_Номер квартиры").AsString() != "" &&
+                       room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
                     {
-                        Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsString(),
-                                                    room.LookupParameter("ADSK_Позиция отделки").AsString(),
-                                                    room.LookupParameter("ADSK_Этаж").AsString(),
-                                                    room.LookupParameter("ADSK_Номер секции").AsString(),
-                                                    room.LookupParameter("ADSK_Номер квартиры").AsString());
-                        info.Add(InfoElement);
+                        if (!info.Any(i => i.Number == room.LookupParameter("ADSK_Номер квартиры").AsString()))
+                        {
+                            Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsInteger().ToString(),
+                                                        room.LookupParameter("ADSK_Тип квартиры").AsString(),
+                                                        room.LookupParameter("ADSK_Этаж").AsString(),
+                                                        room.LookupParameter("ADSK_Номер секции").AsString(),
+                                                        room.LookupParameter("ADSK_Номер квартиры").AsString());
+                            info.Add(InfoElement);
+                        }
                     }
                 }
                 else
                 {
-                    Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsString(),
-                                                room.LookupParameter("ADSK_Позиция отделки").AsString(),
+                    if (room.LookupParameter("ADSK_Номер квартиры") != null &&
+                        room.LookupParameter("ADSK_Номер квартиры").AsString() != null &&
+                        room.LookupParameter("ADSK_Номер квартиры").AsString() != "" &&
+                        room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
+                    {
+                        Info InfoElement = new Info(room.LookupParameter("ADSK_Количество комнат").AsInteger().ToString(),
+                                                room.LookupParameter("ADSK_Тип квартиры").AsString(),
                                                 room.LookupParameter("ADSK_Этаж").AsString(),
                                                 room.LookupParameter("ADSK_Номер секции").AsString(),
                                                 room.LookupParameter("ADSK_Номер квартиры").AsString());
-                    info.Add(InfoElement);
+                        info.Add(InfoElement);
+                    }
                 }
 
             }
 
             List<string> countSection = info.GroupBy(i => i.Section)
+                .Select(group => group.Key)
+                .ToList();
+
+            List<string> countFloor = info.GroupBy(i => i.Floor)
                 .Select(group => group.Key)
                 .ToList();
 
@@ -100,45 +116,126 @@ namespace TEP
             using (var packageTemplate = new ExcelPackage(new FileInfo(pathTemplate)))
             {
                 //Создаём и копируем информацию
-                ExcelWorksheet worksheetTemplate = packageTemplate.Workbook.Worksheets["Выгрузка на корпус"];
-
-                //Диапазон для чтения
-                string rangeTemplate = "A2:S100";
+                ExcelWorksheet worksheetTemplateHousing = packageTemplate.Workbook.Worksheets["Выгрузка на корпус"];
+                ExcelWorksheet worksheetTemplateSection = packageTemplate.Workbook.Worksheets["Выгрузка на секцию"];
 
                 //Открываем файл для записи
                 using (var package = new ExcelPackage(new FileInfo(selectedFilePath)))
                 {
-                    // Выбираем лист
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets["Выгрузка на корпус"];
+                    // Удаляем и добавляем лист "Выгрузка на корпус"
+                    package.Workbook.Worksheets.Delete("Выгрузка на корпус");
+                    ExcelWorksheet worksheetHousing = package.Workbook.Worksheets.Add("Выгрузка на корпус");
+
+                    // Копируем данные, форматирование и другие свойства из исходного листа в новый
+                    for (int i = 1; i <= worksheetTemplateHousing.Dimension.Rows; i++)
+                    {
+                        for (int col = 1; col <= worksheetTemplateHousing.Dimension.Columns; col++)
+                        {
+                             worksheetTemplateHousing.Cells[i, col].Copy(worksheetHousing.Cells[i, col]);
+                        }
+                    }
 
                     int row = 21; //Начинаем заполнение с 21 строки
-                    foreach(var section in countSection)
+                    foreach (var section in countSection)
                     {
-                        worksheet.Cells["А" + row.ToString()].Value = "Секция номер" + section; 
+                        worksheetHousing.Cells["A" + row.ToString()].Value = "Секция номер " + section;
 
                         //Однокомнатные
                         if (info.Any(apart => apart.CountRoom == "1"))
                         {
-                            worksheet.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S");
-                            worksheet.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M");
+                            worksheetHousing.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section);
+                            worksheetHousing.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section);
                         }
 
                         //Двухкомнатные
-                        countApartCountRoom("2", worksheet, column, row, info);
+                        countApartCountRoom("2", section, null, worksheetHousing, column, row, info);
 
                         //3
-                        countApartCountRoom("3", worksheet, column, row, info);
+                        countApartCountRoom("3", section, null, worksheetHousing, column, row, info);
 
                         //4
-                        countApartCountRoom("4", worksheet, column, row, info);
+                        countApartCountRoom("4", section, null, worksheetHousing, column, row, info);
 
                         //5
-                        countApartCountRoom("5", worksheet, column, row, info);
+                        countApartCountRoom("5", section, null, worksheetHousing, column, row, info);
 
                         //6
-                        countApartCountRoom("6", worksheet, column, row, info);
+                        countApartCountRoom("6", section, null, worksheetHousing, column, row, info);
 
-                        row++;  
+                        //Переносим строки с итогами
+                        //Если больше данных нет, копирование не делаем
+                        if (countSection[countSection.Count - 1] != section)
+                        {
+                            for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
+                            {
+                                worksheetHousing.Cells[row + 6, col].Copy(worksheetHousing.Cells[row + 7, col]);
+                                worksheetHousing.Cells[row + 5, col].Copy(worksheetHousing.Cells[row + 6, col]);
+                                worksheetHousing.Cells[row + 4, col].Copy(worksheetHousing.Cells[row + 5, col]);
+                                worksheetHousing.Cells[row + 3, col].Copy(worksheetHousing.Cells[row + 4, col]);
+                                worksheetHousing.Cells[row + 2, col].Copy(worksheetHousing.Cells[row + 3, col]);
+                                worksheetHousing.Cells[row + 1, col].Copy(worksheetHousing.Cells[row + 2, col]);
+                                worksheetHousing.Cells[row + 1, col].Clear();
+                            }
+                        }
+                        row++;
+                    }
+
+                    // Удаляем и добавляем лист "Выгрузка на секцию"
+                    package.Workbook.Worksheets.Delete("Выгрузка на секцию");
+                    ExcelWorksheet worksheetSection = package.Workbook.Worksheets.Add("Выгрузка на секцию");
+
+                    int countNameSection = 3;
+                    row = 9;
+                    foreach (var section in countSection)
+                    {
+                        worksheetSection.Cells["A" + countNameSection.ToString()].Value = "КОРПУС №_1_ СЕКЦИЯ №_" + section + "_";
+                        
+                        foreach (var floor in countFloor)
+                        {
+                            worksheetSection.Cells["A" + row].Value = "Этаж №" + floor;
+
+                            //Однокомнатные
+                            if (info.Any(apart => apart.CountRoom == "1"))
+                            {
+                                worksheetSection.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section && apart.Floor == floor);
+                                worksheetSection.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section && apart.Floor == floor);
+                            }
+
+                            //Двухкомнатные
+                            countApartCountRoom("2", section, floor, worksheetSection, column, row, info);
+
+                            //3
+                            countApartCountRoom("3", section, floor, worksheetSection, column, row, info);
+
+                            //4
+                            countApartCountRoom("4", section, floor, worksheetSection, column, row, info);
+
+                            //5
+                            countApartCountRoom("5", section, floor, worksheetSection, column, row, info);
+
+                            //6
+                            countApartCountRoom("6", section, floor, worksheetSection, column, row, info);
+
+                            row++;
+                        }
+
+                        //Переносим строки с итогами
+                        //Если больше данных нет, копирование не делаем
+                        if (countSection[countSection.Count - 1] != section)
+                        {
+                            for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
+                            {
+                                worksheetSection.Cells[countNameSection + 5, col].Copy(worksheetSection.Cells[row + 8, col]);
+                                worksheetSection.Cells[countNameSection + 4, col].Copy(worksheetSection.Cells[row + 7, col]);
+                                worksheetSection.Cells[countNameSection + 3, col].Copy(worksheetSection.Cells[row + 6, col]);
+                                worksheetSection.Cells[countNameSection + 2, col].Copy(worksheetSection.Cells[row + 5, col]);
+                                worksheetSection.Cells[countNameSection + 1, col].Copy(worksheetSection.Cells[row + 4, col]);
+                                worksheetSection.Cells[countNameSection, col].Copy(worksheetSection.Cells[row + 3, col]);
+                            }
+                        }
+
+                        countNameSection = row + 3;
+                        row = countNameSection + 6;
                     }
 
                     // Сохраняем изменения
@@ -150,7 +247,7 @@ namespace TEP
 
             return Result.Succeeded;
         }
-        private void countApartCountRoom(string countRoom, ExcelWorksheet worksheet, List<string> column, int row, List<Info> info)
+        private void countApartCountRoom(string countRoom, string section, string floor, ExcelWorksheet worksheet, List<string> column, int row, List<Info> info)
         {
             int col = 0;
             switch (countRoom)
@@ -172,11 +269,23 @@ namespace TEP
                     break;
 
             }
-            if (info.Any(apart => apart.CountRoom == countRoom))
+            if(floor != null)
             {
-                worksheet.Cells[column[col]     + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "S");
-                worksheet.Cells[column[col + 1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "M");
-                worksheet.Cells[column[col + 2] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "L");
+                if (info.Any(apart => apart.CountRoom == countRoom))
+                {
+                    worksheet.Cells[column[col] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "S" && apart.Section == section && apart.Floor == floor);
+                    worksheet.Cells[column[col + 1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "M" && apart.Section == section && apart.Floor == floor);
+                    worksheet.Cells[column[col + 2] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "L" && apart.Section == section && apart.Floor == floor);
+                }
+            }
+            else
+            {
+                if (info.Any(apart => apart.CountRoom == countRoom))
+                {
+                    worksheet.Cells[column[col] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "S" && apart.Section == section);
+                    worksheet.Cells[column[col + 1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "M" && apart.Section == section);
+                    worksheet.Cells[column[col + 2] + row.ToString()].Value = info.Count(apart => apart.CountRoom == countRoom && apart.Range == "L" && apart.Section == section);
+                }
             }
         }
     }
