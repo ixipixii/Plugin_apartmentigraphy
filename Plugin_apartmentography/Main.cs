@@ -196,6 +196,11 @@ namespace Plugin_apartmentography
                 "TEP.REPORT_YK");
             var new_button_9_2 = group_1.AddPushButton(button_9_2) as PushButton;
 
+            var button_9_3 = new PushButtonData("Детальная квартирография", "Детальная квартирография",
+                Path.Combine(path9, "TEP.dll"),
+                "TEP.Detailed_apartmentography");
+            var new_button_9_3 = group_1.AddPushButton(button_9_3) as PushButton;
+
             return Result.Succeeded;
         }
     }

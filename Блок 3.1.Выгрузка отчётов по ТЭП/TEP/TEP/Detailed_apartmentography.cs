@@ -31,25 +31,10 @@ namespace TEP
             var uidoc = uiapp.ActiveUIDocument;
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            //файл-шаблон с детальной квартирографией
-            String pathTemplate = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Отчёты.xlsx");
-
-            //Открываем диалог выбора сохранения отчёта
-            var saveDialogImg = new SaveFileDialog
-            {
-                OverwritePrompt = true,
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                Filter = "All files (*.*)|*.*",
-                FileName = "Отчёты.xlsx",
-                DefaultExt = ".xlsx"
-            };
-
-            string selectedFilePath = string.Empty;
-
-            if (saveDialogImg.ShowDialog() == DialogResult.OK)
-            {
-                selectedFilePath = saveDialogImg.FileName;
-            }
+            //Спрашиваем у пользователя какой будет корпус
+            Housing hous = new Housing();
+            hous.ShowDialog();
+            string housing = hous.Hous;
 
             var rooms = new FilteredElementCollector(doc)
                             .OfCategory(BuiltInCategory.OST_Rooms)
@@ -68,7 +53,8 @@ namespace TEP
                     if (room.LookupParameter("ADSK_Номер квартиры") != null &&
                        room.LookupParameter("ADSK_Номер квартиры").AsString() != null &&
                        room.LookupParameter("ADSK_Номер квартиры").AsString() != "" &&
-                       room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ"))
+                       room.LookupParameter("ADSK_Номер квартиры").AsString().Contains("КВ") &&
+                       room.LookupParameter("ADSK_Номер здания").AsString() == housing)
                     {
                         if (!info.Any(i => i.Number == room.LookupParameter("ADSK_Номер квартиры").AsString()))
                         {
@@ -113,137 +99,122 @@ namespace TEP
             };
 
             //Открываем файл-шаблон
-            using (var packageTemplate = new ExcelPackage(new FileInfo(pathTemplate)))
+            String path = Unloading.CopyFile("Детальная квартирография");
+
+            //Открываем файл для записи
+            using (var package = new ExcelPackage(new FileInfo(path)))
             {
-                //Создаём и копируем информацию
-                ExcelWorksheet worksheetTemplateHousing = packageTemplate.Workbook.Worksheets["Выгрузка на корпус"];
-                ExcelWorksheet worksheetTemplateSection = packageTemplate.Workbook.Worksheets["Выгрузка на секцию"];
+                //Выгружаем на корпус
+                ExcelWorksheet worksheetHousing = package.Workbook.Worksheets["Выгрузка на корпус"];
 
-                //Открываем файл для записи
-                using (var package = new ExcelPackage(new FileInfo(selectedFilePath)))
+                int row = 21; //Начинаем заполнение с 21 строки
+                foreach (var section in countSection)
                 {
-                    // Удаляем и добавляем лист "Выгрузка на корпус"
-                    package.Workbook.Worksheets.Delete("Выгрузка на корпус");
-                    ExcelWorksheet worksheetHousing = package.Workbook.Worksheets.Add("Выгрузка на корпус");
+                    worksheetHousing.Cells["A" + row.ToString()].Value = "Секция номер " + section;
 
-                    // Копируем данные, форматирование и другие свойства из исходного листа в новый
-                    for (int i = 1; i <= worksheetTemplateHousing.Dimension.Rows; i++)
+                    //Однокомнатные
+                    if (info.Any(apart => apart.CountRoom == "1"))
                     {
-                        for (int col = 1; col <= worksheetTemplateHousing.Dimension.Columns; col++)
-                        {
-                             worksheetTemplateHousing.Cells[i, col].Copy(worksheetHousing.Cells[i, col]);
-                        }
+                        worksheetHousing.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section);
+                        worksheetHousing.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section);
                     }
 
-                    int row = 21; //Начинаем заполнение с 21 строки
-                    foreach (var section in countSection)
+                    //Двухкомнатные
+                    countApartCountRoom("2", section, null, worksheetHousing, column, row, info);
+
+                    //3
+                    countApartCountRoom("3", section, null, worksheetHousing, column, row, info);
+
+                    //4
+                    countApartCountRoom("4", section, null, worksheetHousing, column, row, info);
+
+                    //5
+                    countApartCountRoom("5", section, null, worksheetHousing, column, row, info);
+
+                    //6
+                    countApartCountRoom("6", section, null, worksheetHousing, column, row, info);
+
+                    //Переносим строки с итогами
+                    //Если больше данных нет, копирование не делаем
+                    if (countSection[countSection.Count - 1] != section)
                     {
-                        worksheetHousing.Cells["A" + row.ToString()].Value = "Секция номер " + section;
+                        for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
+                        {
+                            worksheetHousing.Cells[row + 6, col].Copy(worksheetHousing.Cells[row + 7, col]);
+                            worksheetHousing.Cells[row + 5, col].Copy(worksheetHousing.Cells[row + 6, col]);
+                            worksheetHousing.Cells[row + 4, col].Copy(worksheetHousing.Cells[row + 5, col]);
+                            worksheetHousing.Cells[row + 3, col].Copy(worksheetHousing.Cells[row + 4, col]);
+                            worksheetHousing.Cells[row + 2, col].Copy(worksheetHousing.Cells[row + 3, col]);
+                            worksheetHousing.Cells[row + 1, col].Copy(worksheetHousing.Cells[row + 2, col]);
+                            worksheetHousing.Cells[row + 1, col].Clear();
+                        }
+                    }
+                    row++;
+                }
+
+                //Выгружаем на секцию
+                ExcelWorksheet worksheetSection = package.Workbook.Worksheets["Выгрузка на секцию"];
+
+                int countNameSection = 3;
+                row = 9;
+                foreach (var section in countSection)
+                {
+                    worksheetSection.Cells["A" + countNameSection.ToString()].Value = "КОРПУС №_1_ СЕКЦИЯ №_" + section + "_";
+
+                    foreach (var floor in countFloor)
+                    {
+                        worksheetSection.Cells["A" + row].Value = "Этаж №" + floor;
 
                         //Однокомнатные
                         if (info.Any(apart => apart.CountRoom == "1"))
                         {
-                            worksheetHousing.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section);
-                            worksheetHousing.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section);
+                            worksheetSection.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section && apart.Floor == floor);
+                            worksheetSection.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section && apart.Floor == floor);
                         }
 
                         //Двухкомнатные
-                        countApartCountRoom("2", section, null, worksheetHousing, column, row, info);
+                        countApartCountRoom("2", section, floor, worksheetSection, column, row, info);
 
                         //3
-                        countApartCountRoom("3", section, null, worksheetHousing, column, row, info);
+                        countApartCountRoom("3", section, floor, worksheetSection, column, row, info);
 
                         //4
-                        countApartCountRoom("4", section, null, worksheetHousing, column, row, info);
+                        countApartCountRoom("4", section, floor, worksheetSection, column, row, info);
 
                         //5
-                        countApartCountRoom("5", section, null, worksheetHousing, column, row, info);
+                        countApartCountRoom("5", section, floor, worksheetSection, column, row, info);
 
                         //6
-                        countApartCountRoom("6", section, null, worksheetHousing, column, row, info);
+                        countApartCountRoom("6", section, floor, worksheetSection, column, row, info);
 
-                        //Переносим строки с итогами
-                        //Если больше данных нет, копирование не делаем
-                        if (countSection[countSection.Count - 1] != section)
-                        {
-                            for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
-                            {
-                                worksheetHousing.Cells[row + 6, col].Copy(worksheetHousing.Cells[row + 7, col]);
-                                worksheetHousing.Cells[row + 5, col].Copy(worksheetHousing.Cells[row + 6, col]);
-                                worksheetHousing.Cells[row + 4, col].Copy(worksheetHousing.Cells[row + 5, col]);
-                                worksheetHousing.Cells[row + 3, col].Copy(worksheetHousing.Cells[row + 4, col]);
-                                worksheetHousing.Cells[row + 2, col].Copy(worksheetHousing.Cells[row + 3, col]);
-                                worksheetHousing.Cells[row + 1, col].Copy(worksheetHousing.Cells[row + 2, col]);
-                                worksheetHousing.Cells[row + 1, col].Clear();
-                            }
-                        }
                         row++;
                     }
 
-                    // Удаляем и добавляем лист "Выгрузка на секцию"
-                    package.Workbook.Worksheets.Delete("Выгрузка на секцию");
-                    ExcelWorksheet worksheetSection = package.Workbook.Worksheets.Add("Выгрузка на секцию");
-
-                    int countNameSection = 3;
-                    row = 9;
-                    foreach (var section in countSection)
+                    //Переносим строки с итогами
+                    //Если больше данных нет, копирование не делаем
+                    if (countSection[countSection.Count - 1] != section)
                     {
-                        worksheetSection.Cells["A" + countNameSection.ToString()].Value = "КОРПУС №_1_ СЕКЦИЯ №_" + section + "_";
-                        
-                        foreach (var floor in countFloor)
+                        for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
                         {
-                            worksheetSection.Cells["A" + row].Value = "Этаж №" + floor;
-
-                            //Однокомнатные
-                            if (info.Any(apart => apart.CountRoom == "1"))
-                            {
-                                worksheetSection.Cells[column[0] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "S" && apart.Section == section && apart.Floor == floor);
-                                worksheetSection.Cells[column[1] + row.ToString()].Value = info.Count(apart => apart.CountRoom == "1" && apart.Range == "M" && apart.Section == section && apart.Floor == floor);
-                            }
-
-                            //Двухкомнатные
-                            countApartCountRoom("2", section, floor, worksheetSection, column, row, info);
-
-                            //3
-                            countApartCountRoom("3", section, floor, worksheetSection, column, row, info);
-
-                            //4
-                            countApartCountRoom("4", section, floor, worksheetSection, column, row, info);
-
-                            //5
-                            countApartCountRoom("5", section, floor, worksheetSection, column, row, info);
-
-                            //6
-                            countApartCountRoom("6", section, floor, worksheetSection, column, row, info);
-
-                            row++;
+                            worksheetSection.Cells[countNameSection + 5, col].Copy(worksheetSection.Cells[row + 8, col]);
+                            worksheetSection.Cells[countNameSection + 4, col].Copy(worksheetSection.Cells[row + 7, col]);
+                            worksheetSection.Cells[countNameSection + 3, col].Copy(worksheetSection.Cells[row + 6, col]);
+                            worksheetSection.Cells[countNameSection + 2, col].Copy(worksheetSection.Cells[row + 5, col]);
+                            worksheetSection.Cells[countNameSection + 1, col].Copy(worksheetSection.Cells[row + 4, col]);
+                            worksheetSection.Cells[countNameSection, col].Copy(worksheetSection.Cells[row + 3, col]);
                         }
-
-                        //Переносим строки с итогами
-                        //Если больше данных нет, копирование не делаем
-                        if (countSection[countSection.Count - 1] != section)
-                        {
-                            for (int col = 1; col <= worksheetHousing.Dimension.End.Column; col++)
-                            {
-                                worksheetSection.Cells[countNameSection + 5, col].Copy(worksheetSection.Cells[row + 8, col]);
-                                worksheetSection.Cells[countNameSection + 4, col].Copy(worksheetSection.Cells[row + 7, col]);
-                                worksheetSection.Cells[countNameSection + 3, col].Copy(worksheetSection.Cells[row + 6, col]);
-                                worksheetSection.Cells[countNameSection + 2, col].Copy(worksheetSection.Cells[row + 5, col]);
-                                worksheetSection.Cells[countNameSection + 1, col].Copy(worksheetSection.Cells[row + 4, col]);
-                                worksheetSection.Cells[countNameSection, col].Copy(worksheetSection.Cells[row + 3, col]);
-                            }
-                        }
-
-                        countNameSection = row + 3;
-                        row = countNameSection + 6;
                     }
 
-                    // Сохраняем изменения
-                    package.Save();
+                    countNameSection = row + 3;
+                    row = countNameSection + 6;
                 }
-            }
 
-            System.Diagnostics.Process.Start(selectedFilePath);
+                // Сохраняем изменения
+                package.Save();
+            }
+            // }
+
+            System.Diagnostics.Process.Start(path);
 
             return Result.Succeeded;
         }
@@ -269,7 +240,7 @@ namespace TEP
                     break;
 
             }
-            if(floor != null)
+            if (floor != null)
             {
                 if (info.Any(apart => apart.CountRoom == countRoom))
                 {

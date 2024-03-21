@@ -94,6 +94,9 @@
     <Compile Include="Apartmentography.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Detailed_apartmentography.cs" />
+    <Compile Include="Housing.xaml.cs">
+      <DependentUpon>Housing.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="REPORT_YK.cs" />
@@ -111,6 +114,10 @@
     <None Include="TEP.addin" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Housing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TypeFloor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

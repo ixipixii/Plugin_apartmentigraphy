@@ -18,7 +18,7 @@ namespace TEP
     internal abstract class Unloading
     {
         public Unloading() { }
-        public string GetExeDirectory() //Получить путь до DLL
+        static public string GetExeDirectory() //Получить путь до DLL
         {
             string codeBase = Assembly.GetExecutingAssembly().CodeBase;
             UriBuilder uri = new UriBuilder(codeBase);
@@ -26,7 +26,7 @@ namespace TEP
             path = Path.GetDirectoryName(path);
             return path;
         }
-        public string CopyFile(string nameFile) //Копировать файл-шаблон
+        static public string CopyFile(string nameFile) //Копировать файл-шаблон
         {
             //Путь до DLL
             string absPath = GetExeDirectory();
@@ -35,8 +35,6 @@ namespace TEP
             pathFile = Path.GetFullPath(pathFile);
 
             FileInfo fileInf = new FileInfo(pathFile);
-
-            //var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
 
             //Открываем диалог выбора сохранения отчёта
             var saveDialogImg = new SaveFileDialog
@@ -60,8 +58,28 @@ namespace TEP
             {
                 fileInf.CopyTo(selectedFilePath);
             }
-            catch 
-            {}
+            catch (System.IO.FileNotFoundException)
+            {
+                var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), $@"Autodesk\Revit\Addins\{nameFile}.xlsx"));
+                FileInfo fileInfTemplate = new FileInfo(path.FullName);
+                try
+                {
+                    fileInfTemplate.CopyTo(selectedFilePath);
+                }
+                catch (System.IO.IOException)
+                {
+                    FileInfo deleteFile = new FileInfo(selectedFilePath);
+                    deleteFile.Delete();
+                    fileInfTemplate.CopyTo(selectedFilePath);
+                }
+
+            }
+            catch (System.IO.IOException)
+            {
+                FileInfo deleteFile = new FileInfo(selectedFilePath);
+                deleteFile.Delete();
+                fileInf.CopyTo(selectedFilePath);
+            }
             //Возвращаем путь
             return selectedFilePath;
         }
@@ -89,7 +107,7 @@ namespace TEP
         public int FillCellParameter(int rowIndex, int columnIndex, String cellValue, String excelPath, string value_1, string value_3) //Заполнить ячейку
         {
             //Пустые данные не заносим
-            if(cellValue == "0")
+            if (cellValue == "0")
                 return rowIndex;
 
             using (var package = new ExcelPackage(new FileInfo(excelPath)))
@@ -149,7 +167,7 @@ namespace TEP
         public virtual List<Element> Elements(BuiltInCategory category, Document doc, String filterParameter, int valueFilterParameter, bool valeuCompare)
         {
             //Если знак >= то valeuCompare = 1. Если знак < то valeuCompare = 0.
-            if(valeuCompare)
+            if (valeuCompare)
             {
                 List<Element> elements = new FilteredElementCollector(doc)
                                         .OfCategory(category)
@@ -168,7 +186,7 @@ namespace TEP
                 return elements;
             }
         }
-        
+
         //Формируем списки по нужным параметрам
         public virtual List<Data> ParameterValueEquals(List<Data> list, string parameter, string value)
         {
@@ -263,7 +281,7 @@ namespace TEP
             double area = 0;
             foreach (var element in elements)
             {
-                    area += element.area;
+                area += element.area;
             }
             area = area.Round(3);
             return area;
@@ -323,7 +341,7 @@ namespace TEP
         //Достаём из списка элементов значения параметров
         public virtual List<String> Values(String parameter, List<Data> elements)
         {
-            List<String> values = new List<String>();           
+            List<String> values = new List<String>();
             foreach (var element in elements)
             {
                 Room room = element.element as Room;
@@ -360,8 +378,8 @@ namespace TEP
                         //Если функция поменялась, заносим в ячейку сведения о функции
                         else
                         {
-                            areaFunc= areaFunc.Round(3);
-                            areaName= areaName.Round(3);
+                            areaFunc = areaFunc.Round(3);
+                            areaName = areaName.Round(3);
                             worksheet1.Cells[rowFunc, 1].Value = nameFunc; worksheet1.Cells[rowFunc, 1].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 2].Value = areaFunc; worksheet1.Cells[rowFunc, 2].Style.Font.Bold = true;
                             worksheet1.Cells[rowFunc, 3].Value = "кв.м"; worksheet1.Cells[rowFunc, 3].Style.Font.Bold = true;
@@ -457,7 +475,7 @@ namespace TEP
             Style(worksheet1, rowName);
             return rowName;
         }
-        
+
         public List<Element> RoomListFloor(Document doc, List<string> func, string nameFloor)
         {
             var allFuncRoom = new FilteredElementCollector(doc);
@@ -524,7 +542,7 @@ namespace TEP
         }
         public List<string> Func(String NameFuncStart, String NameFuncEnd)
         {
-            List<String> function = new List<String>(); 
+            List<String> function = new List<String>();
             var path = new System.IO.FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Autodesk\Revit\Addins\Имена помещений.xlsx"));
             using (var package = new ExcelPackage(path))
             {
