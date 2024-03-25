@@ -17,13 +17,13 @@ namespace TEP
 {
     internal class TEP_AR : Unloading
     {
-        public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc, string Start, string End, string Sect)
+        public TEP_AR(UIApplication uiapp, UIDocument uidoc, Document doc, string Start, string End, string Sect, bool Type)
         {
-            if(Start == null || End == null || Start == "" || End == "")
+            if((Start == null || End == null || Start == "" || End == "") && Type == true)
             {
                 TaskDialog.Show("Ошибка ввода", "Введите необходимые данные");
                 return;
-            }
+            }          
 
             //и Количество помещений ритейла в коммерции
 
@@ -90,8 +90,11 @@ namespace TEP
             //Создаём отчёт по всем оставшимся категорям
             number = Engineer_infinity(doc, path, number, rooms);
 
-            //Создаём отчёт по типовым этажам
-            TypeFloor(doc, path, number, Start, End, Sect, rooms, GNS);
+            if(Type == true)
+            {
+                //Создаём отчёт по типовым этажам
+                TypeFloor(doc, path, number, Start, End, Sect, rooms, GNS);
+            }
 
             System.Diagnostics.Process.Start(path);
         }

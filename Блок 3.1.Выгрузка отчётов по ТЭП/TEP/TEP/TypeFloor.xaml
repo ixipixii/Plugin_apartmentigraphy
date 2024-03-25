@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TEP"
              mc:Ignorable="d" 
-             Height="220" Width="300" MinWidth="250"
+             Height="255" Width="300" MinWidth="250"
              Title="Ввод данных">
     <Grid>
         <Grid.RowDefinitions>
@@ -44,11 +44,22 @@
         <TextBox x:Name="Section"
                 Grid.Row="3"
                 HorizontalAlignment="Left"
-                Margin="140,5,0,5" Width="135"></TextBox>
+                Margin="140,5,0,5" Width="134"
+                 IsEnabled="{Binding IsChecked, ElementName=CB}"></TextBox>
+
+        <CheckBox x:Name="CB"
+                     Grid.Row="3"
+                     VerticalAlignment="Center" 
+                     Margin="58,0,211,0"></CheckBox>
 
         <Button Content="Подтвердить"
                 Grid.Row ="4"
-                Margin="10 10 10 10"
+                Margin="140,10,10,10"
                 Click="Button_Click"></Button>
+        
+        <Button Content="               Отчёт без &#xD;&#xA;показателей эффективности"
+            Grid.Row ="4"
+            Margin="140,40,10,-20"
+            Click="Button_Click_1" FontSize="8" Background="White"/>
     </Grid>
 </Window>

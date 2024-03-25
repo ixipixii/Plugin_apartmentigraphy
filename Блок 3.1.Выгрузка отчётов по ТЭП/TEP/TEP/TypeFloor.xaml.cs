@@ -24,6 +24,7 @@ namespace TEP
         public string Start { get; set; }
         public string End { get; set; }
         public string Sect { get; set; }
+        public bool Type { get; set; }
         public TypeFloor()
         {
             InitializeComponent();
@@ -34,8 +35,16 @@ namespace TEP
             Start = StartFloor.Text;
             End = EndFloor.Text;
             Sect = Section.Text;
+            Type = true;
 
-            this.Close();
+            DialogResult = true;
+            Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Type = false;
+            Close();
         }
     }
 }

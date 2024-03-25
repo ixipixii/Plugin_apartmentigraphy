@@ -20,7 +20,7 @@ namespace TEP
             TypeFloor typeFloor = new TypeFloor();
             typeFloor.ShowDialog();
 
-            TEP_AR tEP_AR = new TEP_AR(uiapp, uidoc, doc, typeFloor.Start, typeFloor.End, typeFloor.Sect);
+            TEP_AR tEP_AR = new TEP_AR(uiapp, uidoc, doc, typeFloor.Start, typeFloor.End, typeFloor.Sect, typeFloor.Type);
 
             return Result.Succeeded;
         }
