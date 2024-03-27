@@ -147,20 +147,41 @@ namespace TEP
                                                     .WhereElementIsNotElementType()
                                                     .ToList();
             List<Data> rooms = new List<Data>();
-            foreach (var room in elements)
+
+            if(category == BuiltInCategory.OST_Areas)
             {
-                Data data = new Data();
-                data.element = room;
-                data.function = room.LookupParameter("PNR_Функция помещения").AsString();
-                data.name = room.LookupParameter("PNR_Имя помещения").AsString();
-                data.section = room.LookupParameter("ADSK_Номер секции").AsString();
-                data.number_apart = room.LookupParameter("ADSK_Номер квартиры").AsString();
-                data.number_room = room.LookupParameter("PNR_Номер помещения").AsString();
-                data.floor = room.LookupParameter("ADSK_Этаж").AsString();
-                data.area = UnitUtils.ConvertFromInternalUnits(room.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
-                data.height = double.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
-                rooms.Add(data);
+                foreach (var room in elements)
+                {
+                    Data data = new Data();
+                    data.element = room;
+                    data.function = room.LookupParameter("PNR_Функция помещения").AsString();
+                    data.name = room.LookupParameter("PNR_Имя помещения").AsString();
+                    data.section = room.LookupParameter("ADSK_Номер секции").AsString();
+                    data.number_apart = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                    data.number_room = room.LookupParameter("PNR_Номер помещения").AsString();
+                    data.floor = room.LookupParameter("ADSK_Этаж").AsString();
+                    data.area = UnitUtils.ConvertFromInternalUnits(room.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    data.height = double.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
+                    rooms.Add(data);
+                }
             }
+            else
+            {
+                foreach (var room in elements)
+                {
+                    Data data = new Data();
+                    data.element = room;
+                    data.function = room.LookupParameter("PNR_Функция помещения").AsString();
+                    data.name = room.LookupParameter("PNR_Имя помещения").AsString();
+                    data.section = room.LookupParameter("ADSK_Номер секции").AsString();
+                    data.number_apart = room.LookupParameter("ADSK_Номер квартиры").AsString();
+                    data.number_room = room.LookupParameter("PNR_Номер помещения").AsString();
+                    data.floor = room.LookupParameter("ADSK_Этаж").AsString();
+                    data.area = UnitUtils.ConvertFromInternalUnits(room.get_Parameter(BuiltInParameter.ROOM_AREA).AsDouble(), UnitTypeId.SquareMeters);
+                    data.height = double.Parse(room.get_Parameter(BuiltInParameter.ROOM_HEIGHT).AsValueString());
+                    rooms.Add(data);
+                }
+            }          
 
             return rooms;
         }
